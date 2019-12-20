@@ -1,0 +1,51 @@
+#check-sam:hover {
+    background-color: rgb(78, 78, 78);
+}
+
+#check-sam {
+    padding: 5% 10% 5% 10%;
+    margin-left: 1%;
+    margin-right: 1%;
+}
+
+#rad-sam:hover {
+    background-color: rgb(78, 78, 78);
+}
+
+#rad-sam {
+    padding: 5% 10% 5% 10%;
+    margin-left: 1%;
+    margin-right: 1%;
+}
+
+input[type=checkbox] {
+    position: absolute;
+    left: -999999px;
+}
+
+input[type=checkbox]:checked + label {
+    background-color: rgb(78, 78, 78);
+}
+
+input[type=radio] {
+    position: absolute;
+    left: -999999px;
+}
+
+input[type=radio]:checked + label {
+    background-color: rgb(78, 78, 78);
+}
+
+.font-sam {
+    font-family: "Josefin Sans";
+}
+
+.select-sam {
+    margin: 0% 2% 0% 2%;
+    width: 25%;
+    text-align-last: center;
+}
+
+#second, #third {
+    display: none;
+}
