@@ -2,41 +2,41 @@
     <div class="row">
         <div class="mx-auto mt-5 text-center">
             <img src="../../favicon.ico" class="img-fluid" width="20%">
-            <h3 class="font-sam">Les rencontres avec Matcha</h3>
+            <h3>Les rencontres avec Matcha</h3>
             <div class="progress mt-3 border" style="height:40px;" id="form-bg">
                 <div class="progress-bar bg-danger" role="progress-bar" style="width:33%;" id="progressBar">
-                    <b class="lead font-sam text-uppercase" id="progressText">Étape 1</b>
+                    <b class="lead text-uppercase" id="progressText">Étape 1</b>
                 </div>
             </div>
-            <form class="mx-auto bg-dark py-5 rounded shadow mt-2">
+            <form [formGroup]="signForm" class="mx-auto bg-dark py-5 rounded shadow mt-2" (ngSubmit)="onSubmitForm()">
                 <div id="first">
-                    <h4 class="text-center p-1 rounded text-white font-sam">MES PREFERENCES</h4>
+                    <h4 class="text-center p-1 rounded text-white">MES PREFERENCES</h4>
                     <div class="form-group text-center">
-                        <div class="font-sam text-light">Que recherchez-vous ?</div>
-                        <input id="getmale" type="checkbox" name="getg" value="getmale">
-                        <label for="getmale" id="check-sam" class="border radio-inline my-2 fas fa-male text-light"><p class="font-sam text-white h6">Homme</p></label>
-                        <input id="getfemale" type="checkbox" value="getfemale" name="getg">
-                        <label for="getfemale" id="check-sam" class="border radio-inline my-2 fas fa-female text-light"><p class="font-sam text-white h6">Femme</p></label>
-                        <b class="form-text text-danger" id="GenderError"></b>
+                        <div class="text-light">Que recherchez-vous ?</div>
+                        <input id="getmale" type="checkbox" name="getGenderMale" formControlName="getGenderMale" (change)="checkValue('male')">
+                        <label for="getmale" id="check-sam-1" class="border radio-inline my-2 fas fa-male text-light"><p class="font-sam text-white h6">Homme</p></label>
+                        <input id="getfemale" type="checkbox" name="getGenderFemale" formControlName="getGenderFemale" (change)="checkValue('female')">
+                        <label for="getfemale" id="check-sam-2" class="border radio-inline my-2 fas fa-female text-light"><p class="font-sam text-white h6">Femme</p></label>
+                        <div class="invalid-feedback" id="getErr">Votre préference est requise</div>
                     </div><br>
                     <div class="form-group text-center">
-                        <div class="font-sam text-light">Êtes-vous un homme ou une femme ?</div>
-                        <input id="immale" type="radio" name="myg" value="comble">
-                        <label for="immale" id="rad-sam" class="border radio-inline my-2 fas fa-male text-light"><p class="font-sam text-white h6">Homme</p></label>
-                        <input id="imfemale" type="radio" name="myg" value="sous-sol">
-                        <label for="imfemale" id="rad-sam" class="border radio-inline my-2 fas fa-female text-light"><p class="font-sam text-white h6">Femme</p></label>
-                        <b class="form-text text-danger" id="MyGenderError"></b>
+                        <div class="text-light">Êtes-vous un homme ou une femme ?</div>
+                        <input id="immale" type="radio" name="myGender" value="male" formControlName="myGender" (change)="radioValue('male')">
+                        <label for="immale" id="rad-sam-1" class="border radio-inline my-2 fas fa-male text-light"><p class="font-sam text-white h6">Homme</p></label>
+                        <input id="imfemale" type="radio" name="myGender" value="female" formControlName="myGender" (change)="radioValue('female')">
+                        <label for="imfemale" id="rad-sam-2" class="border radio-inline my-2 fas fa-female text-light"><p class="font-sam text-white h6">Femme</p></label>
+                        <div class="invalid-feedback" id="getErr2">Votre sexe est requis</div>
                     </div><br>
                     <div class="form-group text-center">
-                        <a class="btn btn-light font-sam" id="next-1">ÉTAPE SUIVANTE</a>
+                        <button type="button" class="btn btn-light" id="next-1">ÉTAPE SUIVANTE</button>
                     </div>
                 </div>
                 <div id="second">
-                    <h4 class="text-center p-1 rounded text-white font-sam">MES INFOS</h4>
+                    <h4 class="text-center p-1 rounded text-white">MES INFOS</h4>
                     <div class="form-group text-center">
-                        <div class="font-sam text-light">Quelle est vôtre date de naissance ?</div>
-                        <select class="select-sam text-light bg-dark" name="day">
-                            <option value="0">Jour</option>
+                        <div class="text-light">Quelle est vôtre date de naissance ?</div>
+                        <select class="select-sam text-light bg-dark" name="dayBirth" formControlName="dayBirth" [ngClass]="{ 'is-invalid': submitted && f.dayBirth.errors, 'is-valid': submitted && !f.dayBirth.errors }">
+                            <option value="0" disabled>Jour</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -69,8 +69,8 @@
                             <option value="30">30</option>
                             <option value="31">31</option>
                         </select>
-                        <select class="select-sam text-light bg-dark" name="month">
-                            <option value="0">Mois</option>
+                        <select class="select-sam text-light bg-dark" name="monthBirth" formControlName="monthBirth" [ngClass]="{ 'is-invalid': submitted && f.monthBirth.errors, 'is-valid': submitted && !f.monthBirth.errors }">
+                            <option value="0" disabled>Mois</option>
                             <option value="1">Janvier</option>
                             <option value="2">Février</option>
                             <option value="3">Mars</option>
@@ -84,26 +84,8 @@
                             <option value="11">Novembre</option>
                             <option value="12">Décembre</option>
                         </select>
-                        <select class="select-sam text-light bg-dark" name="year">
-                            <option value="0">Année</option>
-                            <option value="2019">2019</option>
-                            <option value="2018">2018</option>
-                            <option value="2017">2017</option>
-                            <option value="2016">2016</option>
-                            <option value="2015">2015</option>
-                            <option value="2014">2014</option>
-                            <option value="2013">2013</option>
-                            <option value="2012">2012</option>
-                            <option value="2011">2011</option>
-                            <option value="2010">2010</option>
-                            <option value="2009">2009</option>
-                            <option value="2008">2008</option>
-                            <option value="2007">2007</option>
-                            <option value="2006">2006</option>
-                            <option value="2005">2005</option>
-                            <option value="2004">2004</option>
-                            <option value="2003">2003</option>
-                            <option value="2002">2002</option>
+                        <select class="select-sam text-light bg-dark" name="yearBirth" formControlName="yearBirth" [ngClass]="{ 'is-invalid': submitted && f.yearBirth.errors, 'is-valid': submitted && !f.yearBirth.errors }">
+                            <option value="0" disabled>Année</option>
                             <option value="2001">2001</option>
                             <option value="2000">2000</option>
                             <option value="1999">1999</option>
@@ -188,45 +170,56 @@
                             <option value="1920">1920</option>
                             <option value="1919">1919</option>
                         </select>
-                        <b class="form-text text-danger" id="BirthError"></b>
+                        <div *ngIf="(submitted && f.dayBirth.errors) || (submitted && f.monthBirth.errors) || (submitted && f.yearBirth.errors)" class="invalid-feedback">
+                            <div>La date est requise</div>
+                        </div>
                     </div><br>
                     <div class="form-group text-center">
-                        <div class="font-sam text-light">Dans quelle ville habitez-vous ?</div>
-                        <input type="text" name="loca" id="loca" placeholder="Indiquez votre ville 📍" class="form-control w-75 mx-auto text-center">
-                        <b class="form-text text-danger" id="LocaError"></b>
-                        </div><br>
+                        <div class="text-light">Dans quelle ville habitez-vous ?</div>
+                        <input type="text" name="loca" id="loca" placeholder="Indiquez votre ville 📍" class="form-control w-75 mx-auto text-center" formControlName="loca" [ngClass]="{ 'is-invalid': submitted && f.loca.errors, 'is-valid': submitted && !f.loca.errors }">
+                        <div *ngIf="f.loca.errors" class="invalid-feedback">Veuillez indiquer votre ville</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="text-white">Quel est votre nom ?</label>
+                        <input type="text" name="lastname" class="form-control w-75 mx-auto text-center" placeholder="Nom" id="lastname" formControlName="lastname" [ngClass]="{ 'is-invalid': submitted && f.lastname.errors, 'is-valid': submitted && !f.lastname.errors }">
+                        <div *ngIf="f.lastname.errors" class="invalid-feedback">Veuillez indiquer votre nom</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname" class="text-white">Quel est votre prénom ?</label>
+                        <input type="text" name="firstname" class="form-control w-75 mx-auto text-center" placeholder="Prénom" id="firstname" formControlName="firstname" [ngClass]="{ 'is-invalid': submitted && f.firstname.errors, 'is-valid': submitted && !f.firstname.errors }">
+                        <div *ngIf="f.firstname.errors" class="invalid-feedback">Veuillez indiquer votre prénom</div>
+                    </div><br>
                     <div class="form-group text-center">
-                        <a class="btn btn-light font-sam mx-1" id="prev-2">ÉTAPE PRECEDENTE</a>
-                        <a class="btn btn-light font-sam mx-1" id="next-2">ÉTAPE SUIVANTE</a>
+                        <a class="btn btn-light mx-1" id="prev-2">ÉTAPE PRECEDENTE</a>
+                        <button type="button" class="btn btn-light mx-1" id="next-2">ÉTAPE SUIVANTE</button>
                     </div>
                 </div>
                 <div id="third">
-                        <h4 class="text-center p-1 rounded text-white font-sam">MES INFOS</h4>
-                        <div class="form-group">
-                            <label for="lastname" class="text-white font-sam">Quel est votre nom ?</label>
-                            <input type="text" name="lastname" class="form-control w-75 mx-auto text-center" placeholder="Nom" id="lastname">
-                            <b class="form-text text-danger" id="lastnameError"></b>
-                        </div>
-                        <div class="form-group">
-                            <label for="firstname" class="text-white font-sam">Quel est votre prénom ?</label>
-                            <input type="text" name="name" class="form-control w-75 mx-auto text-center" placeholder="Nom" id="firstname">
-                            <b class="form-text text-danger" id="firstnameError"></b>
-                        </div>
-                        <div class="form-group">
-                            <label for="email" class="text-white font-sam">Quel est votre e-mail ?</label>
-                            <input type="email" name="email" class="form-control w-75 mx-auto text-center" placeholder="E-mail" id="email">
-                            <b class="form-text text-danger" id="emailError"></b>
-                        </div>
-                        <div class="form-group">
-                            <label for="passwd" class="text-white font-sam">Choisissez un mot de passe</label>
-                            <input type="password" name="passwd" class="form-control w-75 mx-auto text-center" placeholder="Mot de passe" id="passwd">
-                            <b class="form-text text-danger" id="passwdError"></b>
-                        </div><br>
-                        <div class="form-group text-center">
-                            <a class="btn btn-light font-sam mx-1" id="prev-3">ÉTAPE PRECEDENTE</a>
-                            <a class="btn btn-light font-sam mx-1" id="submit">INSCRIPTION</a>
-                        </div>
+                    <h4 class="text-center p-1 rounded text-white">MES INFOS</h4>
+                    <div class="form-group">
+                        <label for="email" class="text-white">Quel est votre e-mail ?</label>
+                        <input type="email" name="email" class="form-control w-75 mx-auto text-center" placeholder="E-mail" id="email" formControlName="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors, 'is-valid': submitted && !f.email.errors }">
+                        <div *ngIf="f.email.errors" class="invalid-feedback">Veuillez indiquer votre email</div>
                     </div>
+                    <div class="form-group">
+                        <label for="pass" class="text-white">Choisissez un mot de passe</label>
+                        <input type="password" name="pass" class="form-control w-75 mx-auto text-center" placeholder="Mot de passe" id="pass" formControlName="pass" [ngClass]="{ 'is-invalid': submitted && f.pass.errors, 'is-valid': submitted && !f.pass.errors }">
+                        <div *ngIf="f.pass.errors?.required" class="invalid-feedback">Le mot de passe est requis</div>
+                        <div *ngIf="f.pass.errors && !f.pass.errors?.required" class="invalid-feedback">6 caracteres, 1 majuscule, 1 chiffre</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPass" class="text-white">Confirmez le mot de passe</label>
+                        <input type="password" name="confirmPass" class="form-control w-75 mx-auto text-center" placeholder="Mot de passe" id="confirmPass" formControlName="confirmPass" [ngClass]="{ 'is-invalid': submitted && f.confirmPass.errors, 'is-valid': submitted && !f.confirmPass.errors }">
+                        <div *ngIf="submitted && f.confirmPass.errors" class="invalid-feedback">
+                            <div *ngIf="f.confirmPass.errors.required">Mot de passe de confirmation requis</div>
+                            <div *ngIf="f.confirmPass.errors.mustMatch">Les mots de passe doivent correspondre</div>
+                        </div>
+                    </div><br>
+                    <div class="form-group text-center">
+                        <a class="btn btn-light mx-1" id="prev-3">ÉTAPE PRECEDENTE</a>
+                        <button class="btn btn-light mx-1" id="submit" type="submit">INSCRIPTION</button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>

@@ -5,19 +5,9 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class AppareilViewComponent implements OnInit {
+export class HomeComponent implements OnInit {
 
-  isAuth = false;
-  lastUpdate = new Date();
-  appareils: any[];
-
-  constructor() {
-    setTimeout(
-      () => {
-        this.isAuth = true;
-      }, 2000
-    );
-  }
+  constructor() { }
 
   ngOnInit() {
   }

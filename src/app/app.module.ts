@@ -4,27 +4,31 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthComponent } from './auth/auth.component';
-import { AppareilViewComponent } from './home/home.component';
+import { HomeComponent } from './home/home.component';
 import { AuthService } from './services/auth.service';
 import { SignComponent } from './sign/sign.component';
-
+import { FourOhFourComponent } from './four-oh-four/four-oh-four.component';
+import { SignService } from './services/sign.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthComponent,
-    AppareilViewComponent,
-    SignComponent
+    HomeComponent,
+    SignComponent,
+    FourOhFourComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
-    AuthService
+    AuthService,
+    SignService
   ],
   bootstrap: [AppComponent]
 })
