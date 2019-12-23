@@ -38,7 +38,7 @@ export class AuthComponent implements OnInit {
     }
     const formValue = this.authForm.value;
     this.AuthService.getUserDetails(formValue['email'], formValue['password']);
-    this.Router.navigate(['/'])
+    this.Router.navigate(['accueil'])
   }
 
 }

@@ -4,11 +4,13 @@ import { HomeComponent } from './home/home.component';
 import { AuthComponent } from './auth/auth.component';
 import { SignComponent } from './sign/sign.component';
 import { FourOhFourComponent } from './four-oh-four/four-oh-four.component';
+import { LogguedComponent } from './loggued/loggued.component';
 
 const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'auth', component: AuthComponent},
   {path: 'sign', component: SignComponent},
+  {path: 'accueil', component: LogguedComponent},
   {path: '', component: HomeComponent},
   {path: 'not-found', component: FourOhFourComponent},
   {path: '**', redirectTo: '/not-found'}

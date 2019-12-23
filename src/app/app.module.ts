@@ -11,6 +11,7 @@ import { AuthService } from './services/auth.service';
 import { SignComponent } from './sign/sign.component';
 import { FourOhFourComponent } from './four-oh-four/four-oh-four.component';
 import { SignService } from './services/sign.service';
+import { LogguedComponent } from './loggued/loggued.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { SignService } from './services/sign.service';
     AuthComponent,
     HomeComponent,
     SignComponent,
-    FourOhFourComponent
+    FourOhFourComponent,
+    LogguedComponent
   ],
   imports: [
     BrowserModule,
