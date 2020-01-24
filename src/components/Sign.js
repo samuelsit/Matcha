@@ -4,7 +4,82 @@ import Header from './Header'
 import * as $ from 'jquery'
 import { Link } from 'react-router-dom'
 
-class componentName extends Component {
+class Sign extends Component {
+
+    state = {
+        getGender: [false, false],
+        myGender: "",
+        birthday: ["1","1","2001"],
+        loca: "",
+        lastname: "",
+        firstname: "",
+        email: "",
+        pass: ""
+    }
+
+    handleGetGenderMale = event => {
+        var getGender = this.state.getGender
+        const valMale = event.target.checked
+        
+        getGender[0] = valMale
+        this.setState({getGender})
+    }
+
+    handleGetGenderFemale = event => {
+        var getGender = this.state.getGender
+        const valFemale = event.target.checked
+        
+        getGender[1] = valFemale
+        this.setState({getGender})
+    }
+
+    handleMyGender = event => {
+        var myGender = event.target.value
+
+        this.setState({myGender})
+    }
+
+    handleBirth = event => {
+        var birthday = this.state.birthday
+        const id = event.target.id
+        const val = event.target.value
+
+        if (id === "dayBirth") {
+            birthday[0] = val
+        }
+        else if (id === "monthBirth") {
+            birthday[1] = val
+        }
+        else if (id === "yearBirth") {
+            birthday[2] = val
+        }
+        this.setState({birthday})
+    }
+
+    handleText = event => {
+        const id = event.target.id
+        
+        if (id === "loca") {
+            const loca = event.target.value
+            this.setState({loca})
+        }
+        else if (id === "lastname") {
+            const lastname = event.target.value
+            this.setState({lastname})
+        }
+        else if (id === "firstname") {
+            const firstname = event.target.value
+            this.setState({firstname})
+        }
+        else if (id === "email") {
+            const email = event.target.value
+            this.setState({email})
+        }
+        else if (id === "pass") {
+            const pass = event.target.value
+            this.setState({pass})
+        }
+    }
 
     emailIsValid = email => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -170,17 +245,17 @@ class componentName extends Component {
                                     <h4 className="text-center p-1 rounded text-white">MES PREFERENCES</h4>
                                     <div className="form-group text-center">
                                         <div className="text-light">Que recherchez-vous ?</div>
-                                        <input id="getmale" type="checkbox" name="getGenderMale" />
+                                        <input id="getmale" type="checkbox" name="getGender" onChange={this.handleGetGenderMale} />
                                         <label htmlFor="getmale" id="check-sam-1" className="border radio-inline my-2 fas fa-male text-light"><p className="font-sam text-white h6">Homme</p></label>
-                                        <input id="getfemale" type="checkbox" name="getGenderFemale" />
+                                        <input id="getfemale" type="checkbox" name="getGender" onChange={this.handleGetGenderFemale} />
                                         <label htmlFor="getfemale" id="check-sam-2" className="border radio-inline my-2 fas fa-female text-light"><p className="font-sam text-white h6">Femme</p></label>
                                         <div className="invalid-feedback" id="getErr">Votre préference est requise</div>
                                     </div><br />
                                     <div className="form-group text-center">
                                         <div className="text-light">Êtes-vous un homme ou une femme ?</div>
-                                        <input id="immale" type="radio" name="myGender" value="male" />
+                                        <input id="immale" type="radio" name="myGender" value="male"  onChange={this.handleMyGender} />
                                         <label htmlFor="immale" id="rad-sam-1" className="border radio-inline my-2 fas fa-male text-light"><p className="font-sam text-white h6">Homme</p></label>
-                                        <input id="imfemale" type="radio" name="myGender" value="female" />
+                                        <input id="imfemale" type="radio" name="myGender" value="female" onChange={this.handleMyGender} />
                                         <label htmlFor="imfemale" id="rad-sam-2" className="border radio-inline my-2 fas fa-female text-light"><p className="font-sam text-white h6">Femme</p></label>
                                         <div className="invalid-feedback" id="getErr2">Votre sexe est requis</div>
                                     </div><br />
@@ -192,7 +267,7 @@ class componentName extends Component {
                                     <h4 className="text-center p-1 rounded text-white">MES INFOS</h4>
                                     <div className="form-group text-center">
                                         <div className="text-light">Quelle est vôtre date de naissance ?</div>
-                                        <select className="select-sam text-light bg-dark" name="dayBirth" >
+                                        <select className="select-sam text-light bg-dark" id="dayBirth" onChange={this.handleBirth}>
                                             <option value="0" disabled>Jour</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -226,7 +301,7 @@ class componentName extends Component {
                                             <option value="30">30</option>
                                             <option value="31">31</option>
                                         </select>
-                                        <select className="select-sam text-light bg-dark" name="monthBirth" >
+                                        <select className="select-sam text-light bg-dark" id="monthBirth" onChange={this.handleBirth}>
                                             <option value="0" disabled>Mois</option>
                                             <option value="1">Janvier</option>
                                             <option value="2">Février</option>
@@ -241,7 +316,7 @@ class componentName extends Component {
                                             <option value="11">Novembre</option>
                                             <option value="12">Décembre</option>
                                         </select>
-                                        <select className="select-sam text-light bg-dark" name="yearBirth" >
+                                        <select className="select-sam text-light bg-dark" id="yearBirth" onChange={this.handleBirth}>
                                             <option value="0" disabled>Année</option>
                                             <option value="2001">2001</option>
                                             <option value="2000">2000</option>
@@ -333,17 +408,17 @@ class componentName extends Component {
                                     </div><br />
                                     <div className="form-group text-center">
                                         <div className="text-light">Dans quelle ville habitez-vous ?</div>
-                                        <input type="text" name="loca" id="loca" placeholder="Indiquez votre ville 📍" className="form-control w-75 mx-auto text-center" />
+                                        <input type="text" name="loca" id="loca" placeholder="Indiquez votre ville 📍" className="form-control w-75 mx-auto text-center" onChange={this.handleText}/>
                                         <div className="invalid-feedback" id="getErr4">Veuillez indiquer votre ville</div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="lastname" className="text-white">Quel est votre nom ?</label>
-                                        <input type="text" name="lastname" className="form-control w-75 mx-auto text-center" placeholder="Nom" id="lastname"  />
+                                        <input type="text" name="lastname" className="form-control w-75 mx-auto text-center" placeholder="Nom" id="lastname" onChange={this.handleText} />
                                         <div className="invalid-feedback" id="getErr5">Veuillez indiquer votre nom</div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="firstname" className="text-white">Quel est votre prénom ?</label>
-                                        <input type="text" name="firstname" className="form-control w-75 mx-auto text-center" placeholder="Prénom" id="firstname" />
+                                        <input type="text" name="firstname" className="form-control w-75 mx-auto text-center" placeholder="Prénom" id="firstname" onChange={this.handleText} />
                                         <div className="invalid-feedback" id="getErr6">Veuillez indiquer votre prénom</div>
                                     </div><br/>
                                     <div className="form-group text-center">
@@ -355,12 +430,12 @@ class componentName extends Component {
                                     <h4 className="text-center p-1 rounded text-white">MES INFOS</h4>
                                     <div className="form-group">
                                         <label htmlFor="email" className="text-white">Quel est votre e-mail ?</label>
-                                        <input type="email" name="email" className="form-control w-75 mx-auto text-center" placeholder="E-mail" id="email" />
+                                        <input type="email" name="email" className="form-control w-75 mx-auto text-center" placeholder="E-mail" id="email" onChange={this.handleText} />
                                         <div className="invalid-feedback" id="getErr7">Veuillez indiquer votre email</div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="pass" className="text-white">Choisissez un mot de passe</label>
-                                        <input type="password" name="pass" className="form-control w-75 mx-auto text-center" placeholder="Mot de passe" id="pass" />
+                                        <input type="password" name="pass" className="form-control w-75 mx-auto text-center" placeholder="Mot de passe" id="pass" onChange={this.handleText} />
                                         <div className="invalid-feedback" id="getErr8">Le mot de passe est requis</div>
                                         <div className="invalid-feedback" id="getErr9">6 caracteres, 1 majuscule, 1 chiffre</div>
                                     </div>
@@ -386,4 +461,4 @@ class componentName extends Component {
     }
 }
 
-export default componentName
+export default Sign

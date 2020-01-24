@@ -1,58 +1,27 @@
 import React, { Component, Fragment } from 'react'
 import Header from './Header'
+import CardLove from './CardLove'
 
 class Accueil extends Component {
     render () {
         return (
             <Fragment>
-                <Header/>
-                <br/><br/><br/>
+                <Header loggued="true"/>
+                <br/><br/>
                 <div className="container mt-5">
                     <div className="row text-center">
-                        <div className="col-6 col-lg-3 mt-2">
-                            <div className="card">
-                                <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
-                                <div className="card-body">
-                                    <div className="text-dark"><h5 className="card-title">Florian</h5></div>
-                                    <p className="card-text">31 ans - Bruxelles</p>
-                                    <div className="btn btn-danger btn-circle btn-lg text-light mx-2"><i className="far fa-heart"></i></div>
-                                    <div className="btn btn-primary btn-circle btn-lg text-light mx-2"><i className="far fa-comments"></i></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-6 col-lg-3 mt-2">
-                            <div className="card">
-                                <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
-                                <div className="card-body">
-                                    <div className="text-dark"><h5 className="card-title">Florian</h5></div>
-                                    <p className="card-text">31 ans - Bruxelles</p>
-                                    <div className="btn btn-danger btn-circle btn-lg text-light mx-2"><i className="far fa-heart"></i></div>
-                                    <div className="btn btn-primary btn-circle btn-lg text-light mx-2"><i className="far fa-comments"></i></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-6 col-lg-3 mt-2">
-                            <div className="card">
-                                <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
-                                <div className="card-body">
-                                    <div className="text-dark"><h5 className="card-title">Florian</h5></div>
-                                    <p className="card-text">31 ans - Bruxelles</p>
-                                    <div className="btn btn-danger btn-circle btn-lg text-light mx-2"><i className="far fa-heart"></i></div>
-                                    <div className="btn btn-primary btn-circle btn-lg text-light mx-2"><i className="far fa-comments"></i></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-6 col-lg-3 mt-2">
-                            <div className="card">
-                                <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
-                                <div className="card-body">
-                                    <div className="text-dark"><h5 className="card-title">Florian</h5></div>
-                                    <p className="card-text">31 ans - Bruxelles</p>
-                                    <div className="btn btn-danger btn-circle btn-lg text-light mx-2"><i className="far fa-heart"></i></div>
-                                    <div className="btn btn-primary btn-circle btn-lg text-light mx-2"><i className="far fa-comments"></i></div>
-                                </div>
-                            </div>
-                        </div>
+                        <CardLove name="Sam" age="22" country="Paris 17" isLoggued="true"/>
+                        <CardLove name="Noémie" age="76" country="Bretagne" isLoggued="true"/>
+                        <CardLove name="Arthur" age="27" country="Saint-Brice" isLoggued="true"/>
+                        <CardLove name="Seb" age="43" country="Limousin" isLoggued="true"/>
+                        <CardLove name="Nicolas" age="21" country="Paris 19" isLoggued="false"/>
+                        <CardLove name="Rebecca" age="34" country="Deauville" isLoggued="false"/>
+                        <CardLove name="Francis" age="42" country="Montpellier" isLoggued="false"/>
+                        <CardLove name="Monica" age="99" country="Lyon" isLoggued="false"/>
+                        <CardLove name="Pierre" age="53" country="Paris 15" isLoggued="false"/>
+                        <CardLove name="Paul" age="55" country="Paris 11" isLoggued="false"/>
+                        <CardLove name="Jacques" age="32" country="Marseille" isLoggued="false"/>
+                        <CardLove name="Emma" age="19" country="Sarcelles" isLoggued="false"/>
                     </div>
                 </div>
             </Fragment>

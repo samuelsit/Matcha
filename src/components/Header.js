@@ -4,6 +4,18 @@ import { Link } from 'react-router-dom'
 
 class Header extends Component {
     render () {
+        var rightButton = "CONNEXION"
+        var link = "/connexion"
+
+        if (this.props.loggued === "true") {
+            rightButton = "Mon profil"
+            link = "/profile"
+        }
+        else {
+            rightButton = "CONNEXION"
+            link = "/connexion"
+        }
+
         return (
             <header>
                 <nav className="navbar navbar-expand navbar-light bg-light shadow fixed-top" id="navbar">
@@ -18,7 +30,7 @@ class Header extends Component {
                             <li className="nav-item" ></li>
                         </ul>
                     </div>
-                    <Link to={"/connexion"}><div className="nav-link text-light btn btn-sm btn-dark">CONNEXION</div></Link>
+                    <Link to={link}><div className="nav-link text-light btn btn-sm btn-dark">{rightButton}</div></Link>
                 </nav>
             </header>
         )
