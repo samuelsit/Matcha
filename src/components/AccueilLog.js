@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import Header from './Header'
 import CardLove from './CardLove'
+import DiscussionBar from './DiscussionBar'
 
 class Accueil extends Component {
     render () {
@@ -24,6 +25,7 @@ class Accueil extends Component {
                         <CardLove name="Emma" age="19" country="Sarcelles" isLoggued="false"/>
                     </div>
                 </div>
+                <DiscussionBar/>
             </Fragment>
         )
     }

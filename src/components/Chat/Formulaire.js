@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import '../../css/Chat.css'
 
 class Formulaire extends Component {
     state = {
@@ -18,12 +19,6 @@ class Formulaire extends Component {
         this.setState({message: '', length})
     }
 
-    handleKeyUp = event => {
-        if (event.key === 'Enter') {
-            this.createMessage()
-        }
-    }
-
     handleChange = event => {
         const message = event.target.value
         const length = this.props.length - message.length
@@ -38,13 +33,15 @@ class Formulaire extends Component {
     render () {
         return (
             <form className="form" onSubmit={this.handleSubmit}>
-                <textarea value={this.state.message} maxLength={this.props.length} required onChange={this.handleChange} onKeyUp={this.handleKeyUp}/>
-                <div className="info">
+                <div className="form-group">
+                <input type="text" className="form-control" value={this.state.message} maxLength={this.props.length} required onChange={this.handleChange}/>
+                <div className="text-right h2 mt-3">
                     {this.state.length}
                 </div>
-                <button type="submit">
+                <button className="btn btn-circle btn-danger text-light w-100" type="submit">
                     Envoyer
                 </button>
+                </div>
             </form>
         )
     }

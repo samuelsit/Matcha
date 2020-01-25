@@ -1,0 +1,55 @@
+{
+    "members": {
+        "getGender": {
+            "male": false,
+            "female": true
+        },
+        "myGender": "male",
+        "birthday": {
+            "day" : 30,
+            "month": 10,
+            "year": 1997
+        },
+        "loca": "Paris",
+        "login": "ssitruk",
+        "lastname": "Sitruk",
+        "firstname": "Samuel",
+        "email": "samsitruk@gmail.com",
+        "pass": "iw3jr2u6y4uo76s2dap5iw3jr2u6y4u",
+        "like" : 300
+    },
+    "whoConsult": {
+        "memberWhoConsults": "ssitruk",
+        "memberConsulted": "jemarcia",
+        "date": {
+            "minute": 57,
+            "hour": 3,
+            "day" : 30,
+            "month": 10,
+            "year": 1997
+        }
+    },
+    "whoLike" : {
+        "memberWhoLikes": "ssitruk",
+        "memberLiked": "jemarcia",
+        "date": {
+            "minute": 57,
+            "hour": 3,
+            "day" : 30,
+            "month": 10,
+            "year": 1997
+        }
+    },
+    "chat": {
+        "memberWhoSends": "ssitruk",
+        "memberReceived": "jemarcia",
+        "message" : "Hello",
+        "date": {
+            "minute": 57,
+            "hour": 3,
+            "day" : 30,
+            "month": 10,
+            "year": 1997
+        }
+    }
+}

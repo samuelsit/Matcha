@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import logo from '../pictures/favicon.ico'
+import logo from '../pictures/favicon.png'
 import Header from './Header'
 import { Link } from 'react-router-dom'
 
@@ -40,7 +40,7 @@ class Auth extends Component {
                 <div className="container mt-5">
                     <div className="row">
                         <div className="mx-auto mt-5 text-center">
-                            <img src={logo} className="img-fluid" width="20%" alt="logo" />
+                            <img src={logo} className="img-fluid" width="10%" alt="logo" />
                             <h3>Les rencontres avec Matcha</h3>
                             <form className="mx-auto bg-dark py-5 rounded shadow mt-2" onSubmit={this.handleSubmit}>
                                 <h4 className="text-center p-1 rounded text-white">SE CONNECTER</h4>

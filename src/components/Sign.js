@@ -3,6 +3,7 @@ import '../css/Sign.css'
 import Header from './Header'
 import * as $ from 'jquery'
 import { Link } from 'react-router-dom'
+import logo from '../pictures/favicon.png'
 
 class Sign extends Component {
 
@@ -233,7 +234,7 @@ class Sign extends Component {
                 <div className="container mt-5">
                     <div className="row">
                         <div className="mx-auto mt-5 text-center">
-                            <img src="../../favicon.ico" className="img-fluid" width="20%" alt="logo" />
+                            <img src={logo} className="img-fluid" width="10%" alt="logo" />
                             <h3>Les rencontres avec Matcha</h3>
                             <div className="progress mt-3 border" id="form-bg">
                                 <div className="progress-bar bg-danger" id="progressBar">

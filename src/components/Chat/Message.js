@@ -1,16 +1,19 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 const Message = ({pseudo, message, isUser}) => {
     if (isUser(pseudo)) {
         return (
-            <p className="user-message">
+            <Fragment>
+            <p className="badge badge-pill badge-primary">
                 {message}
             </p>
+            <br/>
+            </Fragment>
         )
     }
     else {
         return (
-            <p className="not-user-message">
+            <p className="badge badge-pill badge-danger">
                 <strong>{pseudo}: </strong>{message}
             </p>
         )

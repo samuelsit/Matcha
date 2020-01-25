@@ -13,9 +13,8 @@ class CardLove extends Component {
                     <div className="text-dark card-header"><h5 className="card-title">{this.props.name} <span className={isLoggued}> </span></h5></div>
                     <div className="card-body">
                         <p className="card-text">{this.props.age} ans<br/>{this.props.country}</p>
-                        <div className="btn btn-danger btn-circle mt-2 text-light mx-2"><i className="far fa-heart"></i></div>
                         <Link to={`/pseudo/${this.props.name}`}>
-                            <div className="btn btn-primary btn-circle mt-2 text-light mx-2"><i className="far fa-comments"></i></div>
+                            <div className="btn btn-danger btn-circle mt-2 text-light mx-2"><i className="fas fa-heart"></i></div>
                         </Link>
                     </div>
                 </div>

@@ -1,11 +1,11 @@
 import React, { Component, createRef, Fragment } from 'react'
-import './chat.css'
-import './animations.css'
+import '../../css/Chat.css'
 
 import Formulaire from './Formulaire'
 import Message from './Message'
 import Header from '../Header'
 import ChatProfile from './ChatProfile'
+import DiscussionBar from '../DiscussionBar'
 
 class App extends Component {
   state = {
@@ -38,16 +38,16 @@ class App extends Component {
     return (
       <Fragment>
         <Header loggued="true"/>
-        <div className="container">
+        <div className="container-fluid">
           <div className="row">
             <div className="col-12 col-lg-3 mt-lg-5">
               <ChatProfile name={this.props.match.params.pseudo} age="22" country="Paris 17" isLoggued="true" />
             </div>
-            <div className='box col-9'>
-              <div>
-                <h1 className="text-center d-sm-block d-lg-none d-md-block font-weight-bold">~ {this.props.match.params.pseudo} ~</h1>
-                <div className="messages border" ref={this.messagesRef}>
-                  <div className="message">
+            <div className='col-lg-9'>
+              <div><br/><br/><br/>
+                <h1 className="text-center d-sm-block d-lg-none d-md-block font-weight-bold">{this.props.match.params.pseudo} <span className="badge badge-pill badge-success"> </span></h1>
+                <div className="messages shadow-sm" ref={this.messagesRef}>
+                  <div className="h1 text-right">
                     {messages}
                   </div>
                 </div>
@@ -56,6 +56,7 @@ class App extends Component {
             </div>
           </div>
         </div>
+        <DiscussionBar/>
       </Fragment>
     )
   }

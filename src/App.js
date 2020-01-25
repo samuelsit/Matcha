@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import './App.css'
 
 import Header from './components/Header'
@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 
 function App() {
   return (
-    <div>
+    <Fragment>
       <Header />
       <div className="masthead">
         <div className="container-fluid h-100">
@@ -15,7 +15,7 @@ function App() {
               <div className="font-weight-bold text-light">
                   <p className="masthead-p">Matchez. Discutez.</p>
                   <p className="masthead-p">Faites des rencontres.</p>
-                  <Link to={"/inscription"}><div className="btn btn-lg btn-dark">INSCRIPTION</div></Link>
+                  <Link to={"/inscription"}><div className="btn btn-lg btn-danger">INSCRIPTION</div></Link>
               </div>
             </div>
           </div>
@@ -46,7 +46,7 @@ function App() {
           </div>
         </div>
       </section>
-    </div>
+    </Fragment>
   )
 }
 
