@@ -4,6 +4,7 @@
     top: 60px;
     left: calc(100vw - 475px);
     width: 450px;
+    max-height: 410px;
 }
 
 .middle {
@@ -12,4 +13,18 @@
 
 #cross {
     float: right;
+}
+
+#notif-head {
+    position: sticky;
+    top: 0;
+}
+
+.btn-notif {
+    width: 40px;
+    height: 40px;
+    padding: 5px 5px;
+    font-size: 24px;
+    line-height: 1.33;
+    border-radius: 35px;
 }

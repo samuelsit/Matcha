@@ -12,7 +12,7 @@ class ChatProfile extends Component {
                     <div className="text-dark card-header text-center"><h5 className="card-title">{this.props.name} <span className={isLoggued}> </span></h5></div>
                     <div className="card-body text-center">
                         <p className="card-text"><span className="font-weight-bold">Age: </span>{this.props.age} ans</p><hr/>
-                        <p className="card-text"><span className="font-weight-bold">Pays: </span>{this.props.country}</p><hr/>
+                        <p className="card-text"><span className="font-weight-bold">Localisation: </span>{this.props.country}</p><hr/>
                         <p className="card-text"><span className="font-weight-bold">Attirance: </span>Homme, Femme</p><hr/>
                         <p className="card-text"><span className="font-weight-bold">Biographie: </span><br/>Vous pouvez transmettre une partie de votre monde, de ce qui vous anime, de ce que vous aimez.vous pouvez transmettre une partie de votre monde, de ce qui vous anime, de ce que vous aimez.</p><hr/>
                         <p className="card-text"><span className="font-weight-bold">Centre d'interet: </span><br/>#matcha, #money</p>

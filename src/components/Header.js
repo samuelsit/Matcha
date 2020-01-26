@@ -29,7 +29,7 @@ class Header extends Component {
                         </ul>
                     </div>
                     {this.props.loggued === "true" ? <NotifBar/> : null}
-                    <Link to={"/profile"}>{this.props.loggued === "true" ? <div className="text-light btn btn-circle btn-secondary mr-2"><i className="far fa-user"></i></div> : null}</Link>
+                    <Link to={"/profile"}>{this.props.loggued === "true" ? <div className="text-light btn btn-circle btn-secondary mr-2"><i className="fas fa-user"></i></div> : null}</Link>
                     <Link to={"/connexion"}>{this.props.loggued === "true" ? null : <div className="text-light btn btn-circle btn-secondary mr-2">Connexion</div>}</Link>
                     <Link to={"/"}>{this.props.loggued === "true" ? <div className="text-light btn btn-circle btn-danger mr-2">Déconnexion</div> : null}</Link>
                 </nav>

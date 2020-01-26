@@ -1,0 +1,16 @@
+.btn-search {
+    width: 40px;
+    height: 40px;
+    padding: 7px 7px;
+    font-size: 24px;
+    line-height: 1.33;
+    border-radius: 35px;
+}
+
+#mysort {
+	display: none;
+}
+
+label {
+	padding: 0px 10px 0px 10px;
+}

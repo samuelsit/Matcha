@@ -19,6 +19,7 @@
     top: calc(100vh - 430px);
     left: calc(100vw - 475px);
     width: 450px;
+    max-height: 410px;
 }
 
 .middle {
@@ -27,4 +28,9 @@
 
 #cross {
     float: right;
+}
+
+#discuss-head {
+    position: sticky;
+    top: 0;
 }

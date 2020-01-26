@@ -72,7 +72,7 @@ class Profile extends Component {
                                     <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
                                 </div>
                             </div>
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2623.7722085199825!2d2.3140814160258785!3d48.88161887928986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66fb6d1f1e111%3A0x7f0d14613fc72a83!2s2%20Avenue%20de%20Villiers%2C%2075017%20Paris!5e0!3m2!1sfr!2sfr!4v1579977923449!5m2!1sfr!2sfr" width="100%" height="450" frameborder="0" allowfullscreen="" title="ifrm"></iframe>
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2623.7722085199825!2d2.3140814160258785!3d48.88161887928986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66fb6d1f1e111%3A0x7f0d14613fc72a83!2s2%20Avenue%20de%20Villiers%2C%2075017%20Paris!5e0!3m2!1sfr!2sfr!4v1579977923449!5m2!1sfr!2sfr" width="100%" height="335" frameborder="0" allowfullscreen="" title="ifrm"></iframe>
                         </div>
                     </div>
                 </div>
