@@ -39,7 +39,7 @@ class CardLove extends Component {
                     <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
                     <div className="text-dark text-left card-header"><h5 className="card-title">{this.props.name} <span className={isLoggued}> </span> <span className={colorgender.concat(' ', "float-right")}><i className={gender}></i></span></h5></div>
                     <div className="card-body">
-                        <p className="card-text">{this.props.age} ans<br/>{this.props.country}</p><hr/>
+                        <p className="card-text">{this.props.age} ans<br/><i class="fas fa-map-marker-alt"></i> {this.props.country} (1736 km)</p><hr/>
                         <code>#matcha, #money, #matcha, #money</code>
                         <p className="card-text"></p><hr/>
                         <Link to={`/pseudo/${this.props.name}`}>

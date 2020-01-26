@@ -19,6 +19,7 @@
     top: calc(100vh - 430px);
     left: calc(100vw - 475px);
     width: 450px;
+    height: 410px;
     max-height: 410px;
 }
 

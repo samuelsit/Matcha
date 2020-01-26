@@ -49,7 +49,7 @@ class FilterSort extends Component {
                                     <input type="range" class="custom-range" id="customRange1"></input>
                                 </div>
                                 <div className="col-lg-6">
-                                    <label for="customRange1" className="h3">Filtrer par tags: </label>
+                                    <label for="customRange1" className="h3">Filtrer par tags populaires: </label>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
                                         <label class="form-check-label" for="inlineCheckbox1"><code>#matcha </code></label>
