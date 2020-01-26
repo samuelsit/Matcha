@@ -26,7 +26,7 @@ class Profile extends Component {
                                                     <div className="text-light">Que recherchez-vous ?</div>
                                                     <input id="getmale" type="checkbox" name="getGender" onChange={this.handleGetGenderMale} />
                                                     <label htmlFor="getmale" id="check-sam-1" className="border radio-inline fas fa-male text-light"><p className="font-sam text-white h6">Homme</p></label>
-                                                    <input id="getfemale" type="checkbox" name="getGender" onChange={this.handleGetGenderFemale} />
+                                                    <input id="getfemale" type="checkbox" name="getGender" onChange={this.handleGetGenderFemale} checked/>
                                                     <label htmlFor="getfemale" id="check-sam-2" className="border radio-inline fas fa-female text-light"><p className="font-sam text-white h6">Femme</p></label>
                                                     <div className="invalid-feedback" id="getErr">Votre préference est requise</div>
                                                 </div>
@@ -34,7 +34,7 @@ class Profile extends Component {
                                             <div className="col">
                                                 <div className="form-group text-center">
                                                     <div className="text-light">Quel est votre genre ?</div>
-                                                    <input id="immale" type="radio" name="myGender" value="male"  onChange={this.handleMyGender} />
+                                                    <input id="immale" type="radio" name="myGender" value="male"  onChange={this.handleMyGender} checked/>
                                                     <label htmlFor="immale" id="rad-sam-1" className="border radio-inline fas fa-male text-light"><p className="font-sam text-white h6">Homme</p></label>
                                                     <input id="imfemale" type="radio" name="myGender" value="female" onChange={this.handleMyGender} />
                                                     <label htmlFor="imfemale" id="rad-sam-2" className="border radio-inline fas fa-female text-light"><p className="font-sam text-white h6">Femme</p></label>
