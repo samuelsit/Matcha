@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 
 class CardLove extends Component {
 
@@ -42,9 +41,7 @@ class CardLove extends Component {
                         <p className="card-text">{this.props.age} ans<br/><i class="fas fa-map-marker-alt"></i> {this.props.country} (1736 km)</p><hr/>
                         <code>#matcha, #money, #matcha, #money</code>
                         <p className="card-text"></p><hr/>
-                        <Link to={`/pseudo/${this.props.name}`}>
-                            <div className="btn btn-danger btn-circle text-light float-left"><i className="fas fa-heart"> {this.props.isLoved}</i></div>
-                        </Link>
+                        <div className="btn btn-danger btn-circle text-light float-left"><i className="fas fa-heart"> {this.props.isLoved}</i></div>
                         <div className={colorlove.concat(' ', 'float-right')}><i className={love.concat(' ', 'text-light')}></i></div>
                         {this.props.love === "ho" ? <div className="btn btn-info float-right mr-1"><i className="fas fa-venus-mars"></i></div> : null}
                     </div>
