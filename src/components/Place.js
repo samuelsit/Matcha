@@ -16,13 +16,15 @@ export default function Place() {
         setCoordinates(latLng)
     }
 
-    console.log("latitude: " + coordinates.lat, " longitude: " + coordinates.lng)
+    if (coordinates.lat !== null && coordinates.lng !== null) {
+        console.log("latitude: " + coordinates.lat, " longitude: " + coordinates.lng)
+    }
 
     return (
         <PlacesAutocomplete value={address} onChange={setAddress} onSelect={handleSelect}>
             {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
                 <div>
-                    <input onChange={setAddress} {...getInputProps({ placeholder: "Indiquez votre ville 📍" })} />
+                    <input onChange={setAddress} {...getInputProps({ placeholder: "Indiquez votre ville 📍" })} required/>
                     <div>
                         {loading ? <div>Loading...</div> : null}
                         {suggestions.map((suggestion) => {
