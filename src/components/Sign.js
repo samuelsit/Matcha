@@ -69,10 +69,6 @@ class Sign extends Component {
     handleText = event => {
         const id = event.target.id
         
-        // if (id === "loca") {
-        //     const loca = event.target.value
-        //     this.setState({loca})
-        // }
         if (id === "lastname") {
             const lastname = event.target.value
             this.setState({lastname})
@@ -147,13 +143,6 @@ class Sign extends Component {
         }
         else {
             $("#getErr3").fadeOut()
-        }
-        if (!($("input[name=loca]").val() || "")) {
-            $("#getErr4").fadeIn()
-            error = 1
-        }
-        else {
-            $("#getErr4").fadeOut()
         }
         if (!($("input[name=lastname]").val() || "")) {
             $("#getErr5").fadeIn()
@@ -290,11 +279,6 @@ class Sign extends Component {
                                             <div>La date est requise</div>
                                         </div>
                                     </div><br />
-                                    {/* <div className="form-group text-center">
-                                        <div className="text-light">Dans quelle ville habitez-vous ?</div>
-                                        <input type="text" name="loca"  placeholder="Indiquez votre ville 📍" className="form-control w-75 mx-auto text-center" onChange={this.handleText}/>
-                                        <div className="invalid-feedback" id="getErr4">Veuillez indiquer votre ville</div>
-                                    </div> */}
                                     <div className="form-group text-center">
                                         <div className="text-light">Dans quelle ville habitez-vous ?</div>
                                         <Place/>
