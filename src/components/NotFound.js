@@ -1,18 +1,21 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
+import Header from './Header'
 
 class NotFound extends Component {
     render () {
         return (
-            <div className="container h-100">
-                <div className="row h-100 align-items-center">
-                <div className="col-12 text-center">
-                    <div className="font-weight-bold text-light bg-dark p-5 rounded">
-                        <p>Erreur 404.</p>
-                        <p>La page que vous cherchez n'existe pas.</p>
+            <Fragment>
+                <Header loggued="true"/>
+                <br/><br/><br/><br/>
+                <div className="container h-100">
+                    <div className="col-12 text-center">
+                        <div className="h2 font-weight-bold text-light bg-dark p-5 rounded shadow-lg">
+                            <p>Erreur 404.</p>
+                            <p>La page que vous cherchez n'existe pas.</p>
+                        </div>
                     </div>
                 </div>
-                </div>
-            </div>
+            </Fragment>
         )
     }
 }

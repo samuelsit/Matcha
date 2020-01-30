@@ -2,15 +2,15 @@ import React, { Component, Fragment } from 'react'
 import '../css/Sign.css'
 import Header from './Header'
 import * as $ from 'jquery'
-import { Link } from 'react-router-dom'
 import logo from '../pictures/favicon.png'
 import Birthday from './Birthday'
 import Place from './Place'
+import { Redirect } from "react-router-dom"
 
 class Sign extends Component {
 
     state = {
-        getGender: {
+        attirance: {
             male: false,
             female: false
         },
@@ -28,7 +28,22 @@ class Sign extends Component {
         lastname: "",
         firstname: "",
         email: "",
-        pass: ""
+        pass: "",
+        redirect: false
+    }
+
+    setRedirect = () => {
+        this.setState({
+            redirect: true
+        })
+    }
+    
+    handleRedirect = () => {
+        if (this.state.redirect) {
+            return (
+                <Redirect to={"/accueil"} />
+            )
+        }
     }
 
     handleLocalisation = (address, lat, lng) => {
@@ -41,19 +56,19 @@ class Sign extends Component {
     }
 
     handleGetGenderMale = event => {
-        var getGender = this.state.getGender
+        var attirance = this.state.attirance
         const valMale = event.target.checked
         
-        getGender['male'] = valMale
-        this.setState({getGender})
+        attirance.male = valMale
+        this.setState({attirance})
     }
 
     handleGetGenderFemale = event => {
-        var getGender = this.state.getGender
+        var attirance = this.state.attirance
         const valFemale = event.target.checked
         
-        getGender['female'] = valFemale
-        this.setState({getGender})
+        attirance.female = valFemale
+        this.setState({attirance})
     }
 
     handleMyGender = event => {
@@ -68,13 +83,13 @@ class Sign extends Component {
         const val = event.target.value
 
         if (id === "dayBirth") {
-            birthday['day'] = val
+            birthday.day = val
         }
         else if (id === "monthBirth") {
-            birthday['month'] = val
+            birthday.month = val
         }
         else if (id === "yearBirth") {
-            birthday['year'] = val
+            birthday.year = val
         }
         this.setState({birthday})
     }
@@ -83,11 +98,11 @@ class Sign extends Component {
         const id = event.target.id
         
         if (id === "lastname") {
-            const lastname = event.target.value
+            const lastname = event.target.value.toUpperCase()
             this.setState({lastname})
         }
         else if (id === "firstname") {
-            const firstname = event.target.value
+            const firstname = event.target.value.length > 0 ? event.target.value[0].toUpperCase() + event.target.value.substring(1) : ""
             this.setState({firstname})
         }
         else if (id === "email") {
@@ -109,23 +124,25 @@ class Sign extends Component {
         const gfemale = document.getElementById('getfemale').checked
         const mymale = document.getElementById('imfemale').checked
         const myfemale = document.getElementById('immale').checked
-        var error = 0
+        var error = true
 
         if (gmale === false && gfemale === false) {
+            error = true
             $("#getErr").fadeIn()
-            error = 1
         }
         else {
+            error = false
             $("#getErr").fadeOut()
         }
         if (mymale === false && myfemale === false) {
+            error = true
             $("#getErr2").fadeIn()
-            error = 1
         }
         else {
+            error = false
             $("#getErr2").fadeOut()
         }
-        if (error === 1) {
+        if (error === true) {
             return false
         }
         $("#second").fadeIn()
@@ -148,30 +165,41 @@ class Sign extends Component {
     }
 
     handleN2 = () => {
-         var error = 0
+        var error = true
 
-        if ($("select[name=day]").val() === 0 || $("select[name=month]").val() === 0 || $("select[name=year]").val() === 0) {
-            $("#getErr3").fadeIn()
-            error = 1
+        if (this.state.country.name === null) {
+            error = true
+            $("#getErr4").fadeIn()
         }
         else {
+            error = false
+            $("#getErr4").fadeOut()
+        }
+        if ($("select[name=day]").val() === 0 || $("select[name=month]").val() === 0 || $("select[name=year]").val() === 0) {
+            error = true
+            $("#getErr3").fadeIn()
+        }
+        else {
+            error = false
             $("#getErr3").fadeOut()
         }
         if (!($("input[name=lastname]").val() || "")) {
+            error = true
             $("#getErr5").fadeIn()
-            error = 1
         }
         else {
+            error = false
             $("#getErr5").fadeOut()
         }
         if (!($("input[name=firstname]").val() || "")) {
+            error = true
             $("#getErr6").fadeIn()
-            error = 1
         }
         else {
+            error = false
             $("#getErr6").fadeOut()
         }
-        if (error === 1) {
+        if (error === true) {
             return false
         }
         $("#second").hide()
@@ -193,54 +221,65 @@ class Sign extends Component {
         return true
     }
 
-    handleSubmit = event => {
-        event.preventDefault()
-        var error = 0
+    handleSubmit = () => {
+        var errorSamePass = true
+        var errorConfirm = true
+        var errorPassSynt = true
+        var errorPass = true
+        var errorMail = true
 
         if (!($("input[name=email]").val() || "")) {
+            errorMail = true
             $("#getErr7").fadeIn()
-            error = 1
         }
         else {
+            errorMail = false
             $("#getErr7").fadeOut()
         }
         if (!($("input[name=pass]").val() || "")) {
+            errorPass = true
             $("#getErr8").fadeIn()
-            error = 1
         }
         else {
+            errorPass = false
             $("#getErr8").fadeOut()
         }
         if ((/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$/.test($("input[name=pass]").val())) === false) {
+            errorPassSynt = true
             $("#getErr9").fadeIn()
-            error = 1
         }
         else {
+            errorPassSynt = false
             $("#getErr9").fadeOut()
         }
         if (!($("input[name=confirmPass]").val() || "")) {
+            errorConfirm = true
             $("#getErr10").fadeIn()
-            error = 1
         }
         else {
+            errorConfirm = false
             $("#getErr10").fadeOut()
         }
         if ($("input[name=confirmPass]").val() !== $("input[name=pass]").val()) {
+            errorSamePass = true
             $("#getErr11").fadeIn()
-            error = 1
         }
         else {
+            errorSamePass = false
             $("#getErr11").fadeOut()
         }
-        if (error === 1) {
+        if (errorSamePass || errorConfirm || errorPassSynt || errorPass || errorMail) {
             return false
         }
-        return true
+        else {
+            return this.setRedirect()
+        }
     }
 
     render () {
         return (
             <Fragment>
+                {this.handleRedirect()}
                 <Header />
                 <div className="container mt-5">
                     <div className="row">
@@ -252,7 +291,7 @@ class Sign extends Component {
                                     <b className="lead text-uppercase" id="progressText">Étape 1</b>
                                 </div>
                             </div>
-                            <form className="mx-auto bg-dark py-5 rounded shadow mt-2" onSubmit={this.handleSubmit}>
+                            <form className="mx-auto bg-dark py-5 rounded shadow mt-2">
                                 <div id="first">
                                     <h4 className="text-center p-1 rounded text-white">MES PREFERENCES</h4>
                                     <div className="form-group text-center">
@@ -299,12 +338,12 @@ class Sign extends Component {
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="lastname" className="text-white">Quel est votre nom ?</label>
-                                        <input type="text" name="lastname" className="form-control w-75 mx-auto text-center" placeholder="Nom" id="lastname" onChange={this.handleText} />
+                                        <input type="text" name="lastname" className="form-control w-75 mx-auto text-center" value={this.state.lastname} placeholder="Nom" id="lastname" onChange={this.handleText} />
                                         <div className="invalid-feedback" id="getErr5">Veuillez indiquer votre nom</div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="firstname" className="text-white">Quel est votre prénom ?</label>
-                                        <input type="text" name="firstname" className="form-control w-75 mx-auto text-center" placeholder="Prénom" id="firstname" onChange={this.handleText} />
+                                        <input type="text" name="firstname" className="form-control w-75 mx-auto text-center" value={this.state.firstname} placeholder="Prénom" id="firstname" onChange={this.handleText} />
                                         <div className="invalid-feedback" id="getErr6">Veuillez indiquer votre prénom</div>
                                     </div><br/>
                                     <div className="form-group text-center">
@@ -333,12 +372,10 @@ class Sign extends Component {
                                     </div><br/>
                                     <div className="form-group text-center">
                                         <div className="btn btn-light mx-1" id="prev-3" onClick={this.handleP3}>ÉTAPE PRECEDENTE</div>
-                                        <Link to={"/accueil"}>
-                                            <button className="btn btn-light mx-1" id="submit" type="submit">INSCRIPTION</button>
-                                        </Link>
+                                        <button className="btn btn-light mx-1" id="submit" type="button" onClick={this.handleSubmit}>INSCRIPTION</button>
                                     </div>
                                 </div>
-                            </form>
+                            </form><br/><br/><br/>
                         </div>
                     </div>
                 </div>
