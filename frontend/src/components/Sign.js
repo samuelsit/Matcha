@@ -6,6 +6,7 @@ import logo from '../pictures/favicon.png'
 import Birthday from './Birthday'
 import Place from './Place'
 import { Redirect } from "react-router-dom"
+import axios from 'axios'
 
 class Sign extends Component {
 
@@ -16,14 +17,14 @@ class Sign extends Component {
         },
         myGender: "",
         birthday: {
-            day: "1",
-            month: "1",
-            year: "2001"
+            day: 1,
+            month: 1,
+            year: 2001
         },
         country: {
-            name: null,
-            lng: null,
-            lat: null
+            name: "",
+            lng: 0,
+            lat: 0
         },
         lastname: "",
         firstname: "",
@@ -272,7 +273,28 @@ class Sign extends Component {
             return false
         }
         else {
-            return this.setRedirect()
+            axios.post('http://localhost:5000/members', {
+                attirance: {
+                    male: this.state.attirance.male,
+                    female: this.state.attirance.female
+                },
+                myGender: this.state.myGender,
+                birthday: {
+                    day: this.state.birthday.day,
+                    month: this.state.birthday.month,
+                    year: this.state.birthday.year
+                },
+                country: {
+                    name: this.state.country.name,
+                    lng: this.state.country.lng,
+                    lat: this.state.country.lat
+                },
+                lastname: this.state.lastname,
+                firstname: this.state.firstname,
+                email: this.state.email,
+                password: this.state.pass
+            }).then(res => console.log(res.data))
+            // return this.setRedirect()
         }
     }
 
