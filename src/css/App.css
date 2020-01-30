@@ -1,3 +1,12 @@
+@font-face {
+  font-family: "Josefin Sans";
+  src: url("./JosefinSans-Bold.ttf");
+}
+
+* {
+  font-family: "Josefin Sans";
+}
+
 textarea:focus,
 select:focus,
 input[type="text"]:focus,
@@ -21,10 +30,6 @@ input[type="color"]:focus,
   border: 0;
 }
 
-body {
-  font-family: "Josefin Sans";
-}
-
 .masthead-p {
   font-size: 8.7vw;
   color: rgb(255, 255, 255);
@@ -33,7 +38,7 @@ body {
 
 .masthead {
   height: 100vh;
-  background-image: url('./pictures/background.jpg');
+  background-image: url('../pictures/background.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

@@ -20,11 +20,24 @@ class Sign extends Component {
             month: "1",
             year: "2001"
         },
-        loca: "",
+        country: {
+            name: null,
+            lng: null,
+            lat: null
+        },
         lastname: "",
         firstname: "",
         email: "",
         pass: ""
+    }
+
+    handleLocalisation = (address, lat, lng) => {
+        var country = {
+            name: address,
+            lng: lng,
+            lat: lat
+        }
+        this.setState({country})
     }
 
     handleGetGenderMale = event => {
@@ -281,7 +294,7 @@ class Sign extends Component {
                                     </div><br />
                                     <div className="form-group text-center">
                                         <div className="text-light">Dans quelle ville habitez-vous ?</div>
-                                        <Place/>
+                                        <Place getLocalisation={this.handleLocalisation}/>
                                         <div className="invalid-feedback" id="getErr4">Veuillez indiquer votre ville</div>
                                     </div>
                                     <div className="form-group">
