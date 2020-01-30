@@ -16,6 +16,9 @@ exports.index = function (req, res) {
 // Handle create members actions
 exports.new = function (req, res) {
     var member = new Member();
+    member.isLoggued = req.body.isLoggued;
+    member.popularity = req.body.popularity;
+    member.interet = req.body.interet;
     member.attirance = req.body.attirance;
     member.myGender = req.body.myGender;
     member.birthday = req.body.birthday;

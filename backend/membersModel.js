@@ -1,6 +1,18 @@
 var mongoose = require('mongoose');
 // Setup schema
 var memberSchema = mongoose.Schema({
+    isLoggued: {
+        type: Boolean,
+        required: true
+    },
+    popularity: {
+        type: Number,
+        required: true
+    },
+    interet: {
+        type: String,
+        required: false
+    },
     attirance: {
         male: {
             type: Boolean,

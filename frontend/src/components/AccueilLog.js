@@ -4,9 +4,80 @@ import CardLove from './CardLove'
 import DiscussionBar from './DiscussionBar'
 import FilterSort from './FilterSort'
 import Pagination from './Pagination'
+import axios from 'axios'
+import { getDistance, convertDistance } from 'geolib'
 
 class Accueil extends Component {
+
+    state = {
+        members: [],
+        myCoords: []
+    }
+
+    componentDidMount() {
+        axios.get('http://localhost:5000/members').then(res => {
+            this.setState({members: res.data.members})
+        }).catch(error => {
+            console.log(error)
+        })        
+    }
+
+    getDistanceFrom = (lat, lng) => {
+        navigator.geolocation.getCurrentPosition(position => {
+            this.setState({myCoords: {latitude: position.coords.latitude, longitude: position.coords.longitude}})
+        })
+        const cardCoords = {latitude: lat, longitude: lng}
+        var distance = convertDistance(getDistance(this.state.myCoords, cardCoords, 1000), 'km')            
+        return distance
+    }
+
+    getAge = date => { 
+        var diff = Date.now() - date.getTime();
+        var age = new Date(diff); 
+        return Math.abs(age.getUTCFullYear() - 1970);
+    }
+
+    orientationSexuelle = (genre, attirance) => {
+        if (genre === "male") {
+            if (attirance.male === true && attirance.female === true) {
+                return ("bi")
+            }
+            if (attirance.male === true && attirance.female === false) {
+                return ("ho")
+            }
+            if (attirance.male === false && attirance.female === true) {
+                return ("het")
+            }
+        }
+        else {
+            if (attirance.male === true && attirance.female === true) {
+                return ("bi")
+            }
+            if (attirance.male === false && attirance.female === true) {
+                return ("ho")
+            }
+            if (attirance.male === true && attirance.female === false) {
+                return ("het")
+            }
+        }
+    }
+
     render () {
+        let card = this.state.members.map((el, i) => (
+            <CardLove
+                key={i}
+                isLoggued={el.isLoggued}
+                name={el.firstname}
+                age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
+                country={el.country.name}
+                distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
+                isLoved={el.popularity}
+                gender={el.myGender}
+                love={this.orientationSexuelle(el.myGender, el.attirance)}
+                interet={el.interet}
+            />
+        ))
+
         return (
             <Fragment>
                 <Header loggued="true"/>
@@ -18,18 +89,9 @@ class Accueil extends Component {
                         </div>
                     </div><hr/>
                     <div className="row text-center">
-                        <CardLove name="Sam" age="22" country="Paris 17" isLoggued="true" isLoved="10" gender="male" love="het"/>
-                        <CardLove name="Noémie" age="76" country="Bretagne" isLoggued="true" isLoved="4" gender="female" love="ho"/>
-                        <CardLove name="Arthur" age="27" country="Saint-Brice" isLoggued="true" isLoved="34" gender="male" love="bi"/>
-                        <CardLove name="Seb" age="43" country="Limousin" isLoggued="true" isLoved="234" gender="male" love="het"/>
-                        <CardLove name="Nicolas" age="21" country="Paris 19" isLoggued="true" isLoved="2" gender="male" love="ho"/>
-                        <CardLove name="Rebecca" age="34" country="Deauville" isLoggued="false" isLoved="45" gender="female" love="het"/>
-                        <CardLove name="Francis" age="42" country="Montpellier" isLoggued="false" isLoved="99" gender="male" love="ho"/>
-                        <CardLove name="Monica" age="99" country="Lyon" isLoggued="false" isLoved="126" gender="female" love="bi"/>
-                        <CardLove name="Pierre" age="53" country="Paris 15" isLoggued="false" isLoved="0" gender="male" love="het"/>
-                        <CardLove name="Paul" age="55" country="Paris 11" isLoggued="false" isLoved="76" gender="male" love="het"/>
-                        <CardLove name="Jacques" age="32" country="Marseille" isLoggued="false" isLoved="1" gender="male" love="ho"/>
-                        <CardLove name="Emma" age="19" country="Sarcelles" isLoggued="false" isLoved="1000" gender="female" love="het"/>
+                        {
+                            card
+                        }
                     </div>
                     <div className="row">
                         <div className="col">

@@ -7,6 +7,7 @@ import Birthday from './Birthday'
 import Place from './Place'
 import { Redirect } from "react-router-dom"
 import axios from 'axios'
+import bcrypt from 'bcryptjs'
 
 class Sign extends Component {
 
@@ -30,7 +31,23 @@ class Sign extends Component {
         firstname: "",
         email: "",
         pass: "",
-        redirect: false
+        redirect: false,
+        interet: {
+            value: "#",
+            length: 0,
+            data: ""
+        }
+    }
+
+    validInteret = event => {    
+        const length = this.state.interet.length
+        const value = this.state.interet.value
+        const data = length === 0 ? this.state.interet.value : this.state.interet.data + ", " + this.state.interet.value
+
+        if (event.which === 13 || event.keyCode === 13) {
+            length === 0 ? $(`<code>${value}</code>`).insertBefore("#interet") : $(`<code>, ${value}</code>`).insertBefore("#interet")
+            this.setState({interet: {value: "#", length: length + 1, data: data}})
+        }
     }
 
     setRedirect = () => {
@@ -111,8 +128,14 @@ class Sign extends Component {
             this.setState({email})
         }
         else if (id === "pass") {
-            const pass = event.target.value
+            const pass = bcrypt.hashSync(event.target.value, bcrypt.genSaltSync(10))
             this.setState({pass})
+        }
+        else if (id === "interet") {
+            const tab = this.state.interet.data
+            const len = this.state.interet.length
+            const interet = "#" + event.target.value.replace('#', '')
+            this.setState({interet: {value: interet, length: len, data: tab}})
         }
     }
 
@@ -274,6 +297,9 @@ class Sign extends Component {
         }
         else {
             axios.post('http://localhost:5000/members', {
+                isLoggued: false,
+                popularity: 0,
+                interet: this.state.interet.data,
                 attirance: {
                     male: this.state.attirance.male,
                     female: this.state.attirance.female
@@ -293,8 +319,7 @@ class Sign extends Component {
                 firstname: this.state.firstname,
                 email: this.state.email,
                 password: this.state.pass
-            }).then(res => console.log(res.data))
-            // return this.setRedirect()
+            }).then(this.setRedirect())
         }
     }
 
@@ -391,6 +416,11 @@ class Sign extends Component {
                                         <input type="password" name="confirmPass" className="form-control w-75 mx-auto text-center" placeholder="Mot de passe" id="confirmPass" />
                                         <div className="invalid-feedback" id="getErr10">Mot de passe de confirmation requis</div>
                                         <div className="invalid-feedback" id="getErr11">Les mots de passe doivent correspondre</div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="interet" className="text-white">Centre d'interet</label>
+                                        <input type="text" name="interet" className="form-control w-75 mx-auto text-center" value={this.state.interet.value} placeholder="#exemple" id="interet" onChange={this.handleText} onKeyUp={this.validInteret}/>
+                                        <div id="interet"></div>
                                     </div><br/>
                                     <div className="form-group text-center">
                                         <div className="btn btn-light mx-1" id="prev-3" onClick={this.handleP3}>ÉTAPE PRECEDENTE</div>

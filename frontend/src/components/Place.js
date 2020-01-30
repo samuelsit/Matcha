@@ -12,8 +12,13 @@ export default function Place({ getLocalisation }) {
         setAddress(value)
     }
 
+    const searchOptions = {
+        types: ['(regions)'],
+        componentRestrictions: {country: "fr"}
+    }
+
     return (
-        <PlacesAutocomplete value={address} onChange={setAddress} onSelect={handleSelect}>
+        <PlacesAutocomplete value={address} onChange={setAddress} onSelect={handleSelect} searchOptions={searchOptions}>
             {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
                 <div>
                     <input onChange={setAddress} {...getInputProps({ placeholder: "Indiquez votre ville 📍" })} required/>
