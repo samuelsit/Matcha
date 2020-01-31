@@ -5,7 +5,6 @@ import * as $ from 'jquery'
 import logo from '../pictures/favicon.png'
 import Birthday from './Birthday'
 import Place from './Place'
-import { Redirect } from "react-router-dom"
 import axios from 'axios'
 import bcrypt from 'bcryptjs'
 
@@ -44,23 +43,9 @@ class Sign extends Component {
         const value = this.state.interet.value
         const data = length === 0 ? this.state.interet.value : this.state.interet.data + ", " + this.state.interet.value
 
-        if (event.which === 13 || event.keyCode === 13) {
+        if ((event.which === 13 || event.keyCode === 13) && value !== "#") {
             length === 0 ? $(`<code>${value}</code>`).insertBefore("#interet") : $(`<code>, ${value}</code>`).insertBefore("#interet")
             this.setState({interet: {value: "#", length: length + 1, data: data}})
-        }
-    }
-
-    setRedirect = () => {
-        this.setState({
-            redirect: true
-        })
-    }
-    
-    handleRedirect = () => {
-        if (this.state.redirect) {
-            return (
-                <Redirect to={"/accueil"} />
-            )
         }
     }
 
@@ -296,7 +281,12 @@ class Sign extends Component {
             return false
         }
         else {
-            axios.post('http://localhost:5000/members', {
+            $("#third").hide()
+            $("#final").fadeIn()
+            $("#progressBar").removeClass("bg-success")
+            $("#progressBar").css("background-color", "#E83E8C")
+            $("#progressText").html("FORMULAIRE ENVOYÉ !")
+            axios.post('http://localhost:5000/api/members', {
                 isLoggued: false,
                 popularity: 0,
                 interet: this.state.interet.data,
@@ -311,22 +301,22 @@ class Sign extends Component {
                     year: this.state.birthday.year
                 },
                 country: {
-                    name: this.state.country.name,
+                    name: this.state.country.name.replace(', France', ''),
                     lng: this.state.country.lng,
                     lat: this.state.country.lat
                 },
                 lastname: this.state.lastname,
                 firstname: this.state.firstname,
                 email: this.state.email,
-                password: this.state.pass
-            }).then(this.setRedirect())
+                password: this.state.pass,
+                token: bcrypt.genSaltSync(32)
+            }).then(/*mail*/)
         }
     }
 
     render () {
         return (
             <Fragment>
-                {this.handleRedirect()}
                 <Header />
                 <div className="container mt-5">
                     <div className="row">
@@ -426,6 +416,13 @@ class Sign extends Component {
                                         <div className="btn btn-light mx-1" id="prev-3" onClick={this.handleP3}>ÉTAPE PRECEDENTE</div>
                                         <button className="btn btn-light mx-1" id="submit" type="button" onClick={this.handleSubmit}>INSCRIPTION</button>
                                     </div>
+                                </div>
+                                <div id="final">
+                                    <h2 className="text-center p-1 rounded text-white">Merci de vous être inscrit sur matcha.</h2>
+                                    <h3 className="text-center rounded text-white">Un email recapitulatif vous a été envoyé à l'adresse suivante:</h3>
+                                    <code className="text-center rounded h3">{this.state.email}</code>
+                                    <h3 className="text-center rounded text-white mt-2">Merci de vous y rendre afin de confirmer votre inscription.</h3>
+                                    <h3 className="text-center rounded text-white">À bientôt ! <span role="img" aria-label="emoji">🥰</span></h3>
                                 </div>
                             </form><br/><br/><br/>
                         </div>

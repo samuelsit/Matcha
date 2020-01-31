@@ -1,4 +1,4 @@
-Member = require('./membersModel');
+Member = require('../models/membersModel');
 // Handle index actions
 exports.index = function (req, res) {
     Member.get(function (err, members) {
@@ -27,6 +27,7 @@ exports.new = function (req, res) {
     member.firstname = req.body.firstname;
     member.email = req.body.email;
     member.password = req.body.password;
+    member.token = req.body.token;
     member.save(function (err) {
         if (err)
             res.json(err);

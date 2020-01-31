@@ -71,6 +71,10 @@ var memberSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    token: {
+        type: String,
+        required: true
+    },
     create_date: {
         type: Date,
         default: Date.now

@@ -2,12 +2,27 @@ import React, { Component, Fragment } from 'react'
 import logo from '../pictures/favicon.png'
 import Header from './Header'
 import { Link } from 'react-router-dom'
+import { Redirect } from "react-router-dom"
 
 class Auth extends Component {
 
     state = {
         email: "",
         pass: ""
+    }
+
+    setRedirect = () => {
+        this.setState({
+            redirect: true
+        })
+    }
+    
+    handleRedirect = () => {
+        if (this.state.redirect) {
+            return (
+                <Redirect to={"/accueil"} />
+            )
+        }
     }
 
     handleText = event => {
@@ -29,13 +44,14 @@ class Auth extends Component {
         const pass = document.getElementById("pass").value
         
         if (/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(mail) && /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/.test(pass)) {
-            event.target.submit()
+            this.setRedirect()
         }
     }
 
     render () {
         return (
             <Fragment>
+                {this.handleRedirect()}
                 <Header/>
                 <div className="container mt-5">
                     <div className="row">

@@ -8,6 +8,7 @@ class CardLove extends Component {
         var colorgender = null
         var love = null
         var colorlove = null
+        var distance = isNaN(this.props.distance) ? null : "(" + this.props.distance + " km)"
 
         if (this.props.gender === "male") {
             gender = "fas fa-mars"
@@ -38,7 +39,7 @@ class CardLove extends Component {
                     <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
                     <div className="text-dark text-left card-header"><h5 className="card-title">{this.props.name} <span className={isLoggued}> </span> <span className={colorgender.concat(' ', "float-right")}><i className={gender}></i></span></h5></div>
                     <div className="card-body">
-                        <p className="card-text">{this.props.age} ans<br/><i className="fas fa-map-marker-alt"></i> {this.props.country} ({this.props.distance} km)</p><hr/>
+                        <p className="card-text">{this.props.age} ans<br/><i className="fas fa-map-marker-alt"></i> {this.props.country} {distance}</p><hr/>
                         <code>{this.props.interet}</code>
                         <p className="card-text"></p><hr/>
                         <div className="btn btn-danger btn-circle text-light float-left"><i className="fas fa-heart"> {this.props.isLoved}</i></div>

@@ -74,6 +74,6 @@ input[type=radio]:checked + label {
     height: 35px;
 }
 
-#second, #third {
+#second, #third, #final {
     display: none;
 }

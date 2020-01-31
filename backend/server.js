@@ -10,7 +10,7 @@ let app = express();
 let cors = require('cors');
 
 // Import routes
-let apiRoutes = require("./api-routes");
+let apiRoutes = require("./routes/membersRoutes");
 // Configure bodyparser to handle post requests
 app.use(bodyParser.urlencoded({
     extended: true

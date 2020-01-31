@@ -15,7 +15,7 @@ class Accueil extends Component {
     }
 
     componentDidMount() {
-        axios.get('http://localhost:5000/members').then(res => {
+        axios.get('http://localhost:5000/api/members').then(res => {
             this.setState({members: res.data.members})
         }).catch(error => {
             console.log(error)
