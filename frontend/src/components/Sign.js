@@ -17,9 +17,9 @@ class Sign extends Component {
         },
         myGender: "",
         birthday: {
-            day: 1,
-            month: 1,
-            year: 2001
+            day: 0,
+            month: 0,
+            year: 0
         },
         country: {
             name: "",
@@ -30,7 +30,6 @@ class Sign extends Component {
         firstname: "",
         email: "",
         pass: "",
-        redirect: false,
         interet: {
             value: "#",
             length: 0,
@@ -133,25 +132,26 @@ class Sign extends Component {
         const gfemale = document.getElementById('getfemale').checked
         const mymale = document.getElementById('imfemale').checked
         const myfemale = document.getElementById('immale').checked
-        var error = true
+        var errorattirance = true
+        var errorgender = true
 
         if (gmale === false && gfemale === false) {
-            error = true
+            errorattirance = true
             $("#getErr").fadeIn()
         }
         else {
-            error = false
+            errorattirance = false
             $("#getErr").fadeOut()
         }
         if (mymale === false && myfemale === false) {
-            error = true
+            errorgender = true
             $("#getErr2").fadeIn()
         }
         else {
-            error = false
+            errorgender = false
             $("#getErr2").fadeOut()
         }
-        if (error === true) {
+        if (errorgender === true || errorattirance === true) {
             return false
         }
         $("#second").fadeIn()
@@ -174,41 +174,44 @@ class Sign extends Component {
     }
 
     handleN2 = () => {
-        var error = true
+        var errorcountry = true
+        var errorbday = true
+        var errorlastname = true
+        var errorfirstname = true
 
-        if (this.state.country.name === null) {
-            error = true
-            $("#getErr4").fadeIn()
-        }
-        else {
-            error = false
-            $("#getErr4").fadeOut()
-        }
-        if ($("select[name=day]").val() === 0 || $("select[name=month]").val() === 0 || $("select[name=year]").val() === 0) {
-            error = true
+        if (this.state.birthday.day === 0 || this.state.birthday.month === 0 || this.state.birthday.year === 0) {
+            errorbday = true
             $("#getErr3").fadeIn()
         }
         else {
-            error = false
+            errorbday = false
             $("#getErr3").fadeOut()
         }
+        if (this.state.country.name === "") {
+            errorcountry = true
+            $("#getErr4").fadeIn()
+        }
+        else {
+            errorcountry = false
+            $("#getErr4").fadeOut()
+        }
         if (!($("input[name=lastname]").val() || "")) {
-            error = true
+            errorlastname = true
             $("#getErr5").fadeIn()
         }
         else {
-            error = false
+            errorlastname = false
             $("#getErr5").fadeOut()
         }
         if (!($("input[name=firstname]").val() || "")) {
-            error = true
+            errorfirstname = true
             $("#getErr6").fadeIn()
         }
         else {
-            error = false
+            errorfirstname = false
             $("#getErr6").fadeOut()
         }
-        if (error === true) {
+        if (errorfirstname === true || errorlastname === true || errorcountry === true || errorbday === true) {
             return false
         }
         $("#second").hide()
@@ -277,41 +280,60 @@ class Sign extends Component {
             errorSamePass = false
             $("#getErr11").fadeOut()
         }
-        if (errorSamePass || errorConfirm || errorPassSynt || errorPass || errorMail) {
-            return false
-        }
-        else {
-            $("#third").hide()
-            $("#final").fadeIn()
-            $("#progressBar").removeClass("bg-success")
-            $("#progressBar").css("background-color", "#E83E8C")
-            $("#progressText").html("FORMULAIRE ENVOYÉ !")
-            axios.post('http://localhost:5000/api/members', {
-                isLoggued: false,
-                popularity: 0,
-                interet: this.state.interet.data,
-                attirance: {
-                    male: this.state.attirance.male,
-                    female: this.state.attirance.female
-                },
-                myGender: this.state.myGender,
-                birthday: {
-                    day: this.state.birthday.day,
-                    month: this.state.birthday.month,
-                    year: this.state.birthday.year
-                },
-                country: {
-                    name: this.state.country.name.replace(', France', ''),
-                    lng: this.state.country.lng,
-                    lat: this.state.country.lat
-                },
-                lastname: this.state.lastname,
-                firstname: this.state.firstname,
-                email: this.state.email,
-                password: this.state.pass,
-                token: bcrypt.genSaltSync(32)
-            }).then(/*mail*/)
-        }
+        axios
+        .get('http://localhost:5000/api/members/exist/' + this.state.email)
+        .then(res => {
+            if (res.data.status === 'email already exist') {                
+                this.setState({emailExist: true})
+                $("#getErr12").fadeIn()
+            }
+            else {
+                this.setState({emailExist: false})
+                $("#getErr12").fadeOut()
+            }
+
+            if (errorSamePass || errorConfirm || errorPassSynt || errorPass || errorMail || this.state.emailExist) {
+                return false
+            }
+            else {
+                $("#third").hide()
+                $("#final").fadeIn()
+                $("#progressBar").removeClass("bg-success")
+                $("#progressBar").css("background-color", "#E83E8C")
+                $("#progressText").html("FORMULAIRE ENVOYÉ !")
+    
+                axios.post('http://localhost:5000/api/members', {
+                    isLoggued: false,
+                    popularity: 0,
+                    interet: this.state.interet.data,
+                    attirance: {
+                        male: this.state.attirance.male,
+                        female: this.state.attirance.female
+                    },
+                    myGender: this.state.myGender,
+                    birthday: {
+                        day: this.state.birthday.day,
+                        month: this.state.birthday.month,
+                        year: this.state.birthday.year
+                    },
+                    country: {
+                        name: this.state.country.name.replace(', France', ''),
+                        lng: this.state.country.lng,
+                        lat: this.state.country.lat
+                    },
+                    lastname: this.state.lastname,
+                    firstname: this.state.firstname,
+                    email: this.state.email,
+                    password: this.state.pass,
+                    token: bcrypt.genSaltSync(32),
+                    isValid: false
+                }).then(/*mail*/)
+            }
+        })
+        .catch(error => { console.log(error) })
+
+
+        
     }
 
     render () {
@@ -355,15 +377,23 @@ class Sign extends Component {
                                     <h4 className="text-center p-1 rounded text-white">MES INFOS</h4>
                                     <div className="form-group text-center">
                                         <div className="text-light">Quelle est vôtre date de naissance ?</div>
-                                        <select className="select-sam text-light bg-dark" id="dayBirth" onChange={this.handleBirth}>
-                                            <Birthday Toget="day" />
-                                        </select>
-                                        <select className="select-sam text-light bg-dark" id="monthBirth" onChange={this.handleBirth}>
-                                            <Birthday Toget="month" />
-                                        </select>
-                                        <select className="select-sam text-light bg-dark" id="yearBirth" onChange={this.handleBirth}>
-                                            <Birthday Toget="year" />
-                                        </select>
+                                        <div className="row">
+                                            <div className="col-4">
+                                                <select className="mx-auto select-s form-control w-75" id="dayBirth" onChange={this.handleBirth} value={this.state.birthday.day}>
+                                                    <Birthday Toget="day" />
+                                                </select>
+                                            </div>
+                                            <div className="col-4">
+                                                <select className="mx-auto select-s form-control w-75" id="monthBirth" onChange={this.handleBirth} value={this.state.birthday.month}>
+                                                    <Birthday Toget="month" />
+                                                </select>
+                                            </div>
+                                            <div className="col-4">
+                                                <select className="mx-auto select-s form-control w-75" id="yearBirth" onChange={this.handleBirth} value={this.state.birthday.year}>
+                                                    <Birthday Toget="year" />
+                                                </select>
+                                            </div>
+                                        </div>
                                         <div className="invalid-feedback" id="getErr3">
                                             <div>La date est requise</div>
                                         </div>
@@ -394,6 +424,7 @@ class Sign extends Component {
                                         <label htmlFor="email" className="text-white">Quel est votre e-mail ?</label>
                                         <input type="email" name="email" className="form-control w-75 mx-auto text-center" placeholder="E-mail" id="email" onChange={this.handleText} />
                                         <div className="invalid-feedback" id="getErr7">Veuillez indiquer votre email</div>
+                                        <div className="invalid-feedback" id="getErr12">Votre email existe déja</div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="pass" className="text-white">Choisissez un mot de passe</label>

@@ -1,14 +1,18 @@
 import React, { Component, Fragment } from 'react'
 import logo from '../pictures/favicon.png'
 import Header from './Header'
-import { Link } from 'react-router-dom'
 import { Redirect } from "react-router-dom"
+import axios from 'axios'
+import * as $ from 'jquery'
+import bcrypt from 'bcryptjs'
 
 class Auth extends Component {
 
     state = {
         email: "",
-        pass: ""
+        pass: "",
+        badPass: false,
+        redirect: false
     }
 
     setRedirect = () => {
@@ -42,9 +46,46 @@ class Auth extends Component {
         event.preventDefault()
         const mail = document.getElementById("email").value
         const pass = document.getElementById("pass").value
+        var errorMail = true
+        var errorPass = true
         
-        if (/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(mail) && /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/.test(pass)) {
-            this.setRedirect()
+        if (!(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(mail))) {
+            errorMail = true
+            $("#getErrMail").fadeIn()
+        }
+        else {
+            errorMail = false
+            $("#getErrMail").fadeOut()
+        }
+        if (!(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/.test(pass))) {
+            errorPass = true
+            $("#getErrPass").fadeIn()
+        }
+        else {
+            errorPass = false
+            $("#getErrPass").fadeOut()
+        }
+        if (!errorPass && !errorMail) {
+            axios
+            .get('http://localhost:5000/api/members/exist/' + this.state.email)
+            .then(res => {
+                if (res.data.status === 'email already exist') {
+                    bcrypt.compare(this.state.pass, res.data.pass).then(res => {
+                        if (res === true) {
+                            axios
+                            .patch('http://localhost:5000/api/members/' + this.state.email)
+                            .then(() => {
+                                this.setRedirect()
+                            })
+                            .catch(error => { console.log(error) })
+                        }
+                        else {
+                            $("#badPass").fadeIn()
+                        }
+                    })
+                }
+            })
+            .catch(error => { console.log(error) })
         }
     }
 
@@ -63,14 +104,15 @@ class Auth extends Component {
                                 <div className="form-group">
                                     <label htmlFor="email" className="text-light">Adresse email</label>
                                     <input type="email"  className="form-control w-75 mx-auto text-center" id="email" placeholder="name@example.com" onChange={this.handleText}/>
+                                    <div className="invalid-feedback" id="getErrMail">Veuillez indiquer un email valide</div>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="pass" className="text-light">Mot de passe</label>
                                     <input type="password" id="pass" className="form-control w-75 mx-auto text-center" placeholder="Mot de passe" onChange={this.handleText}/>
+                                    <div className="invalid-feedback" id="getErrPass">Veuillez indiquer un mot de passe valide</div>
+                                    <div className="invalid-feedback" id="badPass">Email ou mot de passe incorrect</div>
                                 </div><br />
-                                <Link to={"/accueil"}>
-                                    <button type="submit" className="btn btn-light">Connexion</button>
-                                </Link>
+                                <button type="submit" className="btn btn-light">Connexion</button>
                             </form>
                         </div>
                     </div>

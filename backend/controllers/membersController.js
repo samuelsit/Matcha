@@ -28,6 +28,7 @@ exports.new = function (req, res) {
     member.email = req.body.email;
     member.password = req.body.password;
     member.token = req.body.token;
+    member.isValid = req.body.isValid;
     member.save(function (err) {
         if (err)
             res.json(err);
@@ -48,13 +49,10 @@ exports.view = function (req, res) {
 };
 // Handle update member info
 exports.update = function (req, res) {
-    Member.findById(req.params.member_id, function (err, member) {
+    Member.findOne({email: req.params.email}, function (err, member) {
         if (err)
             res.send(err);
-        member.name = req.body.name ? req.body.name : member.name;
-        member.gender = req.body.gender;
-        member.email = req.body.email;
-        member.phone = req.body.phone;
+        member.isLoggued = true;
         member.save(function (err) {
             if (err)
                 res.json(err);

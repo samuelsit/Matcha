@@ -19,7 +19,7 @@ class Accueil extends Component {
             this.setState({members: res.data.members})
         }).catch(error => {
             console.log(error)
-        })        
+        })
     }
 
     getDistanceFrom = (lat, lng) => {
@@ -66,7 +66,7 @@ class Accueil extends Component {
         let card = this.state.members.map((el, i) => (
             <CardLove
                 key={i}
-                isLoggued={el.isLoggued}
+                isLoggued={el.isLoggued.toString()}
                 name={el.firstname}
                 age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
                 country={el.country.name}

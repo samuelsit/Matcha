@@ -10,7 +10,8 @@ let app = express();
 let cors = require('cors');
 
 // Import routes
-let apiRoutes = require("./routes/membersRoutes");
+let membersRoutes = require("./routes/membersRoute");
+let alreadyExistRoutes = require("./routes/alreadyExistRoute");
 // Configure bodyparser to handle post requests
 app.use(bodyParser.urlencoded({
     extended: true
@@ -34,7 +35,8 @@ var port = process.env.PORT || 5000;
 app.use(cors());
 
 // Use Api routes in the App
-app.use('/', apiRoutes);
+app.use('/', membersRoutes);
+app.use('/', alreadyExistRoutes);
 // Launch app to listen to specified port
 app.listen(port, function () {
     console.log("Running matchaback on port " + port);

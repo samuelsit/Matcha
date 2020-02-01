@@ -75,6 +75,10 @@ var memberSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    isValid: {
+        type: Boolean,
+        required: true
+    },
     create_date: {
         type: Date,
         default: Date.now

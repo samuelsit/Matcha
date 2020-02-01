@@ -13,7 +13,7 @@ var memberController = require('../controllers/membersController');
 router.route('/api/members')
     .get(memberController.index)
     .post(memberController.new);
-router.route('/api/members/:member_id')
+router.route('/api/members/:email')
     .get(memberController.view)
     .patch(memberController.update)
     .put(memberController.update)
