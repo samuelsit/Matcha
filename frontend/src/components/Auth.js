@@ -73,7 +73,7 @@ class Auth extends Component {
                     bcrypt.compare(this.state.pass, res.data.pass).then(res => {
                         if (res === true) {
                             axios
-                            .patch('http://localhost:5000/api/members/' + this.state.email)
+                            .patch('http://localhost:5000/api/members/true/' + this.state.email)
                             .then(() => {
                                 this.setRedirect()
                             })
@@ -83,6 +83,9 @@ class Auth extends Component {
                             $("#badPass").fadeIn()
                         }
                     })
+                }
+                else {
+                    $("#badPass").fadeIn()
                 }
             })
             .catch(error => { console.log(error) })

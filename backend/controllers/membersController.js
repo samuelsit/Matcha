@@ -5,7 +5,7 @@ exports.index = function (req, res) {
         if (err) {
             res.json({
                 status: "error",
-                message: err,
+                message: err
             });
         }
         res.json({
@@ -39,7 +39,7 @@ exports.new = function (req, res) {
 };
 // Handle view member info
 exports.view = function (req, res) {
-    Member.findById(req.params.member_id, function (err, member) {
+    Member.findOne({email: req.params.email}, function (err, member) {
         if (err)
             res.send(err);
         res.json({
@@ -52,7 +52,7 @@ exports.update = function (req, res) {
     Member.findOne({email: req.params.email}, function (err, member) {
         if (err)
             res.send(err);
-        member.isLoggued = true;
+        member.isLoggued = req.params.status;
         member.save(function (err) {
             if (err)
                 res.json(err);
@@ -73,5 +73,27 @@ exports.delete = function (req, res) {
             status: "success",
             message: 'Contact deleted'
         });
+    });
+};
+
+exports.find = function (req, res) {
+    Member.findOne({email: req.params.email}, function (err, members) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        if (members) {
+            res.json({
+                status: "email already exist",
+                pass: members.password
+            });
+        }
+        else {
+            res.json({
+                status: "email not exist"
+            });
+        }
     });
 };

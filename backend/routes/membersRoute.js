@@ -9,14 +9,29 @@ router.get('/api', function (req, res) {
 });
 // Import contact controller
 var memberController = require('../controllers/membersController');
-// Contact routes
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Get all members // Create new member //
 router.route('/api/members')
     .get(memberController.index)
     .post(memberController.new);
+
+// Get member
 router.route('/api/members/:email')
     .get(memberController.view)
-    .patch(memberController.update)
-    .put(memberController.update)
-    .delete(memberController.delete);
+
+// Change member status //
+router.route('/api/members/:status/:email')
+    .patch(memberController.update);
+
+router.route('/api/members/exist/:email')
+    .get(memberController.find);
+
 // Export API routes
 module.exports = router;
+
+
+/////
+//.put(memberController.update)
+//.delete(memberController.delete);
