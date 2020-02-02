@@ -62,12 +62,6 @@ class Accueil extends Component {
         }
     }
 
-    // handleDisconnect = () => {
-    //     axios
-    //     .patch('http://localhost:5000/api/members/' + this.state.myEmail + '/false')
-    //     .catch(error => { console.log(error) })
-    // }
-
     render () {
         let card = this.state.members.map((el, i) => (
             <CardLove

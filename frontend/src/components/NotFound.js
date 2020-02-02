@@ -5,7 +5,7 @@ class NotFound extends Component {
     render () {
         return (
             <Fragment>
-                <Header loggued="true"/>
+                <Header/>
                 <br/><br/><br/><br/>
                 <div className="container h-100">
                     <div className="col-12 text-center">

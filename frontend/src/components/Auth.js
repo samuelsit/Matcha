@@ -73,11 +73,21 @@ class Auth extends Component {
                     bcrypt.compare(this.state.pass, res.data.pass).then(res => {
                         if (res === true) {
                             axios
-                            .patch('http://localhost:5000/api/members/true/' + this.state.email)
-                            .then(() => {
-                                this.setRedirect()
+                            .get('http://localhost:5000/api/members/isValid/' + this.state.email)
+                            .then(res => {
+                                if (res.data.data === true) {
+                                    axios
+                                    .patch('http://localhost:5000/api/members/status/true/' + this.state.email)
+                                    .then(() => {
+                                        this.setRedirect()
+                                    })
+                                    .catch(error => { console.log(error) })
+                                }
+                                else {
+                                    $("#badPass").fadeOut()
+                                    $("#nonValid").fadeIn()
+                                }
                             })
-                            .catch(error => { console.log(error) })
                         }
                         else {
                             $("#badPass").fadeIn()
@@ -114,6 +124,7 @@ class Auth extends Component {
                                     <input type="password" id="pass" className="form-control w-75 mx-auto text-center" placeholder="Mot de passe" onChange={this.handleText}/>
                                     <div className="invalid-feedback" id="getErrPass">Veuillez indiquer un mot de passe valide</div>
                                     <div className="invalid-feedback" id="badPass">Email ou mot de passe incorrect</div>
+                                    <div className="invalid-feedback" id="nonValid">Compte non validé. Consultez vos emails.</div>
                                 </div><br />
                                 <button type="submit" className="btn btn-light">Connexion</button>
                             </form>

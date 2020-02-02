@@ -325,9 +325,9 @@ class Sign extends Component {
                     firstname: this.state.firstname,
                     email: this.state.email,
                     password: this.state.pass,
-                    token: bcrypt.genSaltSync(32),
+                    token: bcrypt.genSaltSync(32).replace('.', '').replace('/', ''),
                     isValid: false
-                }).then(/*mail*/)
+                })
             }
         })
         .catch(error => { console.log(error) })

@@ -1,6 +1,7 @@
 Member = require('../models/membersModel');
+
 // Handle index actions
-exports.index = function (req, res) {
+exports.allMember = function (req, res) {
     Member.get(function (err, members) {
         if (err) {
             res.json({
@@ -13,8 +14,9 @@ exports.index = function (req, res) {
         });
     });
 };
-// Handle create members actions
-exports.new = function (req, res) {
+// Handle create members actions and send mail
+exports.newMember = function (req, res) {
+    const nodemailer = require("nodemailer");
     var member = new Member();
     member.isLoggued = req.body.isLoggued;
     member.popularity = req.body.popularity;
@@ -36,9 +38,39 @@ exports.new = function (req, res) {
             member
         });
     });
+
+    nodemailer.createTestAccount((err, account) => {
+        let transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true, // true for 465, false for other ports
+            auth: {
+              user: 'matcha42.contact@gmail.com', // generated ethereal user
+              pass: 'Matchacontact42' // generated ethereal password
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+
+        let info = {
+            from: '"Matcha 🥰" <matcha42.contact@gmail.com>', // sender address
+            to: req.body.email, // list of receivers
+            subject: "Confirmation de votre inscription sur matcha ✅", // Subject line
+            html: '<html><head></head><body><h1>Bienvenue sur <span style="color:#E83E8C">Matcha</span> ' + req.body.firstname + ',</h1><p>Pour activer votre compte, veuillez cliquer sur le lien ci dessous<br>ou le copier/coller dans votre navigateur.<br><br><span style="color:#E83E8C">http://localhost:3000/mail-validation?mail=' + req.body.email + '&token=' + req.body.token + '</span><br><br>------------------------------------------------------------------------------<br>Ceci est un mail automatique, Merci de ne pas y répondre.</p></body></html>' // html body
+        };
+
+        transporter.sendMail(info, (error, info) => {
+            if (error) {
+                return console.log(error);
+            }
+            console.log("Message sent: %s", info.messageId);
+        })
+    })
 };
+
 // Handle view member info
-exports.view = function (req, res) {
+exports.oneMember = function (req, res) {
     Member.findOne({email: req.params.email}, function (err, member) {
         if (err)
             res.send(err);
@@ -48,7 +80,7 @@ exports.view = function (req, res) {
     });
 };
 // Handle update member info
-exports.update = function (req, res) {
+exports.changeStatus = function (req, res) {
     Member.findOne({email: req.params.email}, function (err, member) {
         if (err)
             res.send(err);
@@ -62,21 +94,8 @@ exports.update = function (req, res) {
         });
     });
 };
-// Handle delete contact
-exports.delete = function (req, res) {
-    Member.remove({
-        _id: req.params.member_id
-    }, function (err, member) {
-        if (err)
-            res.send(err);
-        res.json({
-            status: "success",
-            message: 'Contact deleted'
-        });
-    });
-};
 
-exports.find = function (req, res) {
+exports.isMember = function (req, res) {
     Member.findOne({email: req.params.email}, function (err, members) {
         if (err) {
             res.json({
@@ -97,3 +116,96 @@ exports.find = function (req, res) {
         }
     });
 };
+
+exports.isValidToken = function (req, res) {
+    Member.findOne({email: req.params.email}, function (err, member) {
+        if (err)
+            res.send(err);
+        if (!member) {
+            res.json({
+                data: false
+            });
+        }
+        else {
+            if (req.params.token === member.token) {
+                res.json({
+                    data: true
+                });
+            }
+            else {
+                res.json({
+                    data: false
+                });
+            }
+        }
+    });
+};
+
+exports.changeToken = function (req, res) {
+    Member.findOne({email: req.params.email}, function (err, member) {
+        if (err)
+            res.send(err);
+        member.token = req.params.token;
+        member.save(function (err) {
+            if (err)
+                res.json(err);
+            res.json({
+                member
+            });
+        });
+    });
+};
+
+exports.isValidMember = function (req, res) {
+    Member.findOne({email: req.params.email}, function (err, member) {
+        if (err)
+            res.send(err);
+        if (!member) {
+            res.json({
+                data: false
+            });
+        }
+        else {
+            if (member.isValid === true) {
+                res.json({
+                    data: true
+                });
+            }
+            else {
+                res.json({
+                    data: false
+                });
+            }
+        }
+    });
+};
+
+exports.changeIsValid = function (req, res) {
+    Member.findOne({email: req.params.email}, function (err, member) {
+        if (err)
+            res.send(err);
+        member.isValid = req.params.status;
+        member.save(function (err) {
+            if (err)
+                res.json(err);
+            res.json({
+                member
+            });
+        });
+    });
+};
+
+////
+// Handle delete contact
+// exports.delete = function (req, res) {
+//     Member.remove({
+//         _id: req.params.member_id
+//     }, function (err, member) {
+//         if (err)
+//             res.send(err);
+//         res.json({
+//             status: "success",
+//             message: 'Contact deleted'
+//         });
+//     });
+// };

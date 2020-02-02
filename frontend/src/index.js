@@ -13,6 +13,7 @@ import Sign from './components/Sign'
 import Accueil from './components/AccueilLog'
 import Chat from './components/Chat/Chat'
 import Profile from './components/Profile'
+import mailValidation from './components/mailValidation'
 
 const Root = () => (
     <BrowserRouter>
@@ -22,6 +23,7 @@ const Root = () => (
             <Route exact path='/inscription' component={Sign} />
             <Route exact path='/accueil' component={Accueil} />
             <Route exact path='/profile' component={Profile} />
+            <Route path='/mail-validation' component={mailValidation} />
             <Route path='/pseudo/:pseudo' component={Chat} />
             <Route component={NotFound} />
         </Switch>
