@@ -7,13 +7,10 @@ import bcrypt from 'bcryptjs'
 class mailValidation extends Component {
 
     state = {
-        message: "Chargement en cours... Veuillez patienter.",
+        error: true,
+        timeToRedirect: 5,
         redirect: false
     }
-
-    // setRedirect = () => {
-        
-    // }
     
     handleRedirect = () => {
         if (this.state.redirect) {
@@ -45,7 +42,7 @@ class mailValidation extends Component {
         .then(res => {
             console.log(res);
             if (res.data.data === false) {
-                this.setState({ message: "Erreur lors de la verification du token." })
+                this.setState({ error: true })
             }
             else {
                 axios
@@ -54,12 +51,17 @@ class mailValidation extends Component {
                     axios
                     .patch('http://localhost:5000/api/members/isValid/' + email + '/true')
                     .then(() => {
-                        this.setState({ message: "Token validé. Vous serez redirigé dans quelques secondes" })
-                        setTimeout(() => {
+                        this.setState({ error: false })
+                        setInterval(() => {
+                            if (this.state.timeToRedirect === 1) {
+                                this.setState({
+                                    redirect: true
+                                })
+                            }
                             this.setState({
-                                redirect: true
+                                timeToRedirect: this.state.timeToRedirect - 1
                             })},
-                            3500
+                            1000
                         );
                     })
                 })
@@ -78,7 +80,11 @@ class mailValidation extends Component {
                     <div className="row">
                         <div className="col text-center">
                             <div className="h2 font-weight-bold text-light bg-dark p-5 rounded shadow-lg">
-                                <p>{this.state.message}</p>
+                                <p>
+                                    {
+                                        this.state.error === true ? "Erreur lors de la verification du token." : `Token validé. Vous serez redirigé dans ${this.state.timeToRedirect} secondes.`
+                                    }
+                                </p>
                             </div>
                         </div>
                     </div>
