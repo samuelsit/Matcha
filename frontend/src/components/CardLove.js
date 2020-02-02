@@ -23,7 +23,7 @@ class CardLove extends Component {
             colorlove = "btn btn-info"
         }
         else {
-            if (this.props.gender === "male") {
+            if (this.props.gender === "male" ) {
                 love = "fas fa-mars-double"
                 colorlove = "btn btn-warning"
             }
@@ -44,7 +44,7 @@ class CardLove extends Component {
                         <p className="card-text"></p><hr/>
                         <div className="btn btn-danger btn-circle text-light float-left"><i className="fas fa-heart"> {this.props.isLoved}</i></div>
                         <div className={colorlove.concat(' ', 'float-right')}><i className={love.concat(' ', 'text-light')}></i></div>
-                        {this.props.love === "ho" ? <div className="btn btn-info float-right mr-1"><i className="fas fa-venus-mars"></i></div> : null}
+                        {this.props.love === "bi" ? <div className="btn btn-info float-right mr-1"><i className="fas fa-venus-mars"></i></div> : null}
                     </div>
                 </div>
             </div>
