@@ -45,6 +45,10 @@ router.route('/api/members/isValid/:email')
 router.route('/api/members/isValid/:email/:status')
     .patch(memberController.changeIsValid);
 
+// Change member profile
+router.route('/api/members/profile/:email')
+    .patch(memberController.changeMemberProfile);
+
 // Export API routes
 module.exports = router;
 

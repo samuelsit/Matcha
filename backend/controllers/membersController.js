@@ -195,6 +195,30 @@ exports.changeIsValid = function (req, res) {
     });
 };
 
+exports.changeMemberProfile = function (req, res) {
+    Member.findOne({email: req.params.email}, function (err, member) {
+        if (err)
+            res.send(err);
+        member.lastname = req.body.lastname;
+        member.firstname = req.body.firstname;
+        member.biographie = req.body.biographie;
+        member.birthday.day = req.body.birthday.day;
+        member.birthday.month = req.body.birthday.month;
+        member.birthday.year = req.body.birthday.year;
+        member.attirance.female = req.body.attirance.female;
+        member.attirance.male = req.body.attirance.male;
+        member.interet = req.body.interet;
+        member.myGender = req.body.myGender;
+        member.save(function (err) {
+            if (err)
+                res.json(err);
+            res.json({
+                member
+            });
+        });
+    });
+};
+
 ////
 // Handle delete contact
 // exports.delete = function (req, res) {

@@ -6,6 +6,8 @@ import bcrypt from 'bcryptjs'
 
 class mailValidation extends Component {
 
+    _isMounted = false
+
     state = {
         error: true,
         timeToRedirect: 5,
@@ -37,37 +39,46 @@ class mailValidation extends Component {
         const email = this.extractParamsURL().httplocalhost3000mailvalidationmail
         const token = this.extractParamsURL().token
 
+        this._isMounted = true
         axios
         .get('http://localhost:5000/api/members/token/' + email + '/' + token)
         .then(res => {
-            console.log(res);
-            if (res.data.data === false) {
-                this.setState({ error: true })
-            }
-            else {
-                axios
-                .patch('http://localhost:5000/api/members/token/' + email + '/' + bcrypt.genSaltSync(32).replace('.', '').replace('/', ''))
-                .then(() => {
+            if (this._isMounted) {
+                if (res.data.data === false) {
+                    this.setState({ error: true })
+                }
+                else {
                     axios
-                    .patch('http://localhost:5000/api/members/isValid/' + email + '/true')
+                    .patch('http://localhost:5000/api/members/token/' + email + '/' + bcrypt.genSaltSync(32).replace('.', '').replace('/', ''))
                     .then(() => {
-                        this.setState({ error: false })
-                        setInterval(() => {
-                            if (this.state.timeToRedirect === 1) {
-                                this.setState({
-                                    redirect: true
-                                })
+                        axios
+                        .patch('http://localhost:5000/api/members/isValid/' + email + '/true')
+                        .then(() => {
+                            if (this._isMounted) {
+                                this.setState({ error: false })
+                                this.interval = setInterval(() => {
+                                    if (this.state.timeToRedirect === 1) {
+                                        this.setState({
+                                            redirect: true
+                                        })
+                                    }
+                                    this.setState({
+                                        timeToRedirect: this.state.timeToRedirect - 1
+                                    })},
+                                    1000
+                                )
                             }
-                            this.setState({
-                                timeToRedirect: this.state.timeToRedirect - 1
-                            })},
-                            1000
-                        );
+                        })
                     })
-                })
-                .catch(error => { console.log(error) })
+                    .catch(error => { console.log(error) })
+                }
             }
         })
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+        clearInterval(this.interval);
     }
     
     render () {

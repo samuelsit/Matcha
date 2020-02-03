@@ -5,14 +5,21 @@ import { Redirect } from "react-router-dom"
 import axios from 'axios'
 import * as $ from 'jquery'
 import bcrypt from 'bcryptjs'
+import { connect } from 'react-redux'
 
 class Auth extends Component {
+
+    _isMounted = false;
 
     state = {
         email: "",
         pass: "",
         badPass: false,
         redirect: false
+    }
+
+    componentDidMount() {
+        this._isMounted = true
     }
 
     setRedirect = () => {
@@ -79,7 +86,10 @@ class Auth extends Component {
                                     axios
                                     .patch('http://localhost:5000/api/members/status/true/' + this.state.email)
                                     .then(() => {
-                                        this.setRedirect()
+                                        if (this._isMounted) {
+                                            this.props.setUserEmail(this.state.email)
+                                            this.setRedirect()
+                                        }
                                     })
                                     .catch(error => { console.log(error) })
                                 }
@@ -100,6 +110,10 @@ class Auth extends Component {
             })
             .catch(error => { console.log(error) })
         }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render () {
@@ -136,4 +150,12 @@ class Auth extends Component {
     }
 }
 
-export default Auth
+const mapDispatchToProps = dispatch => {
+    return {
+        setUserEmail: (email) => {
+            dispatch({ type: 'SET_USER_EMAIL', email: email })
+        }
+    }
+}
+
+export default connect(null, mapDispatchToProps)(Auth)

@@ -6,8 +6,10 @@ import FilterSort from './FilterSort'
 import Pagination from './Pagination'
 import axios from 'axios'
 import { getDistance, convertDistance } from 'geolib'
+import { connect } from 'react-redux'
 
 class Accueil extends Component {
+    _isMounted = false
 
     state = {
         members: [],
@@ -15,8 +17,12 @@ class Accueil extends Component {
     }
 
     componentDidMount() {
+        this._isMounted = true
+        this.props.setUserPos(2, 2)
         axios.get('http://localhost:5000/api/members').then(res => {
-            this.setState({members: res.data.members})
+            if (this._isMounted) {
+                this.setState({members: res.data.members})
+            }
         }).catch(error => {
             console.log(error)
         })
@@ -24,7 +30,10 @@ class Accueil extends Component {
 
     getDistanceFrom = (lat, lng) => {
         navigator.geolocation.getCurrentPosition(position => {
-            this.setState({myCoords: {latitude: position.coords.latitude, longitude: position.coords.longitude}})
+            if (this._isMounted) {
+                this.setState({myCoords: {latitude: position.coords.latitude, longitude: position.coords.longitude}})
+                this.props.setUserPos(position.coords.latitude, position.coords.longitude)
+            }
         })
         const cardCoords = {latitude: lat, longitude: lng}
         var distance = convertDistance(getDistance(this.state.myCoords, cardCoords, 1000), 'km')            
@@ -60,6 +69,10 @@ class Accueil extends Component {
                 return ("het")
             }
         }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render () {
@@ -105,4 +118,12 @@ class Accueil extends Component {
     }
 }
 
-export default Accueil
+const mapDispatchToProps = dispatch => {
+    return {
+        setUserPos: (lat, lng) => {
+            dispatch({ type: 'SET_USER_POS', lat: lat, lng: lng })
+        }
+    }
+}
+
+export default connect(null, mapDispatchToProps)(Accueil)

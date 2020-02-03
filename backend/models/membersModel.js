@@ -3,24 +3,28 @@ var mongoose = require('mongoose');
 var memberSchema = mongoose.Schema({
     isLoggued: {
         type: Boolean,
-        required: true
+        required: false
     },
     popularity: {
         type: Number,
-        required: true
+        required: false
     },
     interet: {
+        type: String,
+        required: false
+    },
+    biographie: {
         type: String,
         required: false
     },
     attirance: {
         male: {
             type: Boolean,
-            required: true
+            required: false
         },
         female: {
             type: Boolean,
-            required: true
+            required: false
         }
     },
     myGender: {

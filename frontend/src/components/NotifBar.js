@@ -4,12 +4,23 @@ import * as $ from 'jquery'
 import Notification from './Notification'
 
 class NotifBar extends Component {
-    handleOpen = () => {
-        $('#notif').fadeIn()
+    state = {
+        isOpenNotif: false
     }
 
     handleClose = () => {
+        this.setState({ isOpenNotif: false })
         $('#notif').fadeOut()
+    }
+
+    handleOpen = () => {
+        if (this.state.isOpenNotif === true) {
+            this.handleClose()
+        }
+        else {
+            this.setState({ isOpenNotif: true })
+            $('#notif').fadeIn()
+        }
     }
 
     render () {
