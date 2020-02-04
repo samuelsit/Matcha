@@ -4,7 +4,7 @@ import axios from 'axios'
 import { Redirect } from "react-router-dom"
 import bcrypt from 'bcryptjs'
 
-class mailValidation extends Component {
+class MailValidation extends Component {
 
     _isMounted = false
 
@@ -105,4 +105,4 @@ class mailValidation extends Component {
     }
 }
 
-export default mailValidation
+export default MailValidation

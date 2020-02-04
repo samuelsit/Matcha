@@ -14,10 +14,17 @@ import Sign from './components/Sign'
 import Accueil from './components/AccueilLog'
 import Chat from './components/Chat/Chat'
 import Profile from './components/Profile'
-import mailValidation from './components/mailValidation'
+import mailValidation from './components/MailValidation'
 import rootReducer from './reducers/rootReducer'
+import { loadState, saveState } from './localStorage'
 
-const store = createStore(rootReducer)
+const persistedState = loadState()
+
+const store = createStore(rootReducer, persistedState)
+
+store.subscribe(() => {
+    saveState(store.getState())
+})
 
 const Root = () => (
     <BrowserRouter>
@@ -27,7 +34,7 @@ const Root = () => (
             <Route exact path='/inscription' component={Sign} />
             <Route exact path='/accueil' component={Accueil} />
             <Route exact path='/profile' component={Profile} />
-            <Route path='/mail-validation' component={mailValidation} />
+            <Route exact path='/mail-validation' component={mailValidation} />
             <Route path='/pseudo/:pseudo' component={Chat} />
             <Route component={NotFound} />
         </Switch>

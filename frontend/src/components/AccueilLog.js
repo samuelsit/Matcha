@@ -7,6 +7,7 @@ import Pagination from './Pagination'
 import axios from 'axios'
 import { getDistance, convertDistance } from 'geolib'
 import { connect } from 'react-redux'
+import { Redirect } from "react-router-dom"
 
 class Accueil extends Component {
     _isMounted = false
@@ -91,30 +92,38 @@ class Accueil extends Component {
             />
         ))
 
-        return (
-            <Fragment>
-                <Header loggued="true"/>
-                <br/>
-                <div className="container-fluid mt-5">
-                    <div className="row">
-                        <div className="col">
-                            <FilterSort/>
+        if (this.props.isAuth === true) {
+            return (
+                <Fragment>
+                    <Header />
+                    <br/>
+                    <div className="container-fluid mt-5">
+                        <div className="row">
+                            <div className="col">
+                                <FilterSort/>
+                            </div>
+                        </div><hr/>
+                        <div className="row text-center">
+                            {
+                                card
+                            }
                         </div>
-                    </div><hr/>
-                    <div className="row text-center">
-                        {
-                            card
-                        }
-                    </div>
-                    <div className="row">
-                        <div className="col">
-                            <Pagination/>
+                        <div className="row">
+                            <div className="col">
+                                <Pagination/>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <DiscussionBar/>
-            </Fragment>
-        )
+                    <DiscussionBar/>
+                </Fragment>
+            )
+        }
+        else {
+            return (
+                <Redirect to={"/connexion"} />
+            )
+        }
+        
     }
 }
 
@@ -126,4 +135,10 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(Accueil)
+const mapStateToProps = state => {
+    return {
+        isAuth: state.isAuth
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Accueil)

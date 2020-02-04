@@ -88,6 +88,7 @@ class Auth extends Component {
                                     .then(() => {
                                         if (this._isMounted) {
                                             this.props.setUserEmail(this.state.email)
+                                            this.props.setUserIsAuth(true)
                                             this.setRedirect()
                                         }
                                     })
@@ -117,41 +118,51 @@ class Auth extends Component {
     }
 
     render () {
-        return (
-            <Fragment>
-                {this.handleRedirect()}
-                <Header/>
-                <div className="container mt-5">
-                    <div className="row">
-                        <div className="mx-auto mt-5 text-center">
-                            <img src={logo} className="img-fluid" width="10%" alt="logo" />
-                            <h3>Les rencontres avec Matcha</h3>
-                            <form className="mx-auto bg-dark py-5 rounded shadow mt-2" onSubmit={this.handleSubmit}>
-                                <h4 className="text-center p-1 rounded text-white">SE CONNECTER</h4>
-                                <div className="form-group">
-                                    <label htmlFor="email" className="text-light">Adresse email</label>
-                                    <input type="email"  className="form-control w-75 mx-auto text-center" id="email" placeholder="name@example.com" onChange={this.handleText}/>
-                                    <div className="invalid-feedback" id="getErrMail">Veuillez indiquer un email valide</div>
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="pass" className="text-light">Mot de passe</label>
-                                    <input type="password" id="pass" className="form-control w-75 mx-auto text-center" placeholder="Mot de passe" onChange={this.handleText}/>
-                                    <div className="invalid-feedback" id="getErrPass">Veuillez indiquer un mot de passe valide</div>
-                                    <div className="invalid-feedback" id="badPass">Email ou mot de passe incorrect</div>
-                                    <div className="invalid-feedback" id="nonValid">Compte non validé. Consultez vos emails.</div>
-                                </div><br />
-                                <button type="submit" className="btn btn-light">Connexion</button>
-                            </form>
+        if (this.props.isAuth === true) {
+            return (
+                <Redirect to={"/accueil"} />
+            )
+        }
+        else {
+            return (
+                <Fragment>
+                    {this.handleRedirect()}
+                    <Header/>
+                    <div className="container mt-5">
+                        <div className="row">
+                            <div className="mx-auto mt-5 text-center">
+                                <img src={logo} className="img-fluid" width="10%" alt="logo" />
+                                <h3>Les rencontres avec Matcha</h3>
+                                <form className="mx-auto bg-dark py-5 rounded shadow mt-2" onSubmit={this.handleSubmit}>
+                                    <h4 className="text-center p-1 rounded text-white">SE CONNECTER</h4>
+                                    <div className="form-group">
+                                        <label htmlFor="email" className="text-light">Adresse email</label>
+                                        <input type="email"  className="form-control w-75 mx-auto text-center" id="email" placeholder="name@example.com" onChange={this.handleText}/>
+                                        <div className="invalid-feedback" id="getErrMail">Veuillez indiquer un email valide</div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="pass" className="text-light">Mot de passe</label>
+                                        <input type="password" id="pass" className="form-control w-75 mx-auto text-center" placeholder="Mot de passe" onChange={this.handleText}/>
+                                        <div className="invalid-feedback" id="getErrPass">Veuillez indiquer un mot de passe valide</div>
+                                        <div className="invalid-feedback" id="badPass">Email ou mot de passe incorrect</div>
+                                        <div className="invalid-feedback" id="nonValid">Compte non validé. Consultez vos emails.</div>
+                                    </div><br />
+                                    <button type="submit" className="btn btn-light">Connexion</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </Fragment>
-        )
+                </Fragment>
+            )
+        }
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
+        setUserIsAuth: (isAuth) => {
+            dispatch({ type: 'SET_USER_AUTH', isAuth: isAuth })
+        },
         setUserEmail: (email) => {
             dispatch({ type: 'SET_USER_EMAIL', email: email })
         }
