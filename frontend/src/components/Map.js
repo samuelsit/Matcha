@@ -18,5 +18,5 @@ class MapG extends Component {
 }
 
 export default GoogleApiWrapper({
-    apiKey: ("AIzaSyBriVepajx5lnt2Nx74SmmktdaYVIQq840")
+    apiKey: "AIzaSyBriVepajx5lnt2Nx74SmmktdaYVIQq840"
 })(MapG)

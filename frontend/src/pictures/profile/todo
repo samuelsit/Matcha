@@ -1,1 +1,1 @@
-chmod 777 /Matcha/frontend/src/pictures/profile
+il faut peut etre faire un chmod 777 sur le dossier /frontend/src/pictures/profile
