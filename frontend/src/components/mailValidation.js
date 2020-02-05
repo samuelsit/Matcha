@@ -36,10 +36,10 @@ class MailValidation extends Component {
     }
 
     componentDidMount = () => {
+        this._isMounted = true
         const email = this.extractParamsURL().httplocalhost3000mailvalidationmail
         const token = this.extractParamsURL().token
 
-        this._isMounted = true
         axios
         .get('http://localhost:5000/api/members/token/' + email + '/' + token)
         .then(res => {
@@ -62,11 +62,12 @@ class MailValidation extends Component {
                                             redirect: true
                                         })
                                     }
-                                    this.setState({
-                                        timeToRedirect: this.state.timeToRedirect - 1
-                                    })},
-                                    1000
-                                )
+                                    if (this._isMounted) {
+                                        this.setState({
+                                            timeToRedirect: this.state.timeToRedirect - 1
+                                        })
+                                    }
+                                }, 1000)
                             }
                         })
                     })

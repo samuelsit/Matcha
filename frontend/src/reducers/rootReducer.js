@@ -20,8 +20,6 @@ const rootReducer = (state  = initState, action) => {
         }
     }
     else if (action.type === 'SET_USER_AUTH') {
-        console.log(action);
-        
         return {
             ...state,
             isAuth: action.isAuth

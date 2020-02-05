@@ -307,7 +307,8 @@ class Sign extends Component {
                 axios.post('http://localhost:5000/api/members', {
                     isLoggued: false,
                     popularity: 0,
-                    interet: this.state.interet.length ? this.state.interet.data : 'Pas de centre d\'intêret',
+                    interet: this.state.interet.data,
+                    biographie: "",
                     attirance: {
                         male: this.state.attirance.male,
                         female: this.state.attirance.female
@@ -328,7 +329,14 @@ class Sign extends Component {
                     email: this.state.email,
                     password: this.state.pass,
                     token: bcrypt.genSaltSync(32).replace('.', '').replace('/', ''),
-                    isValid: false
+                    isValid: false,
+                    pictures: {
+                        _1: "",
+                        _2: "",
+                        _3: "",
+                        _4: "",
+                        _5: ""
+                    }
                 })
             }
         })

@@ -1,5 +1,25 @@
 // Initialize express router
 let router = require('express').Router();
+let multer = require('multer')
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, '../frontend/src/pictures/profile/')
+    },
+    filename: function(req, file, cb) {
+        const url = req.url.split('/')
+        const urlLength = url.length
+        const email = url[urlLength - 2]
+        const pictureId = url[urlLength - 1]
+        const fileName = file.originalname.split('.')
+        const fileLength = fileName.length
+        const ext = fileName[fileLength - 1]        
+        cb(null, email + pictureId + '.' + ext)
+    }
+})
+
+let upload = multer({storage: storage})
+
 // Set default API response
 router.get('/api', function (req, res) {
     res.json({
@@ -48,6 +68,10 @@ router.route('/api/members/isValid/:email/:status')
 // Change member profile
 router.route('/api/members/profile/:email')
     .patch(memberController.changeMemberProfile);
+
+// Change member profile
+router.route('/api/members/pictures/:email/:id')
+    .post(upload.single('image'), memberController.changeMemberPictures);
 
 // Export API routes
 module.exports = router;

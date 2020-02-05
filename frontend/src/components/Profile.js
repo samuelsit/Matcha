@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from 'react'
 import Header from './Header'
-import DiscussionBar from './DiscussionBar'
 import '../css/Profile.css'
 import Birthday from './Birthday'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import { Redirect } from "react-router-dom"
+import DiscussionButton from './DiscussionButton'
+import MapG from './Map'
 
 class Profile extends Component {
 
@@ -19,6 +20,10 @@ class Profile extends Component {
             month: "",
             year: ""
         },
+        country: {
+            lat: 0,
+            lng: 0
+        },
         biographie: "",
         interet: "",
         attirance: {
@@ -26,11 +31,18 @@ class Profile extends Component {
             female: false
         },
         myGender: "",
-        redirect: false
+        email: "",
+        pictures: {
+            _1: "",
+            _2: "",
+            _3: "",
+            _4: "",
+            _5: ""
+        }
     }
 
     handleOnBlurSubmit = () => {
-        axios.patch('http://localhost:5000/api/members/profile/fosexo4750@onetag.org', {
+        axios.patch('http://localhost:5000/api/members/profile/' + this.props.email, {
             interet: this.state.interet,
             attirance: {
                 male: this.state.attirance.male,
@@ -91,16 +103,16 @@ class Profile extends Component {
         const targ = event.target
         
         if (targ.name === "nom") {
-            const lastname = targ.value
+            const lastname = event.target.value.toUpperCase()
             this.setState({lastname})
         }
         else if (targ.name === "prenom") {
-            const firstname = targ.value
+            const firstname = event.target.value.length > 0 ? event.target.value[0].toUpperCase() + event.target.value.substring(1) : ""
             this.setState({firstname})
         }
         else if (targ.name === "bio") {
-            const bio = targ.value
-            this.setState({bio})
+            const biographie = targ.value
+            this.setState({biographie})
         }
         else if (targ.name === "interet") {
             const interet = targ.value
@@ -109,7 +121,7 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        this._isMounted = true
+        this._isMounted = true        
         axios.get('http://localhost:5000/api/members/' + this.props.email).then(res => {
             if (this._isMounted) {
                 this.setState({
@@ -118,6 +130,10 @@ class Profile extends Component {
                     biographie: res.data.member.biographie,
                     interet: res.data.member.interet,
                     myGender: res.data.member.myGender,
+                    country: {
+                        lat: res.data.member.country.lat,
+                        lng: res.data.member.country.lng
+                    },
                     birthday: {
                         day: res.data.member.birthday.day,
                         month: res.data.member.birthday.month,
@@ -126,6 +142,13 @@ class Profile extends Component {
                     attirance: {
                         male: res.data.member.attirance.male,
                         female: res.data.member.attirance.female
+                    },
+                    pictures: {
+                        _1: res.data.member.pictures._1,
+                        _2: res.data.member.pictures._2,
+                        _3: res.data.member.pictures._3,
+                        _4: res.data.member.pictures._4,
+                        _5: res.data.member.pictures._5
                     }
                 })
             }           
@@ -133,23 +156,28 @@ class Profile extends Component {
             if (this.state.myGender === 'male') {
                 document.getElementById('immale').checked = true
             }
-            else {
+            if (this.state.myGender === 'female') {
                 document.getElementById('imfemale').checked = true
             }
-    
             if (this.state.attirance.male === true) {
                 document.getElementById('getmale').checked = true
             }
             if (this.state.attirance.female === true) {
                 document.getElementById('getfemale').checked = true
             }
-    
-            document.getElementById('dayBirth').value = this.state.birthday.day
-            document.getElementById('monthBirth').value = this.state.birthday.month
-            document.getElementById('yearBirth').value = this.state.birthday.year
         })
         .catch(error => {
             console.log(error)
+        })
+    }
+
+    handlePicture = event => {
+        const fd = new FormData()
+        fd.append('image', event.target.files[0], event.target.files[0].name)
+        axios
+        .post('http://localhost:5000/api/members/pictures/' + this.props.email + '/' + event.target.id, fd)
+        .then(res => {
+            console.log(res)
         })
     }
 
@@ -158,7 +186,6 @@ class Profile extends Component {
     }
 
     render () {
-        const {email} = this.props
         if (this.props.isAuth === false) {
             return (
                 <Redirect to={"/connexion"} />
@@ -173,7 +200,7 @@ class Profile extends Component {
                             <div className="col-lg-8 text-center">
                                 <div className="bg-dark p-4 rounded">
                                     <h2 className="text-light">MES INFOS</h2>
-                                    <code className="h4">{email}</code>
+                                    <code className="h4">{this.props.email}</code>
                                     <form className="mt-4">
                                         <div className="row">
                                             <div className="col-lg">
@@ -185,10 +212,10 @@ class Profile extends Component {
                                         </div>
                                         <div className="row">
                                             <div className="col-lg">
-                                                <input type="text" name="interet" className="form-control w-100 mx-auto text-center" placeholder="#matcha, #42" onChange={this.handleText} value={this.state.interet} onBlur={this.handleOnBlurSubmit}/>
+                                                <input type="text" name="interet" className="form-control w-100 mx-auto text-center" placeholder="Pas de centre d'intêret" onChange={this.handleText} value={this.state.interet} onBlur={this.handleOnBlurSubmit}/>
                                             </div>
                                             <div className="col-lg">
-                                            <div className="row">
+                                            <div className="row mt-3 mt-lg-0">
                                                     <div className="col-4">
                                                         <select className="mx-auto select-s form-control w-100" id="dayBirth" onChange={this.handleBirth} value={this.state.birthday.day} onBlur={this.handleOnBlurSubmit}>
                                                             <Birthday Toget="day" />
@@ -233,7 +260,7 @@ class Profile extends Component {
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="exampleFormControlTextarea1" className="text-light">Biographie</label>
-                                            <textarea name="bio" className="form-control" id="exampleFormControlTextarea1" placeholder="Vous pouvez transmettre une partie de votre monde, de ce qui vous anime, de ce que vous aimez.vous pouvez transmettre une partie de votre monde, de ce qui vous anime, de ce que vous aimez." rows="3" onChange={this.handleText} value={this.state.biographie} onBlur={this.handleOnBlurSubmit}></textarea>
+                                            <textarea name="bio" className="form-control" id="exampleFormControlTextarea1" placeholder="Vous pouvez transmettre une partie de votre monde, de ce qui vous anime, de ce que vous aimez." rows="3" onChange={this.handleText} value={this.state.biographie} onBlur={this.handleOnBlurSubmit}></textarea>
                                         </div>
                                     </form>
                                 </div>
@@ -241,25 +268,31 @@ class Profile extends Component {
                             <div className="col-lg-4 text-center">
                                 <div className="row rounded">
                                     <div className="col-12 mt-lg-0 mt-2 mb-2">
-                                        <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
+                                        <input type="file" id="_1" onChange={this.handlePicture}/>
+                                        <label htmlFor="_1"><img className="card-img" src={this.state.pictures._1 ? require(`../pictures/profile/${this.state.pictures._1}`) : require(`../pictures/noPic.png`)} alt="Card cap" /></label>
                                     </div>
-                                    <div className="col-sm-3 col-md-3 col-lg-3 mt-lg-0 mt-2 mb-2">
-                                        <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
+                                    <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
+                                        <input type="file" id="_2" onChange={this.handlePicture}/>
+                                        <label htmlFor="_2"><img className="card-img" src={this.state.pictures._2 ? require(`../pictures/profile/${this.state.pictures._2}`) : require(`../pictures/noPic.png`)} alt="Card cap" /></label>
                                     </div>
-                                    <div className="col-sm-3 col-md-3 col-lg-3 mt-lg-0 mt-2 mb-2">
-                                        <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
+                                    <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
+                                        <input type="file" id="_3" onChange={this.handlePicture}/>
+                                        <label htmlFor="_3"><img className="card-img" src={this.state.pictures._3 ? require(`../pictures/profile/${this.state.pictures._3}`) : require(`../pictures/noPic.png`)} alt="Card cap" /></label>
                                     </div>
-                                    <div className="col-sm-3 col-md-3 col-lg-3 mt-lg-0 mt-2 mb-2">
-                                        <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
+                                    <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
+                                        <input type="file" id="_4" onChange={this.handlePicture}/>
+                                        <label htmlFor="_4"><img className="card-img" src={this.state.pictures._4 ? require(`../pictures/profile/${this.state.pictures._4}`) : require(`../pictures/noPic.png`)} alt="Card cap" /></label>
                                     </div>
-                                    <div className="col-sm-3 col-md-3 col-lg-3 mt-lg-0 mt-2 mb-2">
-                                        <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
+                                    <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
+                                        <input type="file" id="_5" onChange={this.handlePicture}/>
+                                        <label htmlFor="_5"><img className="card-img" src={this.state.pictures._5 ? require(`../pictures/profile/${this.state.pictures._5}`) : require(`../pictures/noPic.png`)} alt="Card cap" /></label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <DiscussionBar/>
+                    <MapG lat={this.state.country.lat} lng={this.state.country.lng}/>
+                    <DiscussionButton/>
                 </Fragment>
             )
         }

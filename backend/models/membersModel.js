@@ -86,6 +86,28 @@ var memberSchema = mongoose.Schema({
     create_date: {
         type: Date,
         default: Date.now
+    },
+    pictures: {
+        _1: {
+            type: String,
+            required: false
+        },
+        _2: {
+            type: String,
+            required: false
+        },
+        _3: {
+            type: String,
+            required: false
+        },
+        _4: {
+            type: String,
+            required: false
+        },
+        _5: {
+            type: String,
+            required: false
+        }
     }
 });
 // Export Contact model

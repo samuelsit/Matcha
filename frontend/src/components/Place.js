@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete'
 import '../css/Place.css'
 
@@ -18,6 +18,8 @@ export default function Place({ getLocalisation }) {
     }
 
     return (
+        <Fragment>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBriVepajx5lnt2Nx74SmmktdaYVIQq840"></script>
         <PlacesAutocomplete value={address} onChange={setAddress} onSelect={handleSelect} searchOptions={searchOptions}>
             {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
                 <div>
@@ -26,8 +28,8 @@ export default function Place({ getLocalisation }) {
                         {loading ? <div>Loading...</div> : null}
                         {suggestions.map((suggestion) => {
                             const style = {
-                                backgroundColor: suggestion.active ? "#343A40" : "#fff",
-                                color: suggestion.active ? "#fff" : "#343A40"
+                                backgroundColor: suggestion.active ? "#6C757D" : "#fff",
+                                color: suggestion.active ? "#fff" : "#6C757D"
                             }
                             return (
                                 <div {...getSuggestionItemProps(suggestion, { style })}>
@@ -39,5 +41,6 @@ export default function Place({ getLocalisation }) {
                 </div>
             )}
         </PlacesAutocomplete>
+        </Fragment>
     )
 }

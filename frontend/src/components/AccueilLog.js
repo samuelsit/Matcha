@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import Header from './Header'
 import CardLove from './CardLove'
-import DiscussionBar from './DiscussionBar'
+import DiscussionButton from './DiscussionButton'
 import FilterSort from './FilterSort'
 import Pagination from './Pagination'
 import axios from 'axios'
@@ -89,6 +89,7 @@ class Accueil extends Component {
                 gender={el.myGender}
                 love={this.orientationSexuelle(el.myGender, el.attirance)}
                 interet={el.interet}
+                email={el.email}
             />
         ))
 
@@ -114,7 +115,7 @@ class Accueil extends Component {
                             </div>
                         </div>
                     </div>
-                    <DiscussionBar/>
+                    <DiscussionButton/>
                 </Fragment>
             )
         }

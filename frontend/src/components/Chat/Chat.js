@@ -5,7 +5,7 @@ import Formulaire from './Formulaire'
 import Message from './Message'
 import Header from '../Header'
 import ChatProfile from './ChatProfile'
-import DiscussionBar from '../DiscussionBar'
+import DiscussionBar from '../DiscussionButton'
 
 class App extends Component {
   state = {

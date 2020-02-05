@@ -30,31 +30,6 @@ class App extends Component {
               </div>
             </div>
           </div>
-          <section className="py-5">
-            <div className="container">
-              <h4 className="font-weight-light">Nos derniers membres inscrits</h4>
-              <div className="row">
-                  <div className="col-2">
-                      <img className="img-fluid" src="https://picsum.photos/400" alt="lastsub" />
-                  </div>
-                  <div className="col-2">
-                      <img className="img-fluid" src="https://picsum.photos/400" alt="lastsub" />
-                  </div>
-                  <div className="col-2">
-                      <img className="img-fluid" src="https://picsum.photos/400" alt="lastsub" />
-                  </div>
-                  <div className="col-2">
-                      <img className="img-fluid" src="https://picsum.photos/400" alt="lastsub" />
-                  </div>
-                  <div className="col-2">
-                      <img className="img-fluid" src="https://picsum.photos/400" alt="lastsub" />
-                  </div>
-                  <div className="col-2">
-                      <img className="img-fluid" src="https://picsum.photos/400" alt="lastsub" />
-                  </div>
-              </div>
-            </div>
-          </section>
         </Fragment>
       )
     }

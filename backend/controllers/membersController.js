@@ -1,5 +1,8 @@
 Member = require('../models/membersModel');
 
+const sharp = require('sharp')
+const fs = require('fs')
+
 // Handle index actions
 exports.allMember = function (req, res) {
     Member.get(function (err, members) {
@@ -31,6 +34,12 @@ exports.newMember = function (req, res) {
     member.password = req.body.password;
     member.token = req.body.token;
     member.isValid = req.body.isValid;
+    member.biographie = req.body.biographie;
+    member.pictures._1 = req.body.pictures._1;
+    member.pictures._2 = req.body.pictures._2;
+    member.pictures._3 = req.body.pictures._3;
+    member.pictures._4 = req.body.pictures._4;
+    member.pictures._5 = req.body.pictures._5;
     member.save(function (err) {
         if (err)
             res.json(err);
@@ -199,16 +208,69 @@ exports.changeMemberProfile = function (req, res) {
     Member.findOne({email: req.params.email}, function (err, member) {
         if (err)
             res.send(err);
-        member.lastname = req.body.lastname;
-        member.firstname = req.body.firstname;
-        member.biographie = req.body.biographie;
-        member.birthday.day = req.body.birthday.day;
-        member.birthday.month = req.body.birthday.month;
-        member.birthday.year = req.body.birthday.year;
-        member.attirance.female = req.body.attirance.female;
-        member.attirance.male = req.body.attirance.male;
-        member.interet = req.body.interet;
-        member.myGender = req.body.myGender;
+        if (req.body.lastname)
+            member.lastname = req.body.lastname;
+        if (req.body.firstname)
+            member.firstname = req.body.firstname;
+        if (req.body.biographie)
+            member.biographie = req.body.biographie;
+        if (req.body.birthday.day)
+            member.birthday.day = req.body.birthday.day;
+        if (req.body.birthday.month)
+            member.birthday.month = req.body.birthday.month;
+        if (req.body.birthday.year)
+            member.birthday.year = req.body.birthday.year;
+        if (req.body.interet)
+            member.interet = req.body.interet;
+        if (req.body.myGender)
+            member.myGender = req.body.myGender;
+        if (!req.body.attirance.male && !req.body.attirance.female) {
+            member.attirance.male = true;
+            member.attirance.female = true;
+        }
+        else {
+            member.attirance.male = req.body.attirance.male;
+            member.attirance.female = req.body.attirance.female;
+        }
+        member.save(function (err) {
+            if (err)
+                res.json(err);
+            console.log(member);
+            
+            res.json({
+                member
+            });
+        });
+    });
+};
+
+exports.changeMemberPictures = function (req, res) {
+    Member.findOne({email: req.params.email}, function (err, member) {
+        if (err)
+            res.send(err);
+
+        sharp(req.file.path)
+        .resize(954, 635)
+        .toBuffer((err, buffer) => {
+            fs.writeFile(req.file.path, buffer, function(e) {
+            });
+        })
+
+        if (req.params.id === '_1') {
+            member.pictures._1 = req.file.filename;
+        }
+        if (req.params.id === '_2') {
+            member.pictures._2 = req.file.filename;
+        }
+        if (req.params.id === '_3') {
+            member.pictures._3 = req.file.filename;
+        }
+        if (req.params.id === '_4') {
+            member.pictures._4 = req.file.filename;
+        }
+        if (req.params.id === '_5') {
+            member.pictures._5 = req.file.filename;
+        }
         member.save(function (err) {
             if (err)
                 res.json(err);

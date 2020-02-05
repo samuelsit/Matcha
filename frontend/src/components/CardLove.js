@@ -1,6 +1,30 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 
 class CardLove extends Component {
+
+    _isMounted = false
+
+    state = {
+        picture: '',
+    }
+
+    componentDidMount() {
+        this._isMounted = true        
+        axios.get('http://localhost:5000/api/members/' + this.props.email).then(res => {
+            if (this._isMounted) {
+                this.setState({
+                    picture: res.data.member.pictures._1
+                })
+            }           
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false
+    }
 
     render () {
         var isLoggued = this.props.isLoggued === "true" ? "badge badge-pill badge-success" : "badge badge-pill badge-danger"
@@ -36,11 +60,11 @@ class CardLove extends Component {
         return (
             <div className="col-6 col-lg-3 col-md-4 mt-4">
                 <div className="card">
-                    <img className="card-img-top" src="https://picsum.photos/268/180" alt="Card cap" />
+                    <img className="card-img-top" src={this.state.picture ? require(`../pictures/profile/${this.state.picture}`) : require(`../pictures/noPicAccueil.png`)} alt="Card cap" />
                     <div className="text-dark text-left card-header"><h5 className="card-title">{this.props.name} <span className={isLoggued}> </span> <span className={colorgender.concat(' ', "float-right")}><i className={gender}></i></span></h5></div>
                     <div className="card-body">
                         <p className="card-text">{this.props.age} ans<br/><i className="fas fa-map-marker-alt"></i> {this.props.country} {distance}</p><hr/>
-                        <code>{this.props.interet}</code>
+                        <code>{this.props.interet ? this.props.interet : "Pas de centre d'intêret"}</code>
                         <p className="card-text"></p><hr/>
                         <div className="btn btn-danger btn-circle text-light float-left"><i className="fas fa-heart"> {this.props.isLoved}</i></div>
                         <div className={colorlove.concat(' ', 'float-right')}><i className={love.concat(' ', 'text-light')}></i></div>

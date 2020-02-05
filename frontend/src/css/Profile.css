@@ -1,8 +1,7 @@
-#maps {
-    width:100%;
-    height:335px;
-}
-
 .select-s {
     text-align-last: center;
+}
+
+input[type=file] {
+    display: none;
 }
