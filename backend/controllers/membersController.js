@@ -234,9 +234,7 @@ exports.changeMemberProfile = function (req, res) {
         }
         member.save(function (err) {
             if (err)
-                res.json(err);
-            console.log(member);
-            
+                res.json(err);            
             res.json({
                 member
             });

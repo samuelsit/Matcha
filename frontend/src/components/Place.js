@@ -19,7 +19,6 @@ export default function Place({ getLocalisation }) {
 
     return (
         <Fragment>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBriVepajx5lnt2Nx74SmmktdaYVIQq840"></script>
         <PlacesAutocomplete value={address} onChange={setAddress} onSelect={handleSelect} searchOptions={searchOptions}>
             {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
                 <div>

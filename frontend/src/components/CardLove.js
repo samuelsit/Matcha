@@ -33,6 +33,7 @@ class CardLove extends Component {
         var love = null
         var colorlove = null
         var distance = isNaN(this.props.distance) ? null : "(" + this.props.distance + " km)"
+        let profilepic = this.state.picture !== '' ? require(`../pictures/profile/${this.state.picture}`) : require(`../pictures/noPicAccueil.png`)
 
         if (this.props.gender === "male") {
             gender = "fas fa-mars"
@@ -60,7 +61,7 @@ class CardLove extends Component {
         return (
             <div className="col-6 col-lg-3 col-md-4 mt-4">
                 <div className="card">
-                    <img className="card-img-top" src={this.state.picture ? require(`../pictures/profile/${this.state.picture}`) : require(`../pictures/noPicAccueil.png`)} alt="Card cap" />
+                    <img className="card-img-top" src={profilepic} alt="Card cap" />
                     <div className="text-dark text-left card-header"><h5 className="card-title">{this.props.name} <span className={isLoggued}> </span> <span className={colorgender.concat(' ', "float-right")}><i className={gender}></i></span></h5></div>
                     <div className="card-body">
                         <p className="card-text">{this.props.age} ans<br/><i className="fas fa-map-marker-alt"></i> {this.props.country} {distance}</p><hr/>

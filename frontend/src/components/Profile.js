@@ -42,8 +42,9 @@ class Profile extends Component {
     }
 
     handleOnBlurSubmit = () => {
+        const regex = RegExp(/^(#[\w+]+,? ?)+$/)
         axios.patch('http://localhost:5000/api/members/profile/' + this.props.email, {
-            interet: this.state.interet,
+            interet: regex.test(this.state.interet) ? this.state.interet : '',
             attirance: {
                 male: this.state.attirance.male,
                 female: this.state.attirance.female
@@ -186,6 +187,13 @@ class Profile extends Component {
     }
 
     render () {
+        const _1 = this.state.pictures._1 !== '' ? require(`../pictures/profile/${this.state.pictures._1}`) : require(`../pictures/noPic.png`)
+        const _2 = this.state.pictures._2 !== '' ? require(`../pictures/profile/${this.state.pictures._2}`) : require(`../pictures/noPic.png`)
+        const _3 = this.state.pictures._3 !== '' ? require(`../pictures/profile/${this.state.pictures._3}`) : require(`../pictures/noPic.png`)
+        const _4 = this.state.pictures._4 !== '' ? require(`../pictures/profile/${this.state.pictures._4}`) : require(`../pictures/noPic.png`)
+        const _5 = this.state.pictures._5 !== '' ? require(`../pictures/profile/${this.state.pictures._5}`) : require(`../pictures/noPic.png`)
+
+
         if (this.props.isAuth === false) {
             return (
                 <Redirect to={"/connexion"} />
@@ -269,23 +277,23 @@ class Profile extends Component {
                                 <div className="row rounded">
                                     <div className="col-12 mt-lg-0 mt-2 mb-2">
                                         <input type="file" id="_1" onChange={this.handlePicture}/>
-                                        <label htmlFor="_1"><img className="card-img" src={this.state.pictures._1 ? require(`../pictures/profile/${this.state.pictures._1}`) : require(`../pictures/noPic.png`)} alt="Card cap" /></label>
+                                        <label htmlFor="_1"><img className="card-img" src={_1} alt="Card cap" /></label>
                                     </div>
                                     <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
                                         <input type="file" id="_2" onChange={this.handlePicture}/>
-                                        <label htmlFor="_2"><img className="card-img" src={this.state.pictures._2 ? require(`../pictures/profile/${this.state.pictures._2}`) : require(`../pictures/noPic.png`)} alt="Card cap" /></label>
+                                        <label htmlFor="_2"><img className="card-img" src={_2} alt="Card cap" /></label>
                                     </div>
                                     <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
                                         <input type="file" id="_3" onChange={this.handlePicture}/>
-                                        <label htmlFor="_3"><img className="card-img" src={this.state.pictures._3 ? require(`../pictures/profile/${this.state.pictures._3}`) : require(`../pictures/noPic.png`)} alt="Card cap" /></label>
+                                        <label htmlFor="_3"><img className="card-img" src={_3} alt="Card cap" /></label>
                                     </div>
                                     <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
                                         <input type="file" id="_4" onChange={this.handlePicture}/>
-                                        <label htmlFor="_4"><img className="card-img" src={this.state.pictures._4 ? require(`../pictures/profile/${this.state.pictures._4}`) : require(`../pictures/noPic.png`)} alt="Card cap" /></label>
+                                        <label htmlFor="_4"><img className="card-img" src={_4} alt="Card cap" /></label>
                                     </div>
                                     <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
                                         <input type="file" id="_5" onChange={this.handlePicture}/>
-                                        <label htmlFor="_5"><img className="card-img" src={this.state.pictures._5 ? require(`../pictures/profile/${this.state.pictures._5}`) : require(`../pictures/noPic.png`)} alt="Card cap" /></label>
+                                        <label htmlFor="_5"><img className="card-img" src={_5} alt="Card cap" /></label>
                                     </div>
                                 </div>
                             </div>
