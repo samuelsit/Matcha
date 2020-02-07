@@ -2,8 +2,26 @@ import React, { Component, Fragment } from 'react'
 import '../css/DiscussionBar.css'
 import * as $ from 'jquery'
 import DiscussionBar from './DiscussionBar'
+import axios from 'axios'
+import { connect } from 'react-redux'
 
 class DiscussionButton extends Component {
+    _isMounted = false
+
+    state = {
+        lastMessages: []
+    }
+
+    componentDidMount() {
+        this._isMounted = true
+        axios.get('http://localhost:5000/api/messages/last/' + this.props.email).then(res => {
+            if (this._isMounted) {
+                this.setState({lastMessages: res.data.lastMessages})
+            }
+        }).catch(error => {
+            console.log(error)
+        })
+    }
 
     handleOpen = () => {
         $('#messenger').fadeIn()
@@ -15,7 +33,19 @@ class DiscussionButton extends Component {
         $('#messenger').fadeOut()
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     render () {
+        let discussions = this.state.lastMessages.map((el, i) => (
+            <DiscussionBar
+                key={i}
+                login={el.user}
+                message={el.data}
+            />
+        ))
+
         return (
             <Fragment>
                 <div id="fixed-bottom">
@@ -31,14 +61,7 @@ class DiscussionButton extends Component {
                         </span>
                     </div>
                     <div className="card-body">
-                        <DiscussionBar login="Romane Benizri" message="salut ca va ?"/>
-                        <DiscussionBar login="Sam Sitruk" message="ecole 42"/>
-                        <DiscussionBar login="Jerem Marciano" message="demain"/>
-                        <DiscussionBar login="Gustave Eiffel" message="..."/>
-                        <DiscussionBar login="Picasso" message="pourquoi?"/>
-                        <DiscussionBar login="Zinedine Zidane" message="ftg"/>
-                        <DiscussionBar login="Pinocchio" message="ok"/>
-                        <DiscussionBar login="Elon Musk" message="dacc"/>
+                        {discussions}
                     </div>
                 </div>
             </Fragment>
@@ -46,4 +69,10 @@ class DiscussionButton extends Component {
     }
 }
 
-export default DiscussionButton
+const mapStateToProps = state => {
+    return {
+        email: state.email
+    }
+}
+
+export default connect(mapStateToProps, null)(DiscussionButton)

@@ -1,16 +1,14 @@
-// Import express
-let express = require('express');
-// Import Body parser
 let bodyParser = require('body-parser');
-// Import Mongoose
 let mongoose = require('mongoose');
-// Initialise the app
-let app = express();
-
+let app = require('express')();
+let http = require('http').Server(app)
+let io = require('socket.io')(http)
 let cors = require('cors');
 
 // Import routes
 let membersRoutes = require("./routes/membersRoute");
+let messagesRoutes = require("./routes/messagesRoute");
+let interactionsRoutes = require("./routes/interactionsRoute");
 // Configure bodyparser to handle post requests
 app.use(bodyParser.urlencoded({
     extended: true
@@ -35,7 +33,16 @@ app.use(cors());
 
 // Use Api routes in the App
 app.use('/', membersRoutes);
+app.use('/', messagesRoutes);
+app.use('/', interactionsRoutes);
+
+io.on('connection', socket => {
+    socket.on('chat message', msg => {
+        io.emit('chat message', msg)
+    })
+})
+
 // Launch app to listen to specified port
-app.listen(port, function () {
+http.listen(port, function () {
     console.log("Running matchaback on port " + port);
 });

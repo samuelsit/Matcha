@@ -5,7 +5,9 @@ const fs = require('fs')
 
 // Handle index actions
 exports.allMember = function (req, res) {
-    Member.get(function (err, members) {
+    var memberLog = '^' + req.params.email + '$'
+    var regex = new RegExp(memberLog)
+    Member.find({email: {$not: regex}}, function (err, members) {
         if (err) {
             res.json({
                 status: "error",
@@ -112,7 +114,7 @@ exports.isMember = function (req, res) {
                 message: err
             });
         }
-        if (members) {
+        if (members !== null) {
             res.json({
                 status: "email already exist",
                 pass: members.password
@@ -276,6 +278,34 @@ exports.changeMemberPictures = function (req, res) {
                 member
             });
         });
+    });
+};
+
+exports.isProfilePicture = function (req, res) {
+    Member.findOne({email: req.params.email}, function (err, member) {
+        if (member) {
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err
+                });
+            }
+            else if (member.pictures._1 !== '') {
+                res.json({
+                    status: true
+                });
+            }
+            else {
+                res.json({
+                    status: false
+                });
+            }
+        }
+        else {
+            res.json({
+                status: false
+            });
+        }
     });
 };
 

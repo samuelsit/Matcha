@@ -1,11 +1,28 @@
 import React, { Component, Fragment } from 'react'
 import '../css/NotifBar.css'
 import * as $ from 'jquery'
-import Notification from './Notification'
+import NotificationBar from './NotificationBar'
+import { connect } from 'react-redux'
+import axios from 'axios'
 
-class NotifBar extends Component {
+class NotificationButton extends Component {
+    _isMounted = false
+
     state = {
-        isOpenNotif: false
+        isOpenNotif: false,
+        lastNotif: [],
+        fullName: ''
+    }
+
+    componentDidMount() {
+        this._isMounted = true
+        axios.get('http://localhost:5000/api/interactions/last/' + this.props.email).then(res => {
+            if (this._isMounted) {
+                this.setState({lastNotif: res.data.interactions})
+            }
+        }).catch(error => {
+            console.log(error)
+        })
     }
 
     handleClose = () => {
@@ -23,7 +40,19 @@ class NotifBar extends Component {
         }
     }
 
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     render () {
+        let notifications = this.state.lastNotif.map((el, i) => (
+            <NotificationBar
+                key={i}
+                login={el.from}
+                eve={el.data}
+            />
+        ))
+
         return (
             <Fragment>
                 <div className="btn btn-warning btn-notif text-light mr-2" onClick={this.handleOpen}><i className="fas fa-bell"></i></div>
@@ -37,14 +66,7 @@ class NotifBar extends Component {
                         </span>
                     </div>
                     <div className="card-body">
-                        <Notification login="Romane Benizri" eve="like"/>
-                        <Notification login="Sam Sitruk" eve="like"/>
-                        <Notification login="Jerem Marciano" eve="consult"/>
-                        <Notification login="Gustave Eiffel" eve="consult"/>
-                        <Notification login="Picasso" eve="like"/>
-                        <Notification login="Zinedine Zidane" eve="consult"/>
-                        <Notification login="Pinocchio" eve="like"/>
-                        <Notification login="Elon Musk" eve="consult"/>
+                        { notifications }
                     </div>
                 </div>
             </Fragment>
@@ -52,4 +74,10 @@ class NotifBar extends Component {
     }
 }
 
-export default NotifBar
+const mapStateToProps = state => {
+    return {
+        email: state.email
+    }
+}
+
+export default connect(mapStateToProps, null)(NotificationButton)

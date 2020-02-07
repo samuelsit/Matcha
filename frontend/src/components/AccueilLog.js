@@ -19,8 +19,8 @@ class Accueil extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        this.props.setUserPos(2, 2)
-        axios.get('http://localhost:5000/api/members').then(res => {
+        // this.props.setUserPos(2, 2)
+        axios.get('http://localhost:5000/api/members/all/' + this.props.email).then(res => {
             if (this._isMounted) {
                 this.setState({members: res.data.members})
             }
@@ -89,7 +89,7 @@ class Accueil extends Component {
                 gender={el.myGender}
                 love={this.orientationSexuelle(el.myGender, el.attirance)}
                 interet={el.interet}
-                email={el.email}
+                mail={el.email}
             />
         ))
 
@@ -138,7 +138,8 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = state => {
     return {
-        isAuth: state.isAuth
+        isAuth: state.isAuth,
+        email: state.email
     }
 }
 

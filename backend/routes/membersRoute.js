@@ -10,15 +10,27 @@ const storage = multer.diskStorage({
         const url = req.url.split('/')
         const urlLength = url.length
         const email = url[urlLength - 2]
-        const pictureId = url[urlLength - 1]
-        const fileName = file.originalname.split('.')
-        const fileLength = fileName.length
-        const ext = fileName[fileLength - 1]        
-        cb(null, email + pictureId + '.' + ext)
+        const pictureId = url[urlLength - 1]      
+        cb(null, email + pictureId + '.png')
     }
 })
 
-let upload = multer({storage: storage})
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true)
+    }
+    else {
+        cb(null, false)
+    }
+}
+
+let upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+})
 
 // Set default API response
 router.get('/api', function (req, res) {
@@ -33,8 +45,10 @@ var memberController = require('../controllers/membersController');
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Get all members // Create new member //
-router.route('/api/members')
+router.route('/api/members/all/:email')
     .get(memberController.allMember)
+
+router.route('/api/members')
     .post(memberController.newMember);
 
 // Get member
@@ -72,6 +86,9 @@ router.route('/api/members/profile/:email')
 // Change member profile
 router.route('/api/members/pictures/:email/:id')
     .post(upload.single('image'), memberController.changeMemberPictures);
+
+router.route('/api/members/pictures/profile/:email')
+    .get(memberController.isProfilePicture);
 
 // Export API routes
 module.exports = router;

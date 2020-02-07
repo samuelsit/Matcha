@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import logo from '../pictures/favicon.png'
 import { Link } from 'react-router-dom'
-import NotifBar from './NotifBar'
+import NotificationButton from './NotificationButton'
 import { connect } from 'react-redux'
 import axios from 'axios'
 
@@ -52,7 +52,7 @@ class Header extends Component {
                                 <li className="nav-item"></li>
                             </ul>
                         </div>
-                        <NotifBar/>
+                        <NotificationButton/>
                         <Link to={"/profile"}><div className="text-light btn btn-circle btn-secondary mr-2"><i className="fas fa-user"></i></div></Link>
                         <Link to={"/"}><div className="text-light btn btn-circle btn-danger mr-2" onClick={this.handleClick}>Déconnexion</div></Link>
                     </nav>

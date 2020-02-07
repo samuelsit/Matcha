@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react'
 import Header from './Header'
 import axios from 'axios'
 import { Redirect } from "react-router-dom"
-import bcrypt from 'bcryptjs'
 
 class MailValidation extends Component {
 
@@ -49,7 +48,7 @@ class MailValidation extends Component {
                 }
                 else {
                     axios
-                    .patch('http://localhost:5000/api/members/token/' + email + '/' + bcrypt.genSaltSync(32).replace('.', '').replace('/', ''))
+                    .patch('http://localhost:5000/api/members/token/' + email + '/' + require('crypto').randomBytes(32).toString('hex'))
                     .then(() => {
                         axios
                         .patch('http://localhost:5000/api/members/isValid/' + email + '/true')
@@ -94,7 +93,7 @@ class MailValidation extends Component {
                             <div className="h2 font-weight-bold text-light bg-dark p-5 rounded shadow-lg">
                                 <p>
                                     {
-                                        this.state.error === true ? "Erreur lors de la verification du token." : `Token validé. Vous serez redirigé dans ${this.state.timeToRedirect} secondes.`
+                                        this.state.error === true ? "Erreur lors de la verification." : `Vous allez être redirigé dans ${this.state.timeToRedirect} seconde(s).`
                                     }
                                 </p>
                             </div>

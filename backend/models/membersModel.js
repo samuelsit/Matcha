@@ -83,10 +83,6 @@ var memberSchema = mongoose.Schema({
         type: Boolean,
         required: true
     },
-    create_date: {
-        type: Date,
-        default: Date.now
-    },
     pictures: {
         _1: {
             type: String,
@@ -108,6 +104,15 @@ var memberSchema = mongoose.Schema({
             type: String,
             required: false
         }
+    },
+    notif: {
+        type: Boolean,
+        required: false
+    }
+},
+{
+    timestamps: {
+        createdAt: 'createdAt'
     }
 });
 // Export Contact model

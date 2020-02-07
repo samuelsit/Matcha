@@ -1,16 +1,68 @@
 import React, { Component, createRef, Fragment } from 'react'
 import '../../css/Chat.css'
-
 import Formulaire from './Formulaire'
 import Message from './Message'
 import Header from '../Header'
 import ChatProfile from './ChatProfile'
-import DiscussionBar from '../DiscussionButton'
+import DiscussionButton from '../DiscussionButton'
+import axios from 'axios'
+import { connect } from 'react-redux'
+import { Redirect } from "react-router-dom"
+import io from 'socket.io-client'
+import * as $ from 'jquery'
 
-class App extends Component {
+const socket = io('http://localhost:5000')
+
+class Chat extends Component {
+  _isMounted = false
+
   state = {
-    messages: {},
-    pseudo: this.props.match.params.pseudo
+    messages: [],
+    pseudo: this.props.match.params.pseudo,
+  }
+
+  componentDidMount() {
+    this._isMounted = true
+    axios.get('http://localhost:5000/api/members/' + this.state.pseudo).then(res => {
+        if (this._isMounted) {
+              this.setState({
+                  firstname: res.data.member.firstname,
+                  lastname: res.data.member.lastname
+              })
+        }
+    }).catch(error => {
+        console.log(error)
+    })
+    axios.get('http://localhost:5000/api/messages/all/' + this.state.pseudo + '/' + this.props.email).then(res => {
+        if (this._isMounted) {
+            this.setState({
+                messages: res.data.messages
+            })
+        }
+    }).catch(error => {
+        console.log(error)
+    })
+    socket.on('chat message', this.receptionSocket)
+  }
+
+  receptionSocket = msg => {
+    var message
+    if (msg.pseudo !== this.props.email) {
+      message = '<div class="badge badge-pill badge-primary float-right">' + msg.message + '</div><br/>'
+    }
+    else {
+      message = '<div class="badge badge-pill badge-secondary float-left">' + msg.message + '</div><br/>'
+    }
+        
+    $('#message').append(message)
+  }
+
+  handleRedirect = () => {
+    if (this.state.redirect) {
+        return (
+            <Redirect to={"/connexion"} />
+        )
+    }
   }
 
   messagesRef = createRef()
@@ -21,45 +73,68 @@ class App extends Component {
   }
 
   addMessage = message => {
-    const messages = { ...this.state.messages }
-    messages[`message-${Date.now()}`] = message
-
-    this.setState({messages})
+    socket.emit('chat message', message)
+    axios.post('http://localhost:5000/api/messages', {
+        from: this.props.email,
+        to: this.state.pseudo,
+        data: message.message
+    })
   }
 
-  isUser = pseudo => pseudo === this.state.pseudo
+  isUser = pseudo => pseudo !== this.state.pseudo
+
+  componentWillUnmount() {
+    this._isMounted = false
+  }
 
   render () {
-    const messages = Object
-    .keys(this.state.messages)
-    .map(key => (
-        <Message isUser={this.isUser} message={this.state.messages[key].message} pseudo={this.state.messages[key].pseudo} />
+    let messages = this.state.messages.map((el, i) => (
+      <Message key={i} isUser={this.isUser} message={el.data} pseudo={el.from}/>
     ))
-    return (
-      <Fragment>
-        <Header loggued="true"/>
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-12 col-lg-3 mt-lg-5">
-              <ChatProfile name={this.props.match.params.pseudo} age="22" country="Paris 17" isLoggued="true" />
-            </div>
-            <div className='col-lg-9'>
-              <div><br/><br/><br/>
-                <h1 className="text-center d-sm-block d-lg-none d-md-block font-weight-bold">{this.props.match.params.pseudo} <span className="badge badge-pill badge-success"> </span></h1>
-                <div className="messages shadow-sm" ref={this.messagesRef}>
-                  <div className="h1 text-right">
-                    {messages}
+    if (!this.props.isAuth) {
+      return (
+          <Redirect to={"/connexion"} />
+      )
+    }
+    else if (this.props.email === this.state.pseudo) {
+      return (
+        <Redirect to={"/profile"} />
+      )
+    }
+    else {
+      return (
+        <Fragment>
+          <Header loggued="true"/>
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-12 col-lg-3 mt-lg-4">
+                <ChatProfile mobileView={false} name={this.state.pseudo}/>
+              </div>
+              <div className='col-lg-9'>
+                <div><br/><br/><br/>
+                  <h1 className="text-center d-sm-block d-lg-none d-md-block font-weight-bold">{this.state.firstname} {this.state.lastname} <span className="badge badge-pill badge-success"> </span></h1>
+                  <div className="messages shadow-sm" ref={this.messagesRef}>
+                    <div id="message" className="h1 text-right mt-2">
+                      {messages}
+                    </div>
                   </div>
                 </div>
+                <Formulaire length={140} pseudo={this.state.pseudo} addMessage={this.addMessage} />
               </div>
-              <Formulaire length={140} pseudo={this.state.pseudo} addMessage={this.addMessage} />
             </div>
           </div>
-        </div>
-        <DiscussionBar/>
-      </Fragment>
-    )
+          <DiscussionButton/>
+        </Fragment>
+      )
+    }
   }
 }
 
-export default App
+const mapStateToProps = state => {
+  return {
+      email: state.email,
+      isAuth: state.isAuth
+  }
+}
+
+export default connect(mapStateToProps, null)(Chat)

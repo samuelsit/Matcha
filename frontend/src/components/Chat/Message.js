@@ -1,21 +1,22 @@
 import React, { Fragment } from 'react'
 
 const Message = ({pseudo, message, isUser}) => {
-    if (isUser(pseudo)) {
+    if (!isUser(pseudo)) {
         return (
             <Fragment>
-            <p className="badge badge-pill badge-primary">
+            <div className="badge badge-pill badge-secondary float-left">
                 {message}
-            </p>
-            <br/>
+            </div><br/>
             </Fragment>
         )
     }
     else {
         return (
-            <p className="badge badge-pill badge-danger">
-                <strong>{pseudo}: </strong>{message}
-            </p>
+            <Fragment>
+            <div className="badge badge-pill badge-primary float-right">
+                {message}
+            </div><br/>
+            </Fragment>
         )
     }
 }

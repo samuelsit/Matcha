@@ -1,17 +1,16 @@
-.messages {
-	flex: 1 1 100%;
-	box-sizing: border-box;
-	align-self: flex-end;
-	max-height: calc(100vh - 310px);
-	overflow-y: scroll;
-    -webkit-overflow-scrolling:touch;
-}
-
 @media screen and (min-width: 1000px) {
     .form {
         position: fixed;
-        top: calc(100vh - 200px);
+        top: calc(100vh - 185px);
         width: 72%;
+    }
+    .messages {
+        flex: 1 1 100%;
+        box-sizing: border-box;
+        align-self: flex-end;
+        max-height: calc(100vh - 270px);
+        overflow-y: scroll;
+        -webkit-overflow-scrolling:touch;
     }
 }
 
@@ -20,5 +19,13 @@
         position: fixed;
         top: calc(100vh - 200px);
         width: 95%;
+    }
+    .messages {
+        flex: 1 1 100%;
+        box-sizing: border-box;
+        align-self: flex-end;
+        max-height: calc(100vh - 320px);
+        overflow-y: scroll;
+        -webkit-overflow-scrolling:touch;
     }
 }

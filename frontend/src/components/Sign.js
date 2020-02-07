@@ -328,7 +328,7 @@ class Sign extends Component {
                     firstname: this.state.firstname,
                     email: this.state.email,
                     password: this.state.pass,
-                    token: bcrypt.genSaltSync(32).replace('.', '').replace('/', ''),
+                    token: require('crypto').randomBytes(32).toString('hex'),
                     isValid: false,
                     pictures: {
                         _1: "",

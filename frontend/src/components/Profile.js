@@ -57,7 +57,8 @@ class Profile extends Component {
             },
             lastname: this.state.lastname,
             firstname: this.state.firstname,
-            biographie: this.state.biographie
+            biographie: this.state.biographie,
+            updatedAt: Date.now()
         })
     }
 
@@ -193,6 +194,10 @@ class Profile extends Component {
         const _4 = this.state.pictures._4 !== '' ? require(`../pictures/profile/${this.state.pictures._4}`) : require(`../pictures/noPic.png`)
         const _5 = this.state.pictures._5 !== '' ? require(`../pictures/profile/${this.state.pictures._5}`) : require(`../pictures/noPic.png`)
 
+        const styleMap = {
+            width: '100%',
+            height: '450px'
+        }
 
         if (this.props.isAuth === false) {
             return (
@@ -207,7 +212,7 @@ class Profile extends Component {
                         <div className="row p-2">
                             <div className="col-lg-8 text-center">
                                 <div className="bg-dark p-4 rounded">
-                                    <h2 className="text-light">MES INFOS</h2>
+                                    <h2 className="text-light">MON PROFIL</h2>
                                     <code className="h4">{this.props.email}</code>
                                     <form className="mt-4">
                                         <div className="row">
@@ -299,7 +304,7 @@ class Profile extends Component {
                             </div>
                         </div>
                     </div>
-                    <MapG lat={this.state.country.lat} lng={this.state.country.lng}/>
+                    <MapG style={styleMap} lat={this.state.country.lat} lng={this.state.country.lng}/>
                     <DiscussionButton/>
                 </Fragment>
             )

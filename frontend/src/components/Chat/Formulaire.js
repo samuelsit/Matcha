@@ -14,7 +14,6 @@ class Formulaire extends Component {
             pseudo,
             message: this.state.message
         }
-
         addMessage(message)
         this.setState({message: '', length})
     }

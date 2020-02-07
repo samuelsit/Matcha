@@ -14,6 +14,7 @@ import Sign from './components/Sign'
 import Accueil from './components/AccueilLog'
 import Chat from './components/Chat/Chat'
 import Profile from './components/Profile'
+import ExternalProfile from './components/ExternalProfile'
 import MailValidation from './components/MailValidation'
 import rootReducer from './reducers/rootReducer'
 import { loadState, saveState } from './localStorage'
@@ -34,8 +35,9 @@ const Root = () => (
             <Route exact path='/inscription' component={Sign} />
             <Route exact path='/accueil' component={Accueil} />
             <Route exact path='/profile' component={Profile} />
+            <Route exact path='/profile/:pseudo' component={ExternalProfile} />
             <Route exact path='/mail-validation' component={MailValidation} />
-            <Route path='/pseudo/:pseudo' component={Chat} />
+            <Route path='/chat/:pseudo' component={Chat} />
             <Route component={NotFound} />
         </Switch>
     </BrowserRouter>
