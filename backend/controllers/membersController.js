@@ -5,9 +5,9 @@ const fs = require('fs')
 
 // Handle index actions
 exports.allMember = function (req, res) {
-    var memberLog = '^' + req.params.email + '$'
+    var memberLog = '^' + req.params.pseudo + '$'
     var regex = new RegExp(memberLog)
-    Member.find({email: {$not: regex}}, function (err, members) {
+    Member.find({pseudo: {$not: regex}}, function (err, members) {
         if (err) {
             res.json({
                 status: "error",
@@ -26,7 +26,14 @@ exports.newMember = function (req, res) {
     member.isLoggued = req.body.isLoggued;
     member.popularity = req.body.popularity;
     member.interet = req.body.interet;
-    member.attirance = req.body.attirance;
+    if (!req.body.attirance.male && !req.body.attirance.female) {
+        member.attirance.male = true;
+        member.attirance.female = true;
+    }
+    else {
+        member.attirance.male = req.body.attirance.male;
+        member.attirance.female = req.body.attirance.female;
+    }
     member.myGender = req.body.myGender;
     member.birthday = req.body.birthday;
     member.country = req.body.country;
@@ -42,6 +49,7 @@ exports.newMember = function (req, res) {
     member.pictures._3 = req.body.pictures._3;
     member.pictures._4 = req.body.pictures._4;
     member.pictures._5 = req.body.pictures._5;
+    member.pseudo = req.body.pseudo;
     member.save(function (err) {
         if (err)
             res.json(err);
@@ -68,7 +76,7 @@ exports.newMember = function (req, res) {
             from: '"Matcha 🥰" <matcha42.contact@gmail.com>', // sender address
             to: req.body.email, // list of receivers
             subject: "Confirmation de votre inscription sur matcha ✅", // Subject line
-            html: '<html><head></head><body><h1>Bienvenue sur <span style="color:#E83E8C">Matcha</span> ' + req.body.firstname + ',</h1><p>Pour activer votre compte, veuillez cliquer sur le lien ci dessous<br>ou le copier/coller dans votre navigateur.<br><br><span style="color:#E83E8C">http://localhost:3000/mail-validation?mail=' + req.body.email + '&token=' + req.body.token + '</span><br><br>------------------------------------------------------------------------------<br>Ceci est un mail automatique, Merci de ne pas y répondre.</p></body></html>' // html body
+            html: '<html><head></head><body><h1>Bienvenue sur <span style="color:#E83E8C">Matcha</span> ' + req.body.firstname + ',</h1><p>Pour activer votre compte, veuillez cliquer sur le lien ci dessous<br>ou le copier/coller dans votre navigateur.<br><br><span style="color:#E83E8C">http://localhost:3000/mail-validation?pseudo=' + req.body.pseudo + '&token=' + req.body.token + '</span><br><br>------------------------------------------------------------------------------<br>Ceci est un mail automatique, Merci de ne pas y répondre.</p></body></html>' // html body
         };
 
         transporter.sendMail(info, (error, info) => {
@@ -82,7 +90,7 @@ exports.newMember = function (req, res) {
 
 // Handle view member info
 exports.oneMember = function (req, res) {
-    Member.findOne({email: req.params.email}, function (err, member) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (err)
             res.send(err);
         res.json({
@@ -92,7 +100,7 @@ exports.oneMember = function (req, res) {
 };
 // Handle update member info
 exports.changeStatus = function (req, res) {
-    Member.findOne({email: req.params.email}, function (err, member) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (err)
             res.send(err);
         member.isLoggued = req.params.status;
@@ -107,7 +115,7 @@ exports.changeStatus = function (req, res) {
 };
 
 exports.isMember = function (req, res) {
-    Member.findOne({email: req.params.email}, function (err, members) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, members) {
         if (err) {
             res.json({
                 status: "error",
@@ -116,20 +124,20 @@ exports.isMember = function (req, res) {
         }
         if (members !== null) {
             res.json({
-                status: "email already exist",
+                status: "pseudo already exist",
                 pass: members.password
             });
         }
         else {
             res.json({
-                status: "email not exist"
+                status: "pseudo not exist"
             });
         }
     });
 };
 
 exports.isValidToken = function (req, res) {
-    Member.findOne({email: req.params.email}, function (err, member) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (err)
             res.send(err);
         if (!member) {
@@ -153,7 +161,7 @@ exports.isValidToken = function (req, res) {
 };
 
 exports.changeToken = function (req, res) {
-    Member.findOne({email: req.params.email}, function (err, member) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (err)
             res.send(err);
         member.token = req.params.token;
@@ -168,7 +176,7 @@ exports.changeToken = function (req, res) {
 };
 
 exports.isValidMember = function (req, res) {
-    Member.findOne({email: req.params.email}, function (err, member) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (err)
             res.send(err);
         if (!member) {
@@ -192,7 +200,7 @@ exports.isValidMember = function (req, res) {
 };
 
 exports.changeIsValid = function (req, res) {
-    Member.findOne({email: req.params.email}, function (err, member) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (err)
             res.send(err);
         member.isValid = req.params.status;
@@ -207,7 +215,7 @@ exports.changeIsValid = function (req, res) {
 };
 
 exports.changeMemberProfile = function (req, res) {
-    Member.findOne({email: req.params.email}, function (err, member) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (err)
             res.send(err);
         if (req.body.lastname)
@@ -234,7 +242,13 @@ exports.changeMemberProfile = function (req, res) {
             member.attirance.male = req.body.attirance.male;
             member.attirance.female = req.body.attirance.female;
         }
-        member.save(function (err) {
+        if (req.body.country.name)
+            member.country.name = req.body.country.name
+        if (req.body.country.lng)
+            member.country.lng = req.body.country.lng
+        if (req.body.country.lat)
+            member.country.lat = req.body.country.lat
+            member.save(function (err) {
             if (err)
                 res.json(err);            
             res.json({
@@ -245,7 +259,7 @@ exports.changeMemberProfile = function (req, res) {
 };
 
 exports.changeMemberPictures = function (req, res) {
-    Member.findOne({email: req.params.email}, function (err, member) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (err)
             res.send(err);
 
@@ -282,7 +296,7 @@ exports.changeMemberPictures = function (req, res) {
 };
 
 exports.isProfilePicture = function (req, res) {
-    Member.findOne({email: req.params.email}, function (err, member) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (member) {
             if (err) {
                 res.json({
@@ -291,6 +305,118 @@ exports.isProfilePicture = function (req, res) {
                 });
             }
             else if (member.pictures._1 !== '') {
+                res.json({
+                    status: true
+                });
+            }
+            else {
+                res.json({
+                    status: false
+                });
+            }
+        }
+        else {
+            res.json({
+                status: false
+            });
+        }
+    });
+};
+
+exports.isPicture2 = function (req, res) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
+        if (member) {
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err
+                });
+            }
+            else if (member.pictures._2 !== '') {
+                res.json({
+                    status: true
+                });
+            }
+            else {
+                res.json({
+                    status: false
+                });
+            }
+        }
+        else {
+            res.json({
+                status: false
+            });
+        }
+    });
+};
+
+exports.isPicture3 = function (req, res) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
+        if (member) {
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err
+                });
+            }
+            else if (member.pictures._3 !== '') {
+                res.json({
+                    status: true
+                });
+            }
+            else {
+                res.json({
+                    status: false
+                });
+            }
+        }
+        else {
+            res.json({
+                status: false
+            });
+        }
+    });
+};
+
+exports.isPicture4 = function (req, res) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
+        if (member) {
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err
+                });
+            }
+            else if (member.pictures._4 !== '') {
+                res.json({
+                    status: true
+                });
+            }
+            else {
+                res.json({
+                    status: false
+                });
+            }
+        }
+        else {
+            res.json({
+                status: false
+            });
+        }
+    });
+};
+
+exports.isPicture5 = function (req, res) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
+        if (member) {
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err
+                });
+            }
+            else if (member.pictures._5 !== '') {
                 res.json({
                     status: true
                 });

@@ -5,10 +5,10 @@ var messagesController = require('../controllers/messagesController');
 router.route('/api/messages')
     .post(messagesController.newMessage)
 
-router.route('/api/messages/all/:email1/:email2')
+router.route('/api/messages/all/:pseudo1/:pseudo2')
     .get(messagesController.getMessagesWith)
 
-router.route('/api/messages/last/:email')
+router.route('/api/messages/last/:pseudo')
     .get(messagesController.getLastMessages)
 
 module.exports = router;

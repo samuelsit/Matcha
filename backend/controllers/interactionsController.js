@@ -16,7 +16,7 @@ exports.newInteraction = function (req, res) {
 };
 
 exports.countLike = function (req, res) {
-    Interaction.find({data: 'like', to: req.params.email}).countDocuments(function (err, interactions) {
+    Interaction.find({data: 'like', to: req.params.pseudo}).countDocuments(function (err, interactions) {
         if (err) {
             res.json({
                 status: "error",
@@ -32,7 +32,7 @@ exports.countLike = function (req, res) {
 exports.isMatch = function (req, res) {
     Interaction.find({
         $and: [
-            {from: req.params.email1, to: req.params.email2},
+            {from: req.params.pseudo1, to: req.params.pseudo2},
             {data: 'like'}
         ]
     }).countDocuments(function (err, interactions) {
@@ -51,7 +51,7 @@ exports.isMatch = function (req, res) {
 exports.getLastNotifications = function (req, res) {
     Interaction
     .find({
-        to: req.params.email
+        to: req.params.pseudo
     })
     .sort({createdAt: -1})
     .exec(function (err, interactions) {

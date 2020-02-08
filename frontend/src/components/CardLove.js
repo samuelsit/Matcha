@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 
 class CardLove extends Component {
 
@@ -10,27 +10,28 @@ class CardLove extends Component {
     state = {
         picture: '',
         popularity: 0,
-        email1: 0,
-        email2: 0,
-        isShow: true
+        pseudo1: 0,
+        pseudo2: 0,
+        isShow: true,
+        redirect: false
     }
 
     componentDidMount() {
         this._isMounted = true
-        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.email + '/' + this.props.mail).then(res => {
+        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud).then(res => {
             if (this._isMounted) {
                 this.setState({
-                    email2: res.data.interactions
+                    pseudo2: res.data.interactions
                 })
             }           
         }).catch(error => {
             console.log(error)
         }).then(() => {
-            if (this.state.email2) {
+            if (this.state.pseudo2) {
                 this.setState({ isShow: false })
             }
         })
-        axios.get('http://localhost:5000/api/members/' + this.props.mail).then(res => {
+        axios.get('http://localhost:5000/api/members/' + this.props.pseud).then(res => {
             if (this._isMounted) {
                 this.setState({
                     picture: res.data.member.pictures._1
@@ -39,7 +40,7 @@ class CardLove extends Component {
         }).catch(error => {
             console.log(error)
         })
-        axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.mail)
+        axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
             .then(res => {
                 if (this._isMounted) {
                     this.setState({
@@ -53,32 +54,32 @@ class CardLove extends Component {
 
     handleClick = () => {
         axios.post('http://localhost:5000/api/interactions', {
-            from: this.props.email,
-            to: this.props.mail,
+            from: this.props.pseudo,
+            to: this.props.pseud,
             data: 'like'
         }).then(() => {
-            axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.mail + '/' + this.props.email).then(res => {
+            axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseud + '/' + this.props.pseudo).then(res => {
                 if (this._isMounted) {
                     this.setState({
-                        email1: res.data.interactions
+                        pseudo1: res.data.interactions
                     })
                 }           
             }).catch(error => {
                 console.log(error)
             }).then(() => {
-                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.email + '/' + this.props.mail).then(res => {
+                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud).then(res => {
                     if (this._isMounted) {
                         this.setState({
-                            email2: res.data.interactions
+                            pseudo2: res.data.interactions
                         })
                     }           
                 }).catch(error => {
                     console.log(error)
                 }).then(() => {
-                    if (this.state.email1 && this.state.email2) {
+                    if (this.state.pseudo1 && this.state.pseudo2) {
                         axios.post('http://localhost:5000/api/messages', {
-                            from: this.props.email,
-                            to: this.props.mail,
+                            from: this.props.pseudo,
+                            to: this.props.pseud,
                             data: "C'est un match !"
                         })
                     }
@@ -86,6 +87,20 @@ class CardLove extends Component {
                 })
             })
         })
+    }
+
+    handleView = () => {
+        this.setState({
+            redirect: true
+        })
+    }
+
+    handleRedirect = () => {
+        if (this.state.redirect) {
+            return (
+                <Redirect to={`/profile/${this.props.pseud}`} />
+            )
+        }
     }
 
     componentWillUnmount() {
@@ -99,7 +114,7 @@ class CardLove extends Component {
         var love = null
         var colorlove = null
         var distance = isNaN(this.props.distance) ? null : "(" + this.props.distance + " km)"
-        let profilepic = this.state.picture !== '' ? require(`../pictures/profile/${this.state.picture}`) : require(`../pictures/noPicAccueil.png`)
+        let profilepic = this.state.picture !== '' ? require(`../pictures/profile/${this.state.picture}`) : require(`../pictures/profile/noPicAccueil.png`)
 
         if (this.props.gender === "male") {
             gender = "fas fa-mars"
@@ -130,12 +145,14 @@ class CardLove extends Component {
         }
         else {
             return (
+                <Fragment>
+                {this.handleRedirect()}
                 <div className="col-6 col-lg-3 col-md-4 mt-4">
                     <div className="card">
-                        <Link to={`/profile/${this.props.mail}`}>
-                        <img className="card-img-top" src={profilepic} alt="Card cap"/>
-                        <div className="text-dark text-left card-header"><h5 className="card-title">{this.props.name} <span className={isLoggued}> </span> <span className={colorgender.concat(' ', "float-right")}><i className={gender}></i></span></h5></div>
-                        </Link>
+                        <div onClick={this.handleView}>
+                            <img className="card-img-top" src={profilepic} alt="Card cap"/>
+                            <div className="text-dark text-left card-header"><h5 className="card-title">{this.props.name} <span className={isLoggued}> </span> <span className={colorgender.concat(' ', "float-right")}><i className={gender}></i></span></h5></div>
+                        </div>
                         <div className="card-body">
                             <p className="card-text">{this.props.age} ans<br/><i className="fas fa-map-marker-alt"></i> {this.props.country} {distance}</p><hr/>
                             <code>{this.props.interet ? this.props.interet : "Pas de centre d'intêret"}</code>
@@ -146,6 +163,7 @@ class CardLove extends Component {
                         </div>
                     </div>
                 </div>
+                </Fragment>
             )
         }
     }
@@ -153,7 +171,7 @@ class CardLove extends Component {
 
 const mapStateToProps = state => {
     return {
-        email: state.email
+        pseudo: state.pseudo
     }
 }
 

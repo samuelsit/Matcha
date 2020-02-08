@@ -49,7 +49,7 @@ class DiscussionBar extends Component {
     }
 
     render () {
-        const pic = this.state.isPic === false ? require('../pictures/noPic.png') : require(`../pictures/profile/${this.props.login}_1.png`)
+        const pic = this.state.isPic === false ? require('../pictures/profile/noPic.png') : require(`../pictures/profile/${this.props.login}_1.png`)
         return (
             <Fragment>
                 {this.handleRedirect()}

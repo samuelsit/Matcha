@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { Redirect } from "react-router-dom"
 import DiscussionButton from './DiscussionButton'
 import MapG from './Map'
+import Place from './Place'
 
 class Profile extends Component {
 
@@ -20,9 +21,11 @@ class Profile extends Component {
             month: "",
             year: ""
         },
+        email: "",
         country: {
-            lat: 0,
-            lng: 0
+            name: "Non renseigné",
+            lng: 2.3184266562967704,
+            lat: 48.896582479838294
         },
         biographie: "",
         interet: "",
@@ -31,7 +34,6 @@ class Profile extends Component {
             female: false
         },
         myGender: "",
-        email: "",
         pictures: {
             _1: "",
             _2: "",
@@ -41,9 +43,62 @@ class Profile extends Component {
         }
     }
 
+    componentDidMount() {
+        this._isMounted = true        
+        axios.get('http://localhost:5000/api/members/' + this.props.pseudo).then(res => {
+            if (this._isMounted) {
+                this.setState({
+                    lastname: res.data.member.lastname,
+                    firstname: res.data.member.firstname,
+                    biographie: res.data.member.biographie,
+                    interet: res.data.member.interet,
+                    myGender: res.data.member.myGender,
+                    country: {
+                        name: res.data.member.country.name,
+                        lat: res.data.member.country.lat,
+                        lng: res.data.member.country.lng
+                    },
+                    birthday: {
+                        day: res.data.member.birthday.day,
+                        month: res.data.member.birthday.month,
+                        year: res.data.member.birthday.year
+                    },
+                    attirance: {
+                        male: res.data.member.attirance.male,
+                        female: res.data.member.attirance.female
+                    },
+                    pictures: {
+                        _1: res.data.member.pictures._1,
+                        _2: res.data.member.pictures._2,
+                        _3: res.data.member.pictures._3,
+                        _4: res.data.member.pictures._4,
+                        _5: res.data.member.pictures._5
+                    },
+                    email: res.data.member.email
+                })
+            }           
+        }).then(() => {
+            if (this.state.myGender === 'male') {
+                document.getElementById('immale').checked = true
+            }
+            if (this.state.myGender === 'female') {
+                document.getElementById('imfemale').checked = true
+            }
+            if (this.state.attirance.male === true) {
+                document.getElementById('getmale').checked = true
+            }
+            if (this.state.attirance.female === true) {
+                document.getElementById('getfemale').checked = true
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })
+    }
+
     handleOnBlurSubmit = () => {
         const regex = RegExp(/^(#[\w+]+,? ?)+$/)
-        axios.patch('http://localhost:5000/api/members/profile/' + this.props.email, {
+        axios.patch('http://localhost:5000/api/members/profile/' + this.props.pseudo, {
             interet: regex.test(this.state.interet) ? this.state.interet : '',
             attirance: {
                 male: this.state.attirance.male,
@@ -55,11 +110,26 @@ class Profile extends Component {
                 month: this.state.birthday.month,
                 year: this.state.birthday.year
             },
+            country: {
+                name: this.state.country.name,
+                lng: this.state.country.lng,
+                lat: this.state.country.lat
+            },
+            email: this.state.email,
             lastname: this.state.lastname,
             firstname: this.state.firstname,
             biographie: this.state.biographie,
             updatedAt: Date.now()
         })
+    }
+
+    handleLocalisation = (address, lat, lng) => {
+        var country = {
+            name: address,
+            lng: lng,
+            lat: lat
+        }
+        this.setState({country})
     }
 
     handleBirth = event => {
@@ -120,64 +190,17 @@ class Profile extends Component {
             const interet = targ.value
             this.setState({interet})
         }
-    }
-
-    componentDidMount() {
-        this._isMounted = true        
-        axios.get('http://localhost:5000/api/members/' + this.props.email).then(res => {
-            if (this._isMounted) {
-                this.setState({
-                    lastname: res.data.member.lastname,
-                    firstname: res.data.member.firstname,
-                    biographie: res.data.member.biographie,
-                    interet: res.data.member.interet,
-                    myGender: res.data.member.myGender,
-                    country: {
-                        lat: res.data.member.country.lat,
-                        lng: res.data.member.country.lng
-                    },
-                    birthday: {
-                        day: res.data.member.birthday.day,
-                        month: res.data.member.birthday.month,
-                        year: res.data.member.birthday.year
-                    },
-                    attirance: {
-                        male: res.data.member.attirance.male,
-                        female: res.data.member.attirance.female
-                    },
-                    pictures: {
-                        _1: res.data.member.pictures._1,
-                        _2: res.data.member.pictures._2,
-                        _3: res.data.member.pictures._3,
-                        _4: res.data.member.pictures._4,
-                        _5: res.data.member.pictures._5
-                    }
-                })
-            }           
-        }).then(() => {
-            if (this.state.myGender === 'male') {
-                document.getElementById('immale').checked = true
-            }
-            if (this.state.myGender === 'female') {
-                document.getElementById('imfemale').checked = true
-            }
-            if (this.state.attirance.male === true) {
-                document.getElementById('getmale').checked = true
-            }
-            if (this.state.attirance.female === true) {
-                document.getElementById('getfemale').checked = true
-            }
-        })
-        .catch(error => {
-            console.log(error)
-        })
+        else if (targ.name === "email") {
+            const email = targ.value
+            this.setState({email})
+        }
     }
 
     handlePicture = event => {
         const fd = new FormData()
         fd.append('image', event.target.files[0], event.target.files[0].name)
         axios
-        .post('http://localhost:5000/api/members/pictures/' + this.props.email + '/' + event.target.id, fd)
+        .post('http://localhost:5000/api/members/pictures/' + this.props.pseudo + '/' + event.target.id, fd)
         .then(res => {
             console.log(res)
         })
@@ -188,15 +211,15 @@ class Profile extends Component {
     }
 
     render () {
-        const _1 = this.state.pictures._1 !== '' ? require(`../pictures/profile/${this.state.pictures._1}`) : require(`../pictures/noPic.png`)
-        const _2 = this.state.pictures._2 !== '' ? require(`../pictures/profile/${this.state.pictures._2}`) : require(`../pictures/noPic.png`)
-        const _3 = this.state.pictures._3 !== '' ? require(`../pictures/profile/${this.state.pictures._3}`) : require(`../pictures/noPic.png`)
-        const _4 = this.state.pictures._4 !== '' ? require(`../pictures/profile/${this.state.pictures._4}`) : require(`../pictures/noPic.png`)
-        const _5 = this.state.pictures._5 !== '' ? require(`../pictures/profile/${this.state.pictures._5}`) : require(`../pictures/noPic.png`)
+        const _1 = this.state.pictures._1 !== '' ? require(`../pictures/profile/${this.state.pictures._1}`) : require(`../pictures/profile/noPic.png`)
+        const _2 = this.state.pictures._2 !== '' ? require(`../pictures/profile/${this.state.pictures._2}`) : require(`../pictures/profile/noPic.png`)
+        const _3 = this.state.pictures._3 !== '' ? require(`../pictures/profile/${this.state.pictures._3}`) : require(`../pictures/profile/noPic.png`)
+        const _4 = this.state.pictures._4 !== '' ? require(`../pictures/profile/${this.state.pictures._4}`) : require(`../pictures/profile/noPic.png`)
+        const _5 = this.state.pictures._5 !== '' ? require(`../pictures/profile/${this.state.pictures._5}`) : require(`../pictures/profile/noPic.png`)
 
         const styleMap = {
             width: '100%',
-            height: '450px'
+            height: '800px'
         }
 
         if (this.props.isAuth === false) {
@@ -213,45 +236,48 @@ class Profile extends Component {
                             <div className="col-lg-8 text-center">
                                 <div className="bg-dark p-4 rounded">
                                     <h2 className="text-light">MON PROFIL</h2>
-                                    <code className="h4">{this.props.email}</code>
+                                    <code className="h4">{this.props.pseudo}</code>
                                     <form className="mt-4">
                                         <div className="row">
                                             <div className="col-lg">
-                                                <input type="text" name="nom" placeholder="Nom" className="form-control w-100 mx-auto text-center" value={this.state.lastname} required onChange={this.handleText} onBlur={this.handleOnBlurSubmit}/><br/>
+                                                <label htmlFor="nom" className="text-light">Nom</label>
+                                                <input type="text" id="nom" name="nom" placeholder="Nom" className="form-control w-100 mx-auto text-center" value={this.state.lastname} required onChange={this.handleText} onBlur={this.handleOnBlurSubmit}/><br/>
                                             </div>
                                             <div className="col-lg">
-                                                <input type="text" name="prenom" placeholder="Prénom" className="form-control w-100 mx-auto text-center" value={this.state.firstname} required onChange={this.handleText} onBlur={this.handleOnBlurSubmit}/><br/>
+                                                <label htmlFor="prenom" className="text-light">Prénom</label>
+                                                <input type="text" id="prenom" name="prenom" placeholder="Prénom" className="form-control w-100 mx-auto text-center" value={this.state.firstname} required onChange={this.handleText} onBlur={this.handleOnBlurSubmit}/><br/>
                                             </div>
                                         </div>
                                         <div className="row">
                                             <div className="col-lg">
-                                                <input type="text" name="interet" className="form-control w-100 mx-auto text-center" placeholder="Pas de centre d'intêret" onChange={this.handleText} value={this.state.interet} onBlur={this.handleOnBlurSubmit}/>
+                                                <label htmlFor="inter" className="text-light">Centre d'intêret</label>
+                                                <input type="text" id="inter" name="interet" className="form-control w-100 mx-auto text-center" placeholder="Pas de centre d'intêret" onChange={this.handleText} value={this.state.interet} onBlur={this.handleOnBlurSubmit}/>
                                             </div>
                                             <div className="col-lg">
-                                            <div className="row mt-3 mt-lg-0">
-                                                    <div className="col-4">
-                                                        <select className="mx-auto select-s form-control w-100" id="dayBirth" onChange={this.handleBirth} value={this.state.birthday.day} onBlur={this.handleOnBlurSubmit}>
-                                                            <Birthday Toget="day" />
-                                                        </select>
-                                                    </div>
-                                                    <div className="col-4">
-                                                        <select className="mx-auto select-s form-control w-100" id="monthBirth" onChange={this.handleBirth} value={this.state.birthday.month} onBlur={this.handleOnBlurSubmit}>
-                                                            <Birthday Toget="month" />
-                                                        </select>
-                                                    </div>
-                                                    <div className="col-4">
-                                                        <select className="mx-auto select-s form-control w-100" id="yearBirth" onChange={this.handleBirth} value={this.state.birthday.year} onBlur={this.handleOnBlurSubmit}>
-                                                            <Birthday Toget="year" />
-                                                        </select>
+                                                <label htmlFor="" className="text-light">Anniversaire</label>
+                                                <div className="row mt-3 mt-lg-0">
+                                                        <div className="col-4">
+                                                            <select className="mx-auto select-s form-control w-100" id="dayBirth" onChange={this.handleBirth} value={this.state.birthday.day} onBlur={this.handleOnBlurSubmit}>
+                                                                <Birthday Toget="day" />
+                                                            </select>
+                                                        </div>
+                                                        <div className="col-4">
+                                                            <select className="mx-auto select-s form-control w-100" id="monthBirth" onChange={this.handleBirth} value={this.state.birthday.month} onBlur={this.handleOnBlurSubmit}>
+                                                                <Birthday Toget="month" />
+                                                            </select>
+                                                        </div>
+                                                        <div className="col-4">
+                                                            <select className="mx-auto select-s form-control w-100" id="yearBirth" onChange={this.handleBirth} value={this.state.birthday.year} onBlur={this.handleOnBlurSubmit}>
+                                                                <Birthday Toget="year" />
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="container mt-3">
-                                            <div className="row">
+                                            <div className="row mt-4">
                                                 <div className="col">
+                                                    <label htmlFor="" className="text-light">Quel est votre genre ?</label>
                                                     <div className="form-group text-center">
-                                                        <div className="text-light">Quel est votre genre ?</div>
                                                         <input id="immale" type="radio" name="myGender" value="male" onChange={this.handleMyGender} onBlur={this.handleOnBlurSubmit}/>
                                                         <label htmlFor="immale" id="rad-sam-1" className="border radio-inline fas fa-male text-light"><p className="font-sam text-white h6">Homme</p></label>
                                                         <input id="imfemale" type="radio" name="myGender" value="female" onChange={this.handleMyGender} onBlur={this.handleOnBlurSubmit}/>
@@ -260,8 +286,8 @@ class Profile extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="col">
+                                                    <label htmlFor="" className="text-light">Que recherchez-vous ?</label>
                                                     <div className="form-group text-center">
-                                                        <div className="text-light">Que recherchez-vous ?</div>
                                                         <input id="getmale" type="checkbox" name="getGender" onChange={this.handleGetGenderMale} onBlur={this.handleOnBlurSubmit}/>
                                                         <label htmlFor="getmale" id="check-sam-1" className="border radio-inline fas fa-male text-light"><p className="font-sam text-white h6">Homme</p></label>
                                                         <input id="getfemale" type="checkbox" name="getGender" onChange={this.handleGetGenderFemale} onBlur={this.handleOnBlurSubmit}/>
@@ -270,43 +296,60 @@ class Profile extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="exampleFormControlTextarea1" className="text-light">Biographie</label>
-                                            <textarea name="bio" className="form-control" id="exampleFormControlTextarea1" placeholder="Vous pouvez transmettre une partie de votre monde, de ce qui vous anime, de ce que vous aimez." rows="3" onChange={this.handleText} value={this.state.biographie} onBlur={this.handleOnBlurSubmit}></textarea>
-                                        </div>
-                                    </form>
+                                            <div className="row">
+                                                <div className="col">
+                                                    <div className="form-group text-center">
+                                                        <label htmlFor="bio" className="text-light">Biographie</label>
+                                                        <textarea name="bio" id="bio" className="form-control" placeholder="Vous pouvez transmettre une partie de votre monde, de ce qui vous anime, de ce que vous aimez." rows="2" onChange={this.handleText} value={this.state.biographie} onBlur={this.handleOnBlurSubmit}></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="row">
+                                                <div className="col">
+                                                    <div className="form-group text-center">
+                                                        <label htmlFor="email" className="text-light">Email</label>
+                                                        <input type="text" name="email" id="email" className="form-control w-100" placeholder="name@exemple.com" onChange={this.handleText} value={this.state.email} onBlur={this.handleOnBlurSubmit} />
+                                                    </div>
+                                                </div>
+                                                <div className="col">
+                                                    <div className="form-group text-center">
+                                                        <label htmlFor="place" className="text-light">Dans quelle ville habitez-vous ?</label>
+                                                        <Place style_w="form-control w-100" getLocalisation={this.handleLocalisation}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-lg-4 text-center">
-                                <div className="row rounded">
-                                    <div className="col-12 mt-lg-0 mt-2 mb-2">
-                                        <input type="file" id="_1" onChange={this.handlePicture}/>
-                                        <label htmlFor="_1"><img className="card-img" src={_1} alt="Card cap" /></label>
-                                    </div>
-                                    <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
-                                        <input type="file" id="_2" onChange={this.handlePicture}/>
-                                        <label htmlFor="_2"><img className="card-img" src={_2} alt="Card cap" /></label>
-                                    </div>
-                                    <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
-                                        <input type="file" id="_3" onChange={this.handlePicture}/>
-                                        <label htmlFor="_3"><img className="card-img" src={_3} alt="Card cap" /></label>
-                                    </div>
-                                    <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
-                                        <input type="file" id="_4" onChange={this.handlePicture}/>
-                                        <label htmlFor="_4"><img className="card-img" src={_4} alt="Card cap" /></label>
-                                    </div>
-                                    <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
-                                        <input type="file" id="_5" onChange={this.handlePicture}/>
-                                        <label htmlFor="_5"><img className="card-img" src={_5} alt="Card cap" /></label>
+                                <div className="col-lg-4 text-center">
+                                    <div className="row rounded">
+                                        <div className="col-12 mt-lg-0 mt-2 mb-2">
+                                            <input type="file" id="_1" onChange={this.handlePicture}/>
+                                            <label htmlFor="_1"><img className="card-img" src={_1} alt="Card cap" /></label>
+                                        </div>
+                                        <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
+                                            <input type="file" id="_2" onChange={this.handlePicture}/>
+                                            <label htmlFor="_2"><img className="card-img" src={_2} alt="Card cap" /></label>
+                                        </div>
+                                        <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
+                                            <input type="file" id="_3" onChange={this.handlePicture}/>
+                                            <label htmlFor="_3"><img className="card-img" src={_3} alt="Card cap" /></label>
+                                        </div>
+                                        <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
+                                            <input type="file" id="_4" onChange={this.handlePicture}/>
+                                            <label htmlFor="_4"><img className="card-img" src={_4} alt="Card cap" /></label>
+                                        </div>
+                                        <div className="col-sm-6 col-md-6 col-lg-6 mt-lg-0 mt-2 mb-2">
+                                            <input type="file" id="_5" onChange={this.handlePicture}/>
+                                            <label htmlFor="_5"><img className="card-img" src={_5} alt="Card cap" /></label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <MapG style={styleMap} lat={this.state.country.lat} lng={this.state.country.lng}/>
-                    <DiscussionButton/>
-                </Fragment>
+                        <MapG style={styleMap} lat={this.state.country.lat} lng={this.state.country.lng}/>
+                        <DiscussionButton/>
+                    </Fragment>
             )
         }
     }
@@ -314,7 +357,7 @@ class Profile extends Component {
 
 const mapStateToProps = state => {
     return {
-        email: state.email,
+        pseudo: state.pseudo,
         isAuth: state.isAuth
     }
 }

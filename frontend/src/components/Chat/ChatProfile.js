@@ -1,18 +1,48 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
+import Slider from '../Slider'
 
 class ChatProfile extends Component {
 
     _isMounted = false
 
     state = {
-      pseudo: this.props.name,
-      isPic: false
+        pseudo: this.props.name,
+        isPic1: false,
+        isPic2: false,
+        isPic3: false,
+        isPic4: false,
+        isPic5: false
     }
   
     componentDidMount() {
       this._isMounted = true
+      axios.get('http://localhost:5000/api/members/pictures/profile/' + this.state.pseudo).then(res => {
+          if (this._isMounted) {
+              this.setState({isPic1: res.data.status})
+          }
+      })
+      axios.get('http://localhost:5000/api/members/pictures/2/' + this.state.pseudo).then(res => {
+          if (this._isMounted) {
+              this.setState({isPic2: res.data.status})
+          }
+      })
+      axios.get('http://localhost:5000/api/members/pictures/3/' + this.state.pseudo).then(res => {
+          if (this._isMounted) {
+              this.setState({isPic3: res.data.status})
+          }
+      })
+      axios.get('http://localhost:5000/api/members/pictures/4/' + this.state.pseudo).then(res => {
+          if (this._isMounted) {
+              this.setState({isPic4: res.data.status})
+          }
+      })
+      axios.get('http://localhost:5000/api/members/pictures/5/' + this.state.pseudo).then(res => {
+          if (this._isMounted) {
+              this.setState({isPic5: res.data.status})
+          }
+      })
       axios.get('http://localhost:5000/api/members/' + this.state.pseudo).then(res => {
           if (this._isMounted) {
                 this.setState({
@@ -32,13 +62,6 @@ class ChatProfile extends Component {
       }).catch(error => {
           console.log(error)
       })
-      axios.get('http://localhost:5000/api/members/pictures/profile/' + this.state.pseudo).then(res => {
-          if (this._isMounted) {
-              this.setState({isPic: res.data.status})
-          }
-      }).catch(error => {
-          console.log(error)
-      })
     }
 
     getAge = date => { 
@@ -47,10 +70,18 @@ class ChatProfile extends Component {
         return Math.abs(age.getUTCFullYear() - 1970);
     }
 
-    handleLocationView = () => {
-        return (
-            this.props.mobileView === true ? null : <Fragment><p className="card-text"><span className="font-weight-bold">Localisation: </span>{this.state.country}</p><hr/></Fragment>
-        )
+    handleView = () => {
+        this.setState({
+            redirect: true
+        })
+    }
+
+    handleRedirect = () => {
+        if (this.state.redirect) {
+            return (
+                <Redirect to={`/profile/${this.state.pseudo}`} />
+            )
+        }
     }
 
     componentWillUnmount() {
@@ -58,7 +89,11 @@ class ChatProfile extends Component {
     }
 
     render () {
-        const pic = this.state.isPic === false ? require('../../pictures/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_1.png`)
+        let pic1 = this.state.isPic1 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_1.png`)
+        let pic2 = this.state.isPic2 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_2.png`)
+        let pic3 = this.state.isPic3 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_3.png`)
+        let pic4 = this.state.isPic4 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_4.png`)
+        let pic5 = this.state.isPic5 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_5.png`)
         var isLoggued = this.state.isLoggued === true ? "badge badge-pill badge-success" : "badge badge-pill badge-danger"
         var bio = this.state.bio === '' ? 'Non renseignée' : this.state.bio
         var interet = this.state.interet === '' ? 'Pas de centre d\'interet' : this.state.interet
@@ -82,14 +117,21 @@ class ChatProfile extends Component {
 
         return (
             <Fragment>
+                {this.handleRedirect()}
                 <div className={classname}>
-                    <Link to={`/profile/${this.state.pseudo}`}>
-                    <img className="card-img-top" src={pic} alt="Card cap" />
-                    <div className="text-dark card-header text-center"><h5 className="card-title">{this.state.firstname} {this.state.lastname} <span className={isLoggued}> </span></h5></div>
-                    </Link>
+                    <div>
+                        <Slider
+                            img1={pic1}
+                            img2={pic2}
+                            img3={pic3}
+                            img4={pic4}
+                            img5={pic5}
+                        />
+                        <div onClick={this.handleView} className="text-dark card-header text-center"><h5 className="card-title">{this.state.firstname} {this.state.lastname} <span className={isLoggued}> </span></h5></div>
+                    </div>
                     <div className="card-body text-center">
                         <p className="card-text"><span className="font-weight-bold">Age: </span>{this.getAge(new Date(this.state.year, this.state.month, this.state.day))} ans</p><hr/>
-                        {this.handleLocationView()}
+                        <p className="card-text"><span className="font-weight-bold">Localisation: </span>{this.state.country}</p><hr/>
                         <p className="card-text"><span className="font-weight-bold">Attirance: </span>{attirance}</p><hr/>
                         <p className="card-text"><span className="font-weight-bold">Biographie: </span><br/>{bio}</p><hr/>
                         <p className="card-text"><span className="font-weight-bold">Centre d'interet: </span><br/>{interet}</p>

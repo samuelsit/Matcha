@@ -33,7 +33,7 @@ class Chat extends Component {
     }).catch(error => {
         console.log(error)
     })
-    axios.get('http://localhost:5000/api/messages/all/' + this.state.pseudo + '/' + this.props.email).then(res => {
+    axios.get('http://localhost:5000/api/messages/all/' + this.state.pseudo + '/' + this.props.pseudo).then(res => {
         if (this._isMounted) {
             this.setState({
                 messages: res.data.messages
@@ -47,7 +47,7 @@ class Chat extends Component {
 
   receptionSocket = msg => {
     var message
-    if (msg.pseudo !== this.props.email) {
+    if (msg.pseudo !== this.props.pseudo) {
       message = '<div class="badge badge-pill badge-primary float-right">' + msg.message + '</div><br/>'
     }
     else {
@@ -75,7 +75,7 @@ class Chat extends Component {
   addMessage = message => {
     socket.emit('chat message', message)
     axios.post('http://localhost:5000/api/messages', {
-        from: this.props.email,
+        from: this.props.pseudo,
         to: this.state.pseudo,
         data: message.message
     })
@@ -96,7 +96,7 @@ class Chat extends Component {
           <Redirect to={"/connexion"} />
       )
     }
-    else if (this.props.email === this.state.pseudo) {
+    else if (this.props.pseudo === this.state.pseudo) {
       return (
         <Redirect to={"/profile"} />
       )
@@ -132,7 +132,7 @@ class Chat extends Component {
 
 const mapStateToProps = state => {
   return {
-      email: state.email,
+      pseudo: state.pseudo,
       isAuth: state.isAuth
   }
 }

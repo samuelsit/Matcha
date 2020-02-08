@@ -12,7 +12,7 @@ class Auth extends Component {
     _isMounted = false;
 
     state = {
-        email: "",
+        pseudo: "",
         pass: "",
         badPass: false,
         redirect: false
@@ -39,9 +39,9 @@ class Auth extends Component {
     handleText = event => {
         const id = event.target.id
         
-        if (id === "email") {
-            const email = event.target.value
-            this.setState({email})
+        if (id === "pseudo") {
+            const pseudo = event.target.value
+            this.setState({pseudo})
         }
         else if (id === "pass") {
             const pass = event.target.value
@@ -51,18 +51,18 @@ class Auth extends Component {
 
     handleSubmit = event => {
         event.preventDefault()
-        const mail = document.getElementById("email").value
+        const pseudo = document.getElementById("pseudo").value
         const pass = document.getElementById("pass").value
-        var errorMail = true
+        var errorPseudo = true
         var errorPass = true
         
-        if (!(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(mail))) {
-            errorMail = true
-            $("#getErrMail").fadeIn()
+        if (pseudo.length === 0) {
+            errorPseudo = true
+            $("#getErrPseudo").fadeIn()
         }
         else {
-            errorMail = false
-            $("#getErrMail").fadeOut()
+            errorPseudo = false
+            $("#getErrPseudo").fadeOut()
         }
         if (!(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/.test(pass))) {
             errorPass = true
@@ -72,22 +72,22 @@ class Auth extends Component {
             errorPass = false
             $("#getErrPass").fadeOut()
         }
-        if (!errorPass && !errorMail) {
+        if (!errorPass && !errorPseudo) {
             axios
-            .get('http://localhost:5000/api/members/exist/' + this.state.email)
+            .get('http://localhost:5000/api/members/exist/' + this.state.pseudo)
             .then(res => {
-                if (res.data.status === 'email already exist') {
+                if (res.data.status === 'pseudo already exist') {
                     bcrypt.compare(this.state.pass, res.data.pass).then(res => {
                         if (res === true) {
                             axios
-                            .get('http://localhost:5000/api/members/isValid/' + this.state.email)
+                            .get('http://localhost:5000/api/members/isValid/' + this.state.pseudo)
                             .then(res => {
                                 if (res.data.data === true) {
                                     axios
-                                    .patch('http://localhost:5000/api/members/status/true/' + this.state.email)
+                                    .patch('http://localhost:5000/api/members/status/true/' + this.state.pseudo)
                                     .then(() => {
                                         if (this._isMounted) {
-                                            this.props.setUserEmail(this.state.email)
+                                            this.props.setUserPseudo(this.state.pseudo)
                                             this.props.setUserIsAuth(true)
                                             this.setRedirect()
                                         }
@@ -136,16 +136,16 @@ class Auth extends Component {
                                 <form className="mx-auto bg-dark py-5 rounded shadow mt-2" onSubmit={this.handleSubmit}>
                                     <h4 className="text-center p-1 rounded text-white">SE CONNECTER</h4>
                                     <div className="form-group">
-                                        <label htmlFor="email" className="text-light">Adresse email</label>
-                                        <input type="email"  className="form-control w-75 mx-auto text-center" id="email" placeholder="name@example.com" onChange={this.handleText}/>
-                                        <div className="invalid-feedback" id="getErrMail">Veuillez indiquer un email valide</div>
+                                        <label htmlFor="pseudo" className="text-light">Pseudo</label>
+                                        <input type="pseudo"  className="form-control w-75 mx-auto text-center" id="pseudo" placeholder="Pseudo" onChange={this.handleText}/>
+                                        <div className="invalid-feedback" id="getErrPseudo">Veuillez indiquer un pseudo valide</div>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="pass" className="text-light">Mot de passe</label>
                                         <input type="password" id="pass" className="form-control w-75 mx-auto text-center" placeholder="Mot de passe" onChange={this.handleText}/>
                                         <div className="invalid-feedback" id="getErrPass">Veuillez indiquer un mot de passe valide</div>
-                                        <div className="invalid-feedback" id="badPass">Email ou mot de passe incorrect</div>
-                                        <div className="invalid-feedback" id="nonValid">Compte non validé. Consultez vos emails.</div>
+                                        <div className="invalid-feedback" id="badPass">Pseudo ou mot de passe incorrect</div>
+                                        <div className="invalid-feedback" id="nonValid">Compte non validé. Consultez votre email.</div>
                                     </div><br />
                                     <button type="submit" className="btn btn-light">Connexion</button>
                                 </form>
@@ -163,8 +163,8 @@ const mapDispatchToProps = dispatch => {
         setUserIsAuth: (isAuth) => {
             dispatch({ type: 'SET_USER_AUTH', isAuth: isAuth })
         },
-        setUserEmail: (email) => {
-            dispatch({ type: 'SET_USER_EMAIL', email: email })
+        setUserPseudo: (pseudo) => {
+            dispatch({ type: 'SET_USER_PSEUDO', pseudo: pseudo })
         }
     }
 }

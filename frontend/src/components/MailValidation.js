@@ -30,17 +30,17 @@ class MailValidation extends Component {
             var param = el.split('=');
             param[0] = param[0].replace('?', '').replace('/', '').replace('/', '').replace('/', '').replace(':', '').replace(':', '').replace('-', '');
             result[param[0]] = param[1];
-        });
+        });        
         return result;
     }
 
     componentDidMount = () => {
         this._isMounted = true
-        const email = this.extractParamsURL().httplocalhost3000mailvalidationmail
+        const pseudo = this.extractParamsURL().httplocalhost3000mailvalidationpseudo
         const token = this.extractParamsURL().token
 
         axios
-        .get('http://localhost:5000/api/members/token/' + email + '/' + token)
+        .get('http://localhost:5000/api/members/token/' + pseudo + '/' + token)
         .then(res => {
             if (this._isMounted) {
                 if (res.data.data === false) {
@@ -48,10 +48,10 @@ class MailValidation extends Component {
                 }
                 else {
                     axios
-                    .patch('http://localhost:5000/api/members/token/' + email + '/' + require('crypto').randomBytes(32).toString('hex'))
+                    .patch('http://localhost:5000/api/members/token/' + pseudo + '/' + require('crypto').randomBytes(32).toString('hex'))
                     .then(() => {
                         axios
-                        .patch('http://localhost:5000/api/members/isValid/' + email + '/true')
+                        .patch('http://localhost:5000/api/members/isValid/' + pseudo + '/true')
                         .then(() => {
                             if (this._isMounted) {
                                 this.setState({ error: false })

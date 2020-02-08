@@ -16,7 +16,7 @@ class NotificationButton extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        axios.get('http://localhost:5000/api/interactions/last/' + this.props.email).then(res => {
+        axios.get('http://localhost:5000/api/interactions/last/' + this.props.pseudo).then(res => {
             if (this._isMounted) {
                 this.setState({lastNotif: res.data.interactions})
             }
@@ -76,7 +76,7 @@ class NotificationButton extends Component {
 
 const mapStateToProps = state => {
     return {
-        email: state.email
+        pseudo: state.pseudo
     }
 }
 

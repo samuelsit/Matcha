@@ -17,16 +17,16 @@ class Sign extends Component {
             male: false,
             female: false
         },
-        myGender: "",
+        myGender: "Non renseigné",
         birthday: {
             day: 0,
             month: 0,
             year: 0
         },
         country: {
-            name: "",
-            lng: 0,
-            lat: 0
+            name: "Non renseigné",
+            lng: 2.3184266562967704,
+            lat: 48.896582479838294
         },
         lastname: "",
         firstname: "",
@@ -36,7 +36,8 @@ class Sign extends Component {
             value: "#",
             length: 0,
             data: ""
-        }
+        },
+        pseudo: ""
     }
 
     validInteret = event => {    
@@ -123,6 +124,10 @@ class Sign extends Component {
             const interet = "#" + event.target.value.replace('#', '')
             this.setState({interet: {value: interet, length: len, data: tab}})
         }
+        else if (id === "pseudo") {
+            const pseudo = event.target.value
+            this.setState({pseudo})
+        }
     }
 
     emailIsValid = email => {
@@ -130,32 +135,6 @@ class Sign extends Component {
     }
 
     handleN1 = () => {
-        const gmale = document.getElementById('getmale').checked
-        const gfemale = document.getElementById('getfemale').checked
-        const mymale = document.getElementById('imfemale').checked
-        const myfemale = document.getElementById('immale').checked
-        var errorattirance = true
-        var errorgender = true
-
-        if (gmale === false && gfemale === false) {
-            errorattirance = true
-            $("#getErr").fadeIn()
-        }
-        else {
-            errorattirance = false
-            $("#getErr").fadeOut()
-        }
-        if (mymale === false && myfemale === false) {
-            errorgender = true
-            $("#getErr2").fadeIn()
-        }
-        else {
-            errorgender = false
-            $("#getErr2").fadeOut()
-        }
-        if (errorgender === true || errorattirance === true) {
-            return false
-        }
         $("#second").fadeIn()
         $("#first").hide()
         $("#progressBar").css("width", "66%")
@@ -176,7 +155,6 @@ class Sign extends Component {
     }
 
     handleN2 = () => {
-        var errorcountry = true
         var errorbday = true
         var errorlastname = true
         var errorfirstname = true
@@ -188,14 +166,6 @@ class Sign extends Component {
         else {
             errorbday = false
             $("#getErr3").fadeOut()
-        }
-        if (this.state.country.name === "") {
-            errorcountry = true
-            $("#getErr4").fadeIn()
-        }
-        else {
-            errorcountry = false
-            $("#getErr4").fadeOut()
         }
         if (!($("input[name=lastname]").val() || "")) {
             errorlastname = true
@@ -213,7 +183,7 @@ class Sign extends Component {
             errorfirstname = false
             $("#getErr6").fadeOut()
         }
-        if (errorfirstname === true || errorlastname === true || errorcountry === true || errorbday === true) {
+        if (errorfirstname === true || errorlastname === true || errorbday === true) {
             return false
         }
         $("#second").hide()
@@ -283,18 +253,18 @@ class Sign extends Component {
             $("#getErr11").fadeOut()
         }
         axios
-        .get('http://localhost:5000/api/members/exist/' + this.state.email)
+        .get('http://localhost:5000/api/members/exist/' + this.state.pseudo)
         .then(res => {
-            if (res.data.status === 'email already exist') {                
-                this.setState({emailExist: true})
+            if (res.data.status === 'pseudo already exist') {                
+                this.setState({pseudoExist: true})
                 $("#getErr12").fadeIn()
             }
             else {
-                this.setState({emailExist: false})
+                this.setState({pseudoExist: false})
                 $("#getErr12").fadeOut()
             }
 
-            if (errorSamePass || errorConfirm || errorPassSynt || errorPass || errorMail || this.state.emailExist) {
+            if (errorSamePass || errorConfirm || errorPassSynt || errorPass || errorMail || this.state.pseudoExist) {
                 return false
             }
             else {
@@ -336,7 +306,8 @@ class Sign extends Component {
                         _3: "",
                         _4: "",
                         _5: ""
-                    }
+                    },
+                    pseudo: this.state.pseudo
                 })
             }
         })
@@ -372,7 +343,6 @@ class Sign extends Component {
                                             <label htmlFor="getmale" id="check-sam-1" className="border radio-inline my-2 fas fa-male text-light"><p className="font-sam text-white h6">Homme</p></label>
                                             <input id="getfemale" type="checkbox" name="getGender" onChange={this.handleGetGenderFemale} />
                                             <label htmlFor="getfemale" id="check-sam-2" className="border radio-inline my-2 fas fa-female text-light"><p className="font-sam text-white h6">Femme</p></label>
-                                            <div className="invalid-feedback" id="getErr">Votre préference est requise</div>
                                         </div><br />
                                         <div className="form-group text-center">
                                             <div className="text-light">Êtes-vous un homme ou une femme ?</div>
@@ -380,7 +350,6 @@ class Sign extends Component {
                                             <label htmlFor="immale" id="rad-sam-1" className="border radio-inline my-2 fas fa-male text-light"><p className="font-sam text-white h6">Homme</p></label>
                                             <input id="imfemale" type="radio" name="myGender" value="female" onChange={this.handleMyGender} />
                                             <label htmlFor="imfemale" id="rad-sam-2" className="border radio-inline my-2 fas fa-female text-light"><p className="font-sam text-white h6">Femme</p></label>
-                                            <div className="invalid-feedback" id="getErr2">Votre sexe est requis</div>
                                         </div><br />
                                         <div className="form-group text-center">
                                             <div className="btn btn-light" id="next-1" onClick={this.handleN1}>ÉTAPE SUIVANTE</div>
@@ -413,7 +382,7 @@ class Sign extends Component {
                                         </div><br />
                                         <div className="form-group text-center">
                                             <div className="text-light">Dans quelle ville habitez-vous ?</div>
-                                            <Place getLocalisation={this.handleLocalisation}/>
+                                            <Place style_w="mx-auto form-control w-75" getLocalisation={this.handleLocalisation}/>
                                             <div className="invalid-feedback" id="getErr4">Veuillez indiquer votre ville</div>
                                         </div>
                                         <div className="form-group">
@@ -435,9 +404,13 @@ class Sign extends Component {
                                         <h4 className="text-center p-1 rounded text-white">MES INFOS</h4>
                                         <div className="form-group">
                                             <label htmlFor="email" className="text-white">Quel est votre e-mail ?</label>
-                                            <input type="email" name="email" className="form-control w-75 mx-auto text-center" placeholder="E-mail" id="email" onChange={this.handleText} />
+                                            <input type="email" name="email" className="form-control w-75 mx-auto text-center" placeholder="name@exemple.com" id="email" onChange={this.handleText} />
                                             <div className="invalid-feedback" id="getErr7">Veuillez indiquer votre email</div>
-                                            <div className="invalid-feedback" id="getErr12">Votre email existe déja</div>
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="pseudo" className="text-white">Choisissez un pseudo</label>
+                                            <input type="pseudo" name="pseudo" className="form-control w-75 mx-auto text-center" placeholder="Pseudo" id="pseudo" onChange={this.handleText} />
+                                            <div className="invalid-feedback" id="getErr12">Ce pseudo existe déja</div>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="pass" className="text-white">Choisissez un mot de passe</label>

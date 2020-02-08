@@ -9,7 +9,7 @@ class Header extends Component {
 
     handleClick = () => {
         axios
-        .patch('http://localhost:5000/api/members/status/false/' + this.props.email)
+        .patch('http://localhost:5000/api/members/status/false/' + this.props.pseudo)
         .then(() => {
             this.props.setUserIsAuth(false);
         })
@@ -73,7 +73,7 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     return {
         isAuth: state.isAuth,
-        email: state.email
+        pseudo: state.pseudo
     }
 }
 

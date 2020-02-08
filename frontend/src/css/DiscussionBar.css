@@ -16,11 +16,11 @@
 #messenger {
     display: none;
     position: fixed;
-    top: calc(100vh - 430px);
+    top: 54vh;
     left: calc(100vw - 475px);
     width: 450px;
-    height: 410px;
-    max-height: 410px;
+    height: 45vh;
+    max-height: 45vh;
 }
 
 .middle {

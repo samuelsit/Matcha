@@ -1,12 +1,14 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
+import { Redirect } from "react-router-dom"
 
 class NotificationBar extends Component {
     _isMounted = false
 
     state = {
         user: '',
-        isPic: false
+        isPic: false,
+        redirect: false
     }
 
     componentDidMount() {
@@ -27,15 +29,30 @@ class NotificationBar extends Component {
         })
     }
 
+    handleView = () => {
+        this.setState({
+            redirect: true
+        })
+    }
+
+    handleRedirect = () => {
+        if (this.state.redirect) {
+            return (
+                <Redirect to={`/profile/${this.props.login}`} />
+            )
+        }
+    }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
 
     render () {
-        const pic = this.state.isPic === false ? require('../pictures/noPic.png') : require(`../pictures/profile/${this.props.login}_1.png`)
+        const pic = this.state.isPic === false ? require('../pictures/profile/noPic.png') : require(`../pictures/profile/${this.props.login}_1.png`)
         return (
             <Fragment>
-                <span className="text-left">
+                {this.handleRedirect()}
+                <span className="text-left" onClick={this.handleView}>
                     <img className="rounded-circle" width="30" height="30" src={pic} alt="Card cap" />
                     <span className="card-title h5 middle"> {this.state.user} {this.props.eve === "like" ? "vous a liké" : "à consulté votre profil"}</span>
                 </span>

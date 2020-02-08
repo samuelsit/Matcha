@@ -9,9 +9,9 @@ const storage = multer.diskStorage({
     filename: function(req, file, cb) {
         const url = req.url.split('/')
         const urlLength = url.length
-        const email = url[urlLength - 2]
+        const pseudo = url[urlLength - 2]
         const pictureId = url[urlLength - 1]      
-        cb(null, email + pictureId + '.png')
+        cb(null, pseudo + pictureId + '.png')
     }
 })
 
@@ -45,50 +45,62 @@ var memberController = require('../controllers/membersController');
 ///////////////////////////////////////////////////////////////////////////////
 //
 // Get all members // Create new member //
-router.route('/api/members/all/:email')
+router.route('/api/members/all/:pseudo')
     .get(memberController.allMember)
 
 router.route('/api/members')
     .post(memberController.newMember);
 
 // Get member
-router.route('/api/members/:email')
+router.route('/api/members/:pseudo')
     .get(memberController.oneMember)
 
 // Change member status //
-router.route('/api/members/status/:status/:email')
+router.route('/api/members/status/:status/:pseudo')
     .patch(memberController.changeStatus);
 
 // Check if member exist
-router.route('/api/members/exist/:email')
+router.route('/api/members/exist/:pseudo')
     .get(memberController.isMember);
 
 // Check if is valid token
-router.route('/api/members/token/:email/:token')
+router.route('/api/members/token/:pseudo/:token')
     .get(memberController.isValidToken);
 
 // Change token
-router.route('/api/members/token/:email/:token')
+router.route('/api/members/token/:pseudo/:token')
     .patch(memberController.changeToken);
 
 // Check if is valid member
-router.route('/api/members/isValid/:email')
+router.route('/api/members/isValid/:pseudo')
     .get(memberController.isValidMember);
 
 // Change isValid
-router.route('/api/members/isValid/:email/:status')
+router.route('/api/members/isValid/:pseudo/:status')
     .patch(memberController.changeIsValid);
 
 // Change member profile
-router.route('/api/members/profile/:email')
+router.route('/api/members/profile/:pseudo')
     .patch(memberController.changeMemberProfile);
 
 // Change member profile
-router.route('/api/members/pictures/:email/:id')
+router.route('/api/members/pictures/:pseudo/:id')
     .post(upload.single('image'), memberController.changeMemberPictures);
 
-router.route('/api/members/pictures/profile/:email')
+router.route('/api/members/pictures/profile/:pseudo')
     .get(memberController.isProfilePicture);
+
+router.route('/api/members/pictures/2/:pseudo')
+    .get(memberController.isPicture2);
+
+router.route('/api/members/pictures/3/:pseudo')
+    .get(memberController.isPicture3);
+
+router.route('/api/members/pictures/4/:pseudo')
+    .get(memberController.isPicture4);
+
+router.route('/api/members/pictures/5/:pseudo')
+    .get(memberController.isPicture5);
 
 // Export API routes
 module.exports = router;

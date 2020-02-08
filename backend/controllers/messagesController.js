@@ -18,8 +18,8 @@ exports.newMessage = function (req, res) {
 exports.getMessagesWith = function (req, res) {    
     Message.find({
         $or: [
-            {$and: [{from: req.params.email1}, {to: req.params.email2}]},
-            {$and: [{to: req.params.email1}, {from: req.params.email2}]}
+            {$and: [{from: req.params.pseudo1}, {to: req.params.pseudo2}]},
+            {$and: [{to: req.params.pseudo1}, {from: req.params.pseudo2}]}
         ]
     }).sort({
         createdAt: 1
@@ -42,8 +42,8 @@ exports.getLastMessages = function (req, res) {
     Message
     .find({
         $or: [
-            {from: req.params.email},
-            {to: req.params.email}
+            {from: req.params.pseudo},
+            {to: req.params.pseudo}
         ]
     })
     .sort({createdAt: -1})
@@ -60,10 +60,10 @@ exports.getLastMessages = function (req, res) {
         }
         
         arr.forEach(element => {
-            if (messageUsers.includes(element.to) === false && element.to !== req.params.email) {
+            if (messageUsers.includes(element.to) === false && element.to !== req.params.pseudo) {
                 messageUsers.push(element.to, element.createdAt, element.data)
             }
-            if (messageUsers.includes(element.from) === false && element.from !== req.params.email) {
+            if (messageUsers.includes(element.from) === false && element.from !== req.params.pseudo) {
                 messageUsers.push(element.from, element.createdAt, element.data)
             }
         });

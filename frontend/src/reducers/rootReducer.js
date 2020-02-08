@@ -1,15 +1,15 @@
 const initState = {
-    email: null,
+    pseudo: null,
     isAuth: false,
     lat: null,
     lng: null
 }
 
 const rootReducer = (state  = initState, action) => {
-    if (action.type === 'SET_USER_EMAIL') {
+    if (action.type === 'SET_USER_PSEUDO') {
         return {
             ...state,
-            email: action.email
+            pseudo: action.pseudo
         }
     }
     else if (action.type === 'SET_USER_POS') {

@@ -5,7 +5,6 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import { Redirect } from "react-router-dom"
 import DiscussionButton from './DiscussionButton'
-import MapG from './Map'
 import ChatProfile from './Chat/ChatProfile'
 
 class ExternalProfile extends Component {
@@ -31,7 +30,7 @@ class ExternalProfile extends Component {
             female: false
         },
         myGender: "",
-        email: this.props.match.params.pseudo,
+        pseudo: this.props.match.params.pseudo,
         pictures: {
             _1: "",
             _2: "",
@@ -40,28 +39,28 @@ class ExternalProfile extends Component {
             _5: ""
         },
         popularity: 0,
-        email1Match: 0,
-        email2Match: 0,
+        pseudo1Match: 0,
+        pseudo2Match: 0,
         redirect: false,
         error: true
     }
 
     componentDidMount() {
         this._isMounted = true
-        axios.get('http://localhost:5000/api/members/exist/' + this.state.email).then(res => {
-            if (res.data.status === 'email not exist') {
+        axios.get('http://localhost:5000/api/members/exist/' + this.state.pseudo).then(res => {
+            if (res.data.status === 'pseudo not exist') {
                 this.setState({error: true})
                 this.setRedirect()
             }
             else {
-                if (this.state.email !== this.props.email) {
+                if (this.state.pseudo !== this.props.pseudo) {
                     axios.post('http://localhost:5000/api/interactions', {
-                        from: this.props.email,
-                        to: this.state.email,
+                        from: this.props.pseudo,
+                        to: this.state.pseudo,
                         data: 'view'
                     })
                 }
-                axios.get('http://localhost:5000/api/members/' + this.state.email).then(res => {
+                axios.get('http://localhost:5000/api/members/' + this.state.pseudo).then(res => {
                     if (this._isMounted) {
                         this.setState({
                             lastname: res.data.member.lastname,
@@ -96,7 +95,7 @@ class ExternalProfile extends Component {
                 .catch(error => {
                     console.log(error)
                 })
-                axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.email)
+                axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo)
                     .then(res => {
                         if (this._isMounted) {
                             this.setState({
@@ -106,19 +105,19 @@ class ExternalProfile extends Component {
                     }).catch(error => {
                         console.log(error)
                 })
-                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.email + '/' + this.state.email).then(res => {
+                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo).then(res => {
                     if (this._isMounted) {
                         this.setState({
-                            email1Match: res.data.interactions
+                            pseudo1Match: res.data.interactions
                         })
                     }           
                 }).catch(error => {
                     console.log(error)
                 })
-                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.state.email + '/' + this.props.email).then(res => {
+                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.state.pseudo + '/' + this.props.pseudo).then(res => {
                     if (this._isMounted) {
                         this.setState({
-                            email2Match: res.data.interactions
+                            pseudo2Match: res.data.interactions
                         })
                     }           
                 }).catch(error => {
@@ -131,7 +130,7 @@ class ExternalProfile extends Component {
     handleProfile = () => {
         if (this.state.error === false) {
             return (
-                <ChatProfile mobileView={true} name={this.state.email}/>
+                <ChatProfile mobileView={true} name={this.state.pseudo}/>
             )
         }
     }
@@ -151,39 +150,39 @@ class ExternalProfile extends Component {
     }
 
     handleClick = () => {
-        if (this.state.email1Match === 0) {
+        if (this.state.pseudo1Match === 0) {
             axios.post('http://localhost:5000/api/interactions', {
-                from: this.props.email,
-                to: this.state.email,
+                from: this.props.pseudo,
+                to: this.state.pseudo,
                 data: 'like'
             })
-            if (this.state.email2Match === 1) {
+            if (this.state.pseudo2Match === 1) {
                 axios.post('http://localhost:5000/api/messages', {
-                    from: this.props.email,
-                    to: this.state.email,
+                    from: this.props.pseudo,
+                    to: this.state.pseudo,
                     data: "C'est un match !"
                 })
             }
         }
-        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.email + '/' + this.state.email).then(res => {
+        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo).then(res => {
             if (this._isMounted) {
                 this.setState({
-                    email1Match: res.data.interactions
+                    pseudo1Match: res.data.interactions
                 })
             }           
         }).catch(error => {
             console.log(error)
         })
-        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.state.email + '/' + this.props.email).then(res => {
+        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.state.pseudo + '/' + this.props.pseudo).then(res => {
             if (this._isMounted) {
                 this.setState({
-                    email2Match: res.data.interactions
+                    pseudo2Match: res.data.interactions
                 })
             }           
         }).catch(error => {
             console.log(error)
         })
-        axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.email)
+        axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo)
             .then(res => {
                 if (this._isMounted) {
                     this.setState({
@@ -205,30 +204,26 @@ class ExternalProfile extends Component {
                 <Redirect to={"/connexion"} />
             )
         }
-        else if (this.state.email === this.props.email) {
+        else if (this.state.pseudo === this.props.pseudo) {
             return (
                 <Redirect to={"/profile"} />
             )
         }
         else {
-            const styleMap = {
-                width: '95%',
-                height: '200px',
-                position: 'sticky',
-                top: '100px'
-            }
             return (
                 <Fragment>
                 {this.handleRedirect()}
                 <Header loggued="true"/>
-                <div className="container-fluid">
+                <div className="container">
                     <div className="row">
-                        <div className="col-12 col-lg-3 col-md-3 mt-lg-4">
+                        <div className='col-lg-3 col-md-3 mt-5 text-center'>
+                            {/* <button className="btn btn-circle btn-lg btn-danger mt-lg-5" onClick={this.handleClick}><i className="fas fa-heart"> {this.state.popularity}</i></button> */}
+                        </div>
+                        <div className="col-12 col-lg-6 col-md-6 mt-lg-4 mt-md-4">
                             {this.handleProfile()}
                         </div>
-                        <div className='col-lg-9 col-md-9 mt-5 text-center'>
-                            <button className="btn btn-circle btn-lg btn-danger mt-5" onClick={this.handleClick}><i className="fas fa-heart"> {this.state.popularity}</i></button>
-                            <MapG style={styleMap} lat={this.state.country.lat} lng={this.state.country.lng}/>
+                        <div className='col-lg-3 col-md-3 mt-5 text-center'>
+                            {/* <button className="btn btn-circle btn-lg btn-danger mt-lg-5" onClick={this.handleClick}><i className="fas fa-heart"> {this.state.popularity}</i></button> */}
                         </div>
                     </div>
                 </div>
@@ -241,7 +236,7 @@ class ExternalProfile extends Component {
 
 const mapStateToProps = state => {
     return {
-        email: state.email,
+        pseudo: state.pseudo,
         isAuth: state.isAuth
     }
 }

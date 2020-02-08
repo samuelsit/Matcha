@@ -30,7 +30,7 @@ class Place extends Component {
             <PlacesAutocomplete value={this.state.address} onChange={this.setAddress} onSelect={this.handleSelect} searchOptions={searchOptions}>
                 {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
                     <div>
-                        <input onChange={this.setAddress} {...getInputProps({ placeholder: "Indiquez votre ville 📍" })} required/>
+                        <input id="place" className={this.props.style_w} onChange={this.setAddress} {...getInputProps({ placeholder: "Indiquez votre ville 📍" })} required/>
                         <div>
                             {loading ? <div>Loading...</div> : null}
                             {suggestions.map((suggestion) => {

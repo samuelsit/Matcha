@@ -1,6 +1,10 @@
 var mongoose = require('mongoose');
 // Setup schema
 var memberSchema = mongoose.Schema({
+    pseudo: {
+        type: String,
+        required: false
+    },
     isLoggued: {
         type: Boolean,
         required: false
