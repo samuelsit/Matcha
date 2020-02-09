@@ -52,7 +52,7 @@ var memberSchema = mongoose.Schema({
     country: {
         name: {
             type: String,
-            required: true
+            required: false
         },
         lng: {
             type: Number,
@@ -108,10 +108,6 @@ var memberSchema = mongoose.Schema({
             type: String,
             required: false
         }
-    },
-    notif: {
-        type: Boolean,
-        required: false
     }
 },
 {

@@ -63,6 +63,29 @@ exports.forgetPass = function (req, res) {
     });
 };
 
+exports.isCountry = function (req, res) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        if (member.country.name === '' ||
+            member.country.lat === 0 ||
+            member.country.lng === 0) {
+            res.json({
+                data: false
+            });
+        }
+        else {
+            res.json({
+                data: true
+            });
+        }
+    });
+};
+
 // Handle create members actions and send mail
 exports.newMember = function (req, res) {
     const nodemailer = require("nodemailer");
@@ -75,8 +98,7 @@ exports.newMember = function (req, res) {
         member.attirance.female = true;
     }
     else {
-        member.attirance.male = req.body.attirance.male;
-        member.attirance.female = req.body.attirance.female;
+        member.attirance = req.body.attirance
     }
     member.myGender = req.body.myGender;
     member.birthday = req.body.birthday;
@@ -318,6 +340,8 @@ exports.changeMemberProfile = function (req, res) {
             member.country.lng = req.body.country.lng
         if (req.body.country.lat)
             member.country.lat = req.body.country.lat
+            console.log(member);
+
             member.save(function (err) {
             if (err)
                 res.json(err);            
@@ -334,6 +358,22 @@ exports.changeMemberPass = function (req, res) {
             res.send(err);
         if (req.body.password)
             member.password = req.body.password
+        member.save(function (err) {
+            if (err)
+                res.json(err);            
+            res.json({
+                member
+            });
+        });
+    });
+};
+
+exports.changeMemberCountry = function (req, res) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
+        if (err)
+            res.send(err);        
+        if (req.body.country)
+            member.country = req.body.country
         member.save(function (err) {
             if (err)
                 res.json(err);            

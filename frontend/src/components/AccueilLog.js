@@ -19,7 +19,6 @@ class Accueil extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        // this.props.setUserPos(2, 2)
         axios.get('http://localhost:5000/api/members/all/' + this.props.pseudo).then(res => {
             if (this._isMounted) {
                 this.setState({members: res.data.members})

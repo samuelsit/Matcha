@@ -24,9 +24,9 @@ class Sign extends Component {
             year: 0
         },
         country: {
-            name: "Non renseigné",
-            lng: 2.3184266562967704,
-            lat: 48.896582479838294
+            name: '',
+            lng: 0,
+            lat: 0
         },
         lastname: "",
         firstname: "",
@@ -309,7 +309,7 @@ class Sign extends Component {
                         year: this.state.birthday.year
                     },
                     country: {
-                        name: this.state.country.name.replace(', France', ''),
+                        name: this.state.country.name,
                         lng: this.state.country.lng,
                         lat: this.state.country.lat
                     },
