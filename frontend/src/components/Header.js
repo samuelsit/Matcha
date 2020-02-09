@@ -11,7 +11,9 @@ class Header extends Component {
         axios
         .patch('http://localhost:5000/api/members/status/false/' + this.props.pseudo)
         .then(() => {
-            this.props.setUserIsAuth(false);
+            this.props.setUserIsAuth(false)
+            this.props.setUserPos(0, 0)
+            this.props.setUserPseudo('')
         })
         .catch(error => { console.log(error) })
     }
@@ -66,11 +68,17 @@ const mapDispatchToProps = dispatch => {
     return {
         setUserIsAuth: (isAuth) => {
             dispatch({ type: 'SET_USER_AUTH', isAuth: isAuth })
+        },
+        setUserPos: (lat, lng) => {
+            dispatch({ type: 'SET_USER_POS', lat: lat, lng: lng })
+        },
+        setUserPseudo: (pseudo) => {
+            dispatch({ type: 'SET_USER_PSEUDO', pseudo: pseudo })
         }
     }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = state => { 
     return {
         isAuth: state.isAuth,
         pseudo: state.pseudo
