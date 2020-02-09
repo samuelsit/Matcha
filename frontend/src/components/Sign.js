@@ -211,7 +211,18 @@ class Sign extends Component {
         var errorPassSynt = true
         var errorPass = true
         var errorMail = true
+        var errorPseudo = true
+        var email = document.getElementById('email').value
+        var pseudo = document.getElementById('pseudo').value.length
 
+        if (pseudo === 0) {
+            errorPseudo = true
+            $("#getErrPseudo").fadeIn()
+        }
+        else {
+            errorPseudo = false
+            $("#getErrPseudo").fadeOut()
+        }
         if (!($("input[name=email]").val() || "")) {
             errorMail = true
             $("#getErr7").fadeIn()
@@ -219,6 +230,14 @@ class Sign extends Component {
         else {
             errorMail = false
             $("#getErr7").fadeOut()
+        }
+        if (/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(email) === false) {
+            errorMail = true
+            $("#getErrMail").fadeIn()
+        }
+        else {
+            errorMail = false
+            $("#getErrMail").fadeOut()
         }
         if (!($("input[name=pass]").val() || "")) {
             errorPass = true
@@ -264,7 +283,7 @@ class Sign extends Component {
                 $("#getErr12").fadeOut()
             }
 
-            if (errorSamePass || errorConfirm || errorPassSynt || errorPass || errorMail || this.state.pseudoExist) {
+            if (errorSamePass || errorConfirm || errorPassSynt || errorPass || errorMail || this.state.pseudoExist || errorPseudo) {
                 return false
             }
             else {
@@ -406,11 +425,13 @@ class Sign extends Component {
                                             <label htmlFor="email" className="text-white">Quel est votre e-mail ?</label>
                                             <input type="email" name="email" className="form-control w-75 mx-auto text-center" placeholder="name@exemple.com" id="email" onChange={this.handleText} />
                                             <div className="invalid-feedback" id="getErr7">Veuillez indiquer votre email</div>
+                                            <div className="invalid-feedback" id="getErrMail">Veuillez indiquer un email valide</div>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="pseudo" className="text-white">Choisissez un pseudo</label>
                                             <input type="pseudo" name="pseudo" className="form-control w-75 mx-auto text-center" placeholder="Pseudo" id="pseudo" onChange={this.handleText} />
                                             <div className="invalid-feedback" id="getErr12">Ce pseudo existe déja</div>
+                                            <div className="invalid-feedback" id="getErrPseudo">Veuillez entrer un pseudo valide</div>
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="pass" className="text-white">Choisissez un mot de passe</label>

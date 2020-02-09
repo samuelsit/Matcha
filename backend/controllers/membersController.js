@@ -19,6 +19,50 @@ exports.allMember = function (req, res) {
         });
     });
 };
+
+exports.forgetPass = function (req, res) {
+    const nodemailer = require("nodemailer");
+    Member.findOne({email: req.params.email}, function (err, member) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        nodemailer.createTestAccount((err, account) => {
+            let transporter = nodemailer.createTransport({
+                host: "smtp.gmail.com",
+                port: 465,
+                secure: true, // true for 465, false for other ports
+                auth: {
+                  user: 'matcha42.contact@gmail.com', // generated ethereal user
+                  pass: 'Matchacontact42' // generated ethereal password
+                },
+                tls: {
+                    rejectUnauthorized: false
+                }
+            });
+    
+            let info = {
+                from: '"Matcha 🥰" <matcha42.contact@gmail.com>', // sender address
+                to: member.email, // list of receivers
+                subject: "Changement de votre mot de passe ✅", // Subject line
+                html: '<html><head></head><body><h1>Bonjour, <span style="color:#E83E8C">' + member.firstname + '</span>,</h1><p>Pour changer votre mot de passe, veuillez cliquer sur le lien ci dessous<br>ou le copier/coller dans votre navigateur.<br><br><span style="color:#E83E8C">http://localhost:3000/reinitialisation?pseudo=' + member.pseudo + '&token=' + member.token + '</span><br><br>------------------------------------------------------------------------------<br>Ceci est un mail automatique, Merci de ne pas y répondre.</p></body></html>' // html body
+            };
+    
+            transporter.sendMail(info, (error, info) => {
+                if (error) {
+                    return console.log(error);
+                }
+                console.log("Message sent: %s", info.messageId);
+            })
+        })
+        res.json({
+            data: 'send'
+        });
+    });
+};
+
 // Handle create members actions and send mail
 exports.newMember = function (req, res) {
     const nodemailer = require("nodemailer");
@@ -136,6 +180,28 @@ exports.isMember = function (req, res) {
     });
 };
 
+exports.isMemberMail = function (req, res) {
+    Member.findOne({email: req.params.email}, function (err, members) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        if (members !== null) {
+            res.json({
+                status: "pseudo already exist",
+                pass: members.password
+            });
+        }
+        else {
+            res.json({
+                status: "pseudo not exist"
+            });
+        }
+    });
+};
+
 exports.isValidToken = function (req, res) {
     Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (err)
@@ -218,6 +284,10 @@ exports.changeMemberProfile = function (req, res) {
     Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (err)
             res.send(err);
+        if (req.body.email)
+            member.email = req.body.email
+        if (req.body.password)
+            member.password = req.body.password
         if (req.body.lastname)
             member.lastname = req.body.lastname;
         if (req.body.firstname)
@@ -249,6 +319,22 @@ exports.changeMemberProfile = function (req, res) {
         if (req.body.country.lat)
             member.country.lat = req.body.country.lat
             member.save(function (err) {
+            if (err)
+                res.json(err);            
+            res.json({
+                member
+            });
+        });
+    });
+};
+
+exports.changeMemberPass = function (req, res) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
+        if (err)
+            res.send(err);
+        if (req.body.password)
+            member.password = req.body.password
+        member.save(function (err) {
             if (err)
                 res.json(err);            
             res.json({

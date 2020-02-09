@@ -213,7 +213,7 @@ class ExternalProfile extends Component {
             return (
                 <Fragment>
                 {this.handleRedirect()}
-                <Header loggued="true"/>
+                <Header />
                 <div className="container">
                     <div className="row">
                         <div className='col-lg-3 col-md-3 mt-5 text-center'>

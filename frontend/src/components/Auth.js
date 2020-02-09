@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import logo from '../pictures/favicon.png'
 import Header from './Header'
-import { Redirect } from "react-router-dom"
+import { Redirect, Link } from "react-router-dom"
 import axios from 'axios'
 import * as $ from 'jquery'
 import bcrypt from 'bcryptjs'
@@ -147,7 +147,10 @@ class Auth extends Component {
                                         <div className="invalid-feedback" id="badPass">Pseudo ou mot de passe incorrect</div>
                                         <div className="invalid-feedback" id="nonValid">Compte non validé. Consultez votre email.</div>
                                     </div><br />
-                                    <button type="submit" className="btn btn-light">Connexion</button>
+                                    <button type="submit" className="btn btn-light">Connexion</button><br/>
+                                    <Link to="/oubli">
+                                        <div className="text-light mt-3">Mot de passe oublié ?</div>
+                                    </Link>
                                 </form>
                             </div>
                         </div>

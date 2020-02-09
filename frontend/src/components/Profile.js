@@ -4,7 +4,7 @@ import '../css/Profile.css'
 import Birthday from './Birthday'
 import axios from 'axios'
 import { connect } from 'react-redux'
-import { Redirect } from "react-router-dom"
+import { Redirect, Link } from "react-router-dom"
 import DiscussionButton from './DiscussionButton'
 import MapG from './Map'
 import Place from './Place'
@@ -230,13 +230,27 @@ class Profile extends Component {
         else {
             return (
                 <Fragment>
-                    <Header loggued="true"/><br/><br/><br/>
+                    <Header /><br/><br/><br/>
                     <div className="container-fluid">
                         <div className="row p-2">
                             <div className="col-lg-8 text-center">
                                 <div className="bg-dark p-4 rounded">
-                                    <h2 className="text-light">MON PROFIL</h2>
-                                    <code className="h4">{this.props.pseudo}</code>
+                                    <div className="row">
+                                        <div className="col-4">
+                                            <Link to="/reinitialisation">
+                                            <label htmlFor="" className="text-light">Changer de mot de passe</label><br/>
+                                            <div className="btn btn-info btn-lg"><i className="fas fa-key"></i></div>
+                                            </Link>
+                                        </div>
+                                        <div className="col-4">
+                                            <h2 className="text-light">MON PROFIL</h2>
+                                            <code className="h4">{this.props.pseudo}</code>
+                                        </div>
+                                        <div className="col-4">
+                                            <label htmlFor="" className="text-light">Historique</label><br/>
+                                            <div className="btn btn-info btn-lg"><i className="fas fa-history"></i></div>
+                                        </div>
+                                    </div>
                                     <form className="mt-4">
                                         <div className="row">
                                             <div className="col-lg">
@@ -300,7 +314,7 @@ class Profile extends Component {
                                                 <div className="col">
                                                     <div className="form-group text-center">
                                                         <label htmlFor="bio" className="text-light">Biographie</label>
-                                                        <textarea name="bio" id="bio" className="form-control" placeholder="Vous pouvez transmettre une partie de votre monde, de ce qui vous anime, de ce que vous aimez." rows="2" onChange={this.handleText} value={this.state.biographie} onBlur={this.handleOnBlurSubmit}></textarea>
+                                                        <textarea name="bio" id="bio" className="form-control text-center" placeholder="Vous pouvez transmettre une partie de votre monde, de ce qui vous anime, de ce que vous aimez." rows="2" onChange={this.handleText} value={this.state.biographie} onBlur={this.handleOnBlurSubmit}></textarea>
                                                     </div>
                                                 </div>
                                             </div>

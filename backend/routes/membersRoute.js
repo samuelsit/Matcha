@@ -63,6 +63,9 @@ router.route('/api/members/status/:status/:pseudo')
 router.route('/api/members/exist/:pseudo')
     .get(memberController.isMember);
 
+router.route('/api/members/exist/email/:email')
+    .get(memberController.isMemberMail);
+
 // Check if is valid token
 router.route('/api/members/token/:pseudo/:token')
     .get(memberController.isValidToken);
@@ -83,6 +86,9 @@ router.route('/api/members/isValid/:pseudo/:status')
 router.route('/api/members/profile/:pseudo')
     .patch(memberController.changeMemberProfile);
 
+router.route('/api/members/profile/pass/:pseudo')
+    .patch(memberController.changeMemberPass);
+
 // Change member profile
 router.route('/api/members/pictures/:pseudo/:id')
     .post(upload.single('image'), memberController.changeMemberPictures);
@@ -101,6 +107,9 @@ router.route('/api/members/pictures/4/:pseudo')
 
 router.route('/api/members/pictures/5/:pseudo')
     .get(memberController.isPicture5);
+
+router.route('/api/members/forget/:email')
+    .get(memberController.forgetPass);
 
 // Export API routes
 module.exports = router;
