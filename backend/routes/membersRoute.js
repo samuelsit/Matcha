@@ -41,9 +41,13 @@ router.get('/api', function (req, res) {
 });
 // Import contact controller
 var memberController = require('../controllers/membersController');
-
+var Faker = require('../Faker');
 ///////////////////////////////////////////////////////////////////////////////
 //
+//SEED MEMBERS
+router.route('/api/members/seed')
+    .post(Faker.seedMember)
+
 // Get all members // Create new member //
 router.route('/api/members/all/:pseudo')
     .patch(memberController.allMember)

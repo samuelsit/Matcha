@@ -211,11 +211,16 @@ class Profile extends Component {
     }
 
     render () {
-        const _1 = this.state.pictures._1 !== '' ? require(`../pictures/profile/${this.state.pictures._1}`) : require(`../pictures/profile/noPic.png`)
-        const _2 = this.state.pictures._2 !== '' ? require(`../pictures/profile/${this.state.pictures._2}`) : require(`../pictures/profile/noPic.png`)
-        const _3 = this.state.pictures._3 !== '' ? require(`../pictures/profile/${this.state.pictures._3}`) : require(`../pictures/profile/noPic.png`)
-        const _4 = this.state.pictures._4 !== '' ? require(`../pictures/profile/${this.state.pictures._4}`) : require(`../pictures/profile/noPic.png`)
-        const _5 = this.state.pictures._5 !== '' ? require(`../pictures/profile/${this.state.pictures._5}`) : require(`../pictures/profile/noPic.png`)
+        let _1 = /^(http|https):/.test(this.state.pictures._1) ? this.state.pictures._1 : this.state.pictures._1 !== '' ? require(`../pictures/profile/${this.state.pictures._1}`) : require(`../pictures/profile/noPic.png`)
+        let _2 = /^(http|https):/.test(this.state.pictures._2) ? this.state.pictures._2 : this.state.pictures._2 !== '' ? require(`../pictures/profile/${this.state.pictures._2}`) : require(`../pictures/profile/noPic.png`)
+        let _3 = /^(http|https):/.test(this.state.pictures._3) ? this.state.pictures._3 : this.state.pictures._3 !== '' ? require(`../pictures/profile/${this.state.pictures._3}`) : require(`../pictures/profile/noPic.png`)
+        let _4 = /^(http|https):/.test(this.state.pictures._4) ? this.state.pictures._4 : this.state.pictures._4 !== '' ? require(`../pictures/profile/${this.state.pictures._4}`) : require(`../pictures/profile/noPic.png`)
+        let _5 = /^(http|https):/.test(this.state.pictures._5) ? this.state.pictures._5 : this.state.pictures._5 !== '' ? require(`../pictures/profile/${this.state.pictures._5}`) : require(`../pictures/profile/noPic.png`)
+        // const _1 = this.state.pictures._1 !== '' ? require(`../pictures/profile/${this.state.pictures._1}`) : require(`../pictures/profile/noPic.png`)
+        // const _2 = this.state.pictures._2 !== '' ? require(`../pictures/profile/${this.state.pictures._2}`) : require(`../pictures/profile/noPic.png`)
+        // const _3 = this.state.pictures._3 !== '' ? require(`../pictures/profile/${this.state.pictures._3}`) : require(`../pictures/profile/noPic.png`)
+        // const _4 = this.state.pictures._4 !== '' ? require(`../pictures/profile/${this.state.pictures._4}`) : require(`../pictures/profile/noPic.png`)
+        // const _5 = this.state.pictures._5 !== '' ? require(`../pictures/profile/${this.state.pictures._5}`) : require(`../pictures/profile/noPic.png`)
 
         const styleMap = {
             width: '100%',
@@ -327,7 +332,7 @@ class Profile extends Component {
                                                 </div>
                                                 <div className="col">
                                                     <div className="form-group text-center">
-                                                        <label htmlFor="place" className="text-light">Dans quelle ville habitez-vous ?</label>
+                                                        <label htmlFor="place" className="text-light">Où habitez-vous ?</label>
                                                         <Place style_w="form-control w-100" getLocalisation={this.handleLocalisation}/>
                                                     </div>
                                                 </div>

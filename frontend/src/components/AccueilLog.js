@@ -3,7 +3,6 @@ import Header from './Header'
 import CardLove from './CardLove'
 import DiscussionButton from './DiscussionButton'
 import FilterSort from './FilterSort'
-import Pagination from './Pagination'
 import axios from 'axios'
 import { getDistance, convertDistance } from 'geolib'
 import { connect } from 'react-redux'
@@ -14,13 +13,17 @@ class Accueil extends Component {
 
     state = {
         members: [],
-        myCoords: []
+        myCoords: [],
+        skip: 0,
+        limit: 4,
+        page: 1
     }
 
     componentDidMount() {
         this._isMounted = true
         axios.patch('http://localhost:5000/api/members/all/' + this.props.pseudo, {
-            data: 'sam'
+            skip: this.state.skip,
+            limit: this.state.limit
         }).then(res => {
             if (this._isMounted) {
                 this.setState({members: res.data.members})
@@ -28,6 +31,21 @@ class Accueil extends Component {
         }).catch(error => {
             console.log(error)
         })
+        this.handleDisabledBtn()
+    }
+
+    componentDidUpdate() {
+        axios.patch('http://localhost:5000/api/members/all/' + this.props.pseudo, {
+            skip: this.state.skip,
+            limit: this.state.limit
+        }).then(res => {
+            if (this._isMounted) {
+                this.setState({members: res.data.members})
+            }
+        }).catch(error => {
+            console.log(error)
+        })
+        this.handleDisabledBtn()
     }
 
     getDistanceFrom = (lat, lng) => {
@@ -73,6 +91,30 @@ class Accueil extends Component {
         }
     }
 
+    handleNext = () => {
+        this.setState({skip: this.state.skip + 4})
+        this.setState({limit: this.state.limit + 4})
+        this.setState({page: this.state.page + 1})
+    }
+
+    handlePrev = () => {
+        if (this.state.page > 1) {
+            this.setState({skip: this.state.skip - 4})
+            this.setState({limit: this.state.limit - 4})
+            this.setState({page: this.state.page - 1})
+        }
+    }
+
+    handleDisabledBtn = () => {
+        var btn = document.getElementById('prev')
+        if (this.state.page === 1) {
+            btn.classList.add("disabled");
+        }
+        else {
+            btn.classList.remove("disabled");
+        }
+    }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
@@ -112,7 +154,16 @@ class Accueil extends Component {
                         </div>
                         <div className="row">
                             <div className="col">
-                                <Pagination/>
+                                <nav aria-label="Page navigation example" className="mt-3">
+                                    <ul className="pagination justify-content-start">
+                                        <li id="prev" className="page-item" onClick={this.handlePrev}>
+                                            <div className="page-link">Previous</div>
+                                        </li>
+                                        <li id="next" className="page-item" onClick={this.handleNext}>
+                                            <div className="page-link">Next</div>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
                         </div>
                     </div>

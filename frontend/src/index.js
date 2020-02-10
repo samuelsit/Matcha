@@ -9,6 +9,7 @@ import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 
 import NotFound from './components/NotFound'
+import Seed from './components/Seed'
 import Reinit from './components/Reinit'
 import Forget from './components/Forget'
 import Auth from './components/Auth'
@@ -33,6 +34,7 @@ const Root = () => (
     <BrowserRouter>
         <Switch>
             <Route exact path='/' component={App} />
+            <Route exact path='/seed' component={Seed} />
             <Route exact path='/connexion' component={Auth} />
             <Route exact path='/inscription' component={Sign} />
             <Route exact path='/reinitialisation' component={Reinit} />

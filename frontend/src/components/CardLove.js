@@ -114,7 +114,7 @@ class CardLove extends Component {
         var love = null
         var colorlove = null
         var distance = isNaN(this.props.distance) ? null : "(" + this.props.distance + " km)"
-        let profilepic = this.state.picture !== '' ? require(`../pictures/profile/${this.state.picture}`) : require(`../pictures/profile/noPicAccueil.png`)
+        let profilepic = /^(http|https):/.test(this.state.picture) ? this.state.picture : this.state.picture !== '' ? require(`../pictures/profile/${this.state.picture}`) : require(`../pictures/profile/noPicAccueil.png`)
 
         if (this.props.gender === "male") {
             gender = "fas fa-mars"

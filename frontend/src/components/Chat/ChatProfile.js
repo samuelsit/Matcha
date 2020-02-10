@@ -13,34 +13,39 @@ class ChatProfile extends Component {
         isPic2: false,
         isPic3: false,
         isPic4: false,
-        isPic5: false
+        isPic5: false,
+        _1: '',
+        _2: '',
+        _3: '',
+        _4: '',
+        _5: ''
     }
   
     componentDidMount() {
       this._isMounted = true
       axios.get('http://localhost:5000/api/members/pictures/profile/' + this.state.pseudo).then(res => {
           if (this._isMounted) {
-              this.setState({isPic1: res.data.status})
+              this.setState({isPic1: res.data.status, _1: res.data.pic})
           }
       })
       axios.get('http://localhost:5000/api/members/pictures/2/' + this.state.pseudo).then(res => {
           if (this._isMounted) {
-              this.setState({isPic2: res.data.status})
+              this.setState({isPic2: res.data.status, _2: res.data.pic})
           }
       })
       axios.get('http://localhost:5000/api/members/pictures/3/' + this.state.pseudo).then(res => {
           if (this._isMounted) {
-              this.setState({isPic3: res.data.status})
+              this.setState({isPic3: res.data.status, _3: res.data.pic})
           }
       })
       axios.get('http://localhost:5000/api/members/pictures/4/' + this.state.pseudo).then(res => {
           if (this._isMounted) {
-              this.setState({isPic4: res.data.status})
+              this.setState({isPic4: res.data.status, _4: res.data.pic})
           }
       })
       axios.get('http://localhost:5000/api/members/pictures/5/' + this.state.pseudo).then(res => {
           if (this._isMounted) {
-              this.setState({isPic5: res.data.status})
+              this.setState({isPic5: res.data.status, _5: res.data.pic})
           }
       })
       axios.get('http://localhost:5000/api/members/' + this.state.pseudo).then(res => {
@@ -89,11 +94,11 @@ class ChatProfile extends Component {
     }
 
     render () {
-        let pic1 = this.state.isPic1 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_1.png`)
-        let pic2 = this.state.isPic2 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_2.png`)
-        let pic3 = this.state.isPic3 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_3.png`)
-        let pic4 = this.state.isPic4 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_4.png`)
-        let pic5 = this.state.isPic5 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_5.png`)
+        let pic1 = /^(http|https):/.test(this.state._1) ? this.state._1 : this.state.isPic1 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_1.png`)
+        let pic2 = /^(http|https):/.test(this.state._2) ? this.state._2 : this.state.isPic2 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_2.png`)
+        let pic3 = /^(http|https):/.test(this.state._3) ? this.state._3 : this.state.isPic3 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_3.png`)
+        let pic4 = /^(http|https):/.test(this.state._4) ? this.state._4 : this.state.isPic4 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_4.png`)
+        let pic5 = /^(http|https):/.test(this.state._5) ? this.state._5 : this.state.isPic5 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_5.png`)
         var isLoggued = this.state.isLoggued === true ? "badge badge-pill badge-success" : "badge badge-pill badge-danger"
         var bio = this.state.bio === '' ? 'Non renseignée' : this.state.bio
         var interet = this.state.interet === '' ? 'Pas de centre d\'interet' : this.state.interet

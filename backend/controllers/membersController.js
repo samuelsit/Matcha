@@ -4,9 +4,7 @@ const sharp = require('sharp')
 const fs = require('fs')
 
 // Handle index actions
-exports.allMember = function (req, res) {
-    console.log(req.body);
-    
+exports.allMember = function (req, res) {    
     var memberLog = '^' + req.params.pseudo + '$'
     var regex = new RegExp(memberLog)
     Member.find({
@@ -23,7 +21,7 @@ exports.allMember = function (req, res) {
         res.json({
             members
         });
-    });
+    }).skip(req.body.skip).limit(req.body.limit);
 };
 
 exports.forgetPass = function (req, res) {
@@ -438,7 +436,8 @@ exports.isProfilePicture = function (req, res) {
             }
             else if (member.pictures._1 !== '') {
                 res.json({
-                    status: true
+                    status: true,
+                    pic: member.pictures._1
                 });
             }
             else {
@@ -466,7 +465,8 @@ exports.isPicture2 = function (req, res) {
             }
             else if (member.pictures._2 !== '') {
                 res.json({
-                    status: true
+                    status: true,
+                    pic: member.pictures._2
                 });
             }
             else {
@@ -494,7 +494,8 @@ exports.isPicture3 = function (req, res) {
             }
             else if (member.pictures._3 !== '') {
                 res.json({
-                    status: true
+                    status: true,
+                    pic: member.pictures._3
                 });
             }
             else {
@@ -522,7 +523,8 @@ exports.isPicture4 = function (req, res) {
             }
             else if (member.pictures._4 !== '') {
                 res.json({
-                    status: true
+                    status: true,
+                    pic: member.pictures._4
                 });
             }
             else {
@@ -550,7 +552,8 @@ exports.isPicture5 = function (req, res) {
             }
             else if (member.pictures._5 !== '') {
                 res.json({
-                    status: true
+                    status: true,
+                    pic: member.pictures._5
                 });
             }
             else {
