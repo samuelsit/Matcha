@@ -5,9 +5,15 @@ const fs = require('fs')
 
 // Handle index actions
 exports.allMember = function (req, res) {
+    console.log(req.body);
+    
     var memberLog = '^' + req.params.pseudo + '$'
     var regex = new RegExp(memberLog)
-    Member.find({pseudo: {$not: regex}}, function (err, members) {
+    Member.find({
+        $and: [
+            {pseudo: {$not: regex}}
+        ]
+    }, function (err, members) {
         if (err) {
             res.json({
                 status: "error",

@@ -46,7 +46,7 @@ var memberController = require('../controllers/membersController');
 //
 // Get all members // Create new member //
 router.route('/api/members/all/:pseudo')
-    .get(memberController.allMember)
+    .patch(memberController.allMember)
 
 router.route('/api/members')
     .post(memberController.newMember);

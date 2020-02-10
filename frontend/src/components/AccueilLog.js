@@ -19,7 +19,9 @@ class Accueil extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        axios.get('http://localhost:5000/api/members/all/' + this.props.pseudo).then(res => {
+        axios.patch('http://localhost:5000/api/members/all/' + this.props.pseudo, {
+            data: 'sam'
+        }).then(res => {
             if (this._isMounted) {
                 this.setState({members: res.data.members})
             }
@@ -29,7 +31,7 @@ class Accueil extends Component {
     }
 
     getDistanceFrom = (lat, lng) => {
-        navigator.geolocation.getCurrentPosition(position => {
+        navigator.geolocation.getCurrentPosition(position => {            
             if (this._isMounted) {
                 this.setState({myCoords: {latitude: position.coords.latitude, longitude: position.coords.longitude}})
                 this.props.setUserPos(position.coords.latitude, position.coords.longitude)
@@ -100,7 +102,7 @@ class Accueil extends Component {
                     <div className="container-fluid mt-5">
                         <div className="row">
                             <div className="col">
-                                <FilterSort/>
+                                <FilterSort getRange={this.handleRangeToState}/>
                             </div>
                         </div><hr/>
                         <div className="row text-center">
