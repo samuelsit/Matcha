@@ -157,7 +157,7 @@ class CardLove extends Component {
                             <p className="card-text">{this.props.age} ans<br/><i className="fas fa-map-marker-alt"></i> {this.props.country} {distance}</p><hr/>
                             <code>{this.props.interet ? this.props.interet : "Pas de centre d'intêret"}</code>
                             <p className="card-text"></p><hr/>
-                            <div className="btn btn-danger btn-circle text-light float-left" onClick={this.handleClick}><i className="fas fa-heart"> {this.state.popularity}</i></div>
+                            <div className="btn btn-danger btn-circle text-light float-left" onClick={this.handleClick}><i className="fas fa-heart"> {this.props.isLoved}</i></div>
                             <div className={colorlove.concat(' ', 'float-right')}><i className={love.concat(' ', 'text-light')}></i></div>
                             {this.props.love === "bi" ? <div className="btn btn-info float-right mr-1"><i className="fas fa-venus-mars"></i></div> : null}
                         </div>

@@ -9,7 +9,7 @@ exports.seedMember = function (req, res) {
     var Birth = new Date(faker.date.past(20, new Date(2000, 0, 1)));
     faker.seed(parseInt(req.body.seed, 10));
     member.isLoggued = req.body.seed % 5 === 0 ? true : false;
-    member.popularity = faker.random.number();
+    member.popularity = faker.random.number(500);
     member.interet = '#' + faker.random.word().replace(/ /g, ', #');
     member.attirance.male = req.body.seed % 2 === 0 ? true : false;
     member.attirance.female = req.body.seed % 1 === 0 ? true : false;

@@ -21,21 +21,7 @@ class Accueil extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        axios.patch('http://localhost:5000/api/members/all/' + this.props.pseudo, {
-            skip: this.state.skip,
-            limit: this.state.limit
-        }).then(res => {
-            if (this._isMounted) {
-                this.setState({members: res.data.members})
-            }
-        }).catch(error => {
-            console.log(error)
-        })
-        this.handleDisabledBtn()
-    }
-
-    componentDidUpdate() {
-        axios.patch('http://localhost:5000/api/members/all/' + this.props.pseudo, {
+        axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
             skip: this.state.skip,
             limit: this.state.limit
         }).then(res => {
@@ -95,6 +81,17 @@ class Accueil extends Component {
         this.setState({skip: this.state.skip + 4})
         this.setState({limit: this.state.limit + 4})
         this.setState({page: this.state.page + 1})
+        axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
+            skip: this.state.skip,
+            limit: this.state.limit
+        }).then(res => {
+            if (this._isMounted) {
+                this.setState({members: res.data.members})
+            }
+        }).catch(error => {
+            console.log(error)
+        })
+        this.handleDisabledBtn()
     }
 
     handlePrev = () => {
@@ -102,6 +99,17 @@ class Accueil extends Component {
             this.setState({skip: this.state.skip - 4})
             this.setState({limit: this.state.limit - 4})
             this.setState({page: this.state.page - 1})
+            axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
+                skip: this.state.skip,
+                limit: this.state.limit
+            }).then(res => {
+                if (this._isMounted) {
+                    this.setState({members: res.data.members})
+                }
+            }).catch(error => {
+                console.log(error)
+            })
+            this.handleDisabledBtn()
         }
     }
 

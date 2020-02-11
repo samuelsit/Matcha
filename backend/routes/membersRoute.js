@@ -50,7 +50,7 @@ router.route('/api/members/seed')
 
 // Get all members // Create new member //
 router.route('/api/members/all/:pseudo')
-    .patch(memberController.allMember)
+    .post(memberController.allMember)
 
 router.route('/api/members')
     .post(memberController.newMember);
