@@ -7,21 +7,154 @@ const fs = require('fs')
 exports.allMember = function (req, res) {    
     var memberLog = '^' + req.params.pseudo + '$'
     var regex = new RegExp(memberLog)
-    Member.find({
-        $and: [
-            {pseudo: {$not: regex}}
-        ]
-    }, function (err, members) {
-        if (err) {
+    let {attirance, myGender, skip} = req.body
+    
+    if (!attirance.male && attirance.female) {
+        Member
+        .find({
+            pseudo: {$not: regex},
+            $or: [
+                {attirance: { male: true , female: true }},
+                {attirance: { male: myGender === 'male' ? true : false , female: false }},
+                {attirance: { male: myGender === 'male' ? true : false , female: true }}
+            ],
+            myGender: 'female'
+        }, function (err, members) {
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err
+                });
+            }
             res.json({
-                status: "error",
-                message: err
+                members
             });
-        }
-        res.json({
-            members
-        });
-    }).skip(req.body.skip).limit(req.body.limit);
+        })
+        .sort({isLoggued: -1})
+        .skip(skip)
+        .limit(4);
+    }
+    else if (attirance.male && !attirance.female) {
+        Member
+        .find({
+            pseudo: {$not: regex},
+            $or: [
+                {attirance: { male: true , female: true }},
+                {attirance: { male: myGender === 'male' ? true : false , female: false }},
+                {attirance: { male: myGender === 'male' ? true : false , female: true }}
+            ],
+            myGender: 'male'
+        }, function (err, members) {
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err
+                });
+            }
+            res.json({
+                members
+            });
+        })
+        .sort({isLoggued: -1})
+        .skip(skip)
+        .limit(4);
+    }
+    else {
+        Member
+        .find({
+            pseudo: {$not: regex},
+            $or: [
+                {attirance: { male: true , female: true }},
+                {attirance: { male: myGender === 'male' ? true : false , female: false }},
+                {attirance: { male: myGender === 'male' ? true : false , female: true }}
+            ]
+        }, function (err, members) {
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err
+                });
+            }
+            res.json({
+                members
+            });
+        })
+        .sort({isLoggued: -1})
+        .skip(skip)
+        .limit(4);
+    }
+};
+
+exports.CountAllMember = function (req, res) {    
+    var memberLog = '^' + req.params.pseudo + '$'
+    var regex = new RegExp(memberLog)
+    let {attirance, myGender, skip} = req.body
+    
+    if (!attirance.male && attirance.female) {
+        Member
+        .countDocuments({
+            pseudo: {$not: regex},
+            $or: [
+                {attirance: { male: true , female: true }},
+                {attirance: { male: myGender === 'male' ? true : false , female: false }},
+                {attirance: { male: myGender === 'male' ? true : false , female: true }}
+            ],
+            myGender: 'female'
+        }, function (err, nbMembers) {
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err
+                });
+            }
+            res.json({
+                nbMembers
+            });
+        })
+    }
+    else if (attirance.male && !attirance.female) {
+        Member
+        .countDocuments({
+            pseudo: {$not: regex},
+            $or: [
+                {attirance: { male: true , female: true }},
+                {attirance: { male: myGender === 'male' ? true : false , female: false }},
+                {attirance: { male: myGender === 'male' ? true : false , female: true }}
+            ],
+            myGender: 'male'
+        }, function (err, nbMembers) {
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err
+                });
+            }
+            res.json({
+                nbMembers
+            });
+        })
+    }
+    else {
+        Member
+        .countDocuments({
+            pseudo: {$not: regex},
+            $or: [
+                {attirance: { male: true , female: true }},
+                {attirance: { male: myGender === 'male' ? true : false , female: false }},
+                {attirance: { male: myGender === 'male' ? true : false , female: true }}
+            ]
+        }, function (err, nbMembers) {
+            if (err) {
+                res.json({
+                    status: "error",
+                    message: err
+                });
+            }
+            res.json({
+                nbMembers
+            });
+        })
+    }
 };
 
 exports.forgetPass = function (req, res) {
@@ -344,8 +477,6 @@ exports.changeMemberProfile = function (req, res) {
             member.country.lng = req.body.country.lng
         if (req.body.country.lat)
             member.country.lat = req.body.country.lat
-            console.log(member);
-
             member.save(function (err) {
             if (err)
                 res.json(err);            

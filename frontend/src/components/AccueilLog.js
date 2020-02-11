@@ -7,31 +7,69 @@ import axios from 'axios'
 import { getDistance, convertDistance } from 'geolib'
 import { connect } from 'react-redux'
 import { Redirect } from "react-router-dom"
+import '../css/Accueil.css'
 
 class Accueil extends Component {
     _isMounted = false
 
     state = {
         members: [],
+        attirance: {
+            male: false,
+            female: false
+        },
+        myGender: '',
         myCoords: [],
         skip: 0,
-        limit: 4,
-        page: 1
+        page: 1,
+        pageMax: 0
     }
 
     componentDidMount() {
         this._isMounted = true
-        axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
-            skip: this.state.skip,
-            limit: this.state.limit
-        }).then(res => {
+        axios.get('http://localhost:5000/api/members/' + this.props.pseudo).then(res => {
             if (this._isMounted) {
-                this.setState({members: res.data.members})
-            }
-        }).catch(error => {
+                this.setState({
+                    attirance: {
+                        male: res.data.member.attirance.male,
+                        female: res.data.member.attirance.female
+                    },
+                    myGender: res.data.member.myGender
+                })
+            }           
+        })
+        .then(res => {
+            axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
+                skip: this.state.skip,
+                attirance: {
+                    male: this.state.attirance.male,
+                    female: this.state.attirance.female
+                },
+                myGender: this.state.myGender
+            }).then(res => {
+                if (this._isMounted) {
+                    this.setState({members: res.data.members})
+                }
+            }).then(() => {
+                axios.post('http://localhost:5000/api/members/CountAll/' + this.props.pseudo, {
+                    skip: this.state.skip,
+                    attirance: {
+                        male: this.state.attirance.male,
+                        female: this.state.attirance.female
+                    },
+                    myGender: this.state.myGender
+                }).then(res => {
+                    if (this._isMounted) {
+                        this.setState({pageMax: res.data.nbMembers / 4})
+                    }
+                })
+            }).catch(error => {
+                console.log(error)
+            })
+        })
+        .catch(error => {
             console.log(error)
         })
-        this.handleDisabledBtn()
     }
 
     getDistanceFrom = (lat, lng) => {
@@ -77,13 +115,14 @@ class Accueil extends Component {
         }
     }
 
-    handleNext = () => {
-        this.setState({skip: this.state.skip + 4})
-        this.setState({limit: this.state.limit + 4})
-        this.setState({page: this.state.page + 1})
+    getNewMembers = () => {
         axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
             skip: this.state.skip,
-            limit: this.state.limit
+            attirance: {
+                male: this.state.attirance.male,
+                female: this.state.attirance.female
+            },
+            myGender: this.state.myGender
         }).then(res => {
             if (this._isMounted) {
                 this.setState({members: res.data.members})
@@ -91,35 +130,34 @@ class Accueil extends Component {
         }).catch(error => {
             console.log(error)
         })
-        this.handleDisabledBtn()
+    }
+
+    handleNext = () => {
+        if (this.state.page < this.state.pageMax) {
+            this.setState({skip: this.state.skip + 4, page: this.state.page + 1}, this.getNewMembers)
+        }
     }
 
     handlePrev = () => {
         if (this.state.page > 1) {
-            this.setState({skip: this.state.skip - 4})
-            this.setState({limit: this.state.limit - 4})
-            this.setState({page: this.state.page - 1})
-            axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
-                skip: this.state.skip,
-                limit: this.state.limit
-            }).then(res => {
-                if (this._isMounted) {
-                    this.setState({members: res.data.members})
-                }
-            }).catch(error => {
-                console.log(error)
-            })
-            this.handleDisabledBtn()
+            this.setState({skip: this.state.skip - 4, page: this.state.page - 1}, this.getNewMembers)
         }
     }
 
-    handleDisabledBtn = () => {
-        var btn = document.getElementById('prev')
+    componentDidUpdate() {
+        var btnprev = document.getElementById('prev')
+        var btnnext = document.getElementById('next')
         if (this.state.page === 1) {
-            btn.classList.add("disabled");
+            btnprev.classList.add("disabled");
         }
         else {
-            btn.classList.remove("disabled");
+            btnprev.classList.remove("disabled");
+        }
+        if (this.state.page === this.state.pageMax) {
+            btnnext.classList.add("disabled");
+        }
+        else {
+            btnnext.classList.remove("disabled");
         }
     }
 
@@ -141,6 +179,7 @@ class Accueil extends Component {
                 love={this.orientationSexuelle(el.myGender, el.attirance)}
                 interet={el.interet}
                 pseud={el.pseudo}
+                img={el.pictures._1}
             />
         ))
 
@@ -164,10 +203,10 @@ class Accueil extends Component {
                             <div className="col">
                                 <nav aria-label="Page navigation example" className="mt-3">
                                     <ul className="pagination justify-content-start">
-                                        <li id="prev" className="page-item" onClick={this.handlePrev}>
+                                        <li id="prev" className="page-item disable cursor-pagination" onClick={this.handlePrev}>
                                             <div className="page-link">Previous</div>
                                         </li>
-                                        <li id="next" className="page-item" onClick={this.handleNext}>
+                                        <li id="next" className="page-item cursor-pagination" onClick={this.handleNext}>
                                             <div className="page-link">Next</div>
                                         </li>
                                     </ul>

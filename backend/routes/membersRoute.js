@@ -52,6 +52,9 @@ router.route('/api/members/seed')
 router.route('/api/members/all/:pseudo')
     .post(memberController.allMember)
 
+router.route('/api/members/CountAll/:pseudo')
+    .post(memberController.CountAllMember)
+
 router.route('/api/members')
     .post(memberController.newMember);
 
