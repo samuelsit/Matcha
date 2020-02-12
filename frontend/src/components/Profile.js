@@ -243,16 +243,16 @@ class Profile extends Component {
                                     <div className="row">
                                         <div className="col-4">
                                             <Link to="/reinitialisation">
-                                            <label htmlFor="" className="text-light">Changer de mot de passe</label><br/>
+                                            <div className="text-light d-none d-lg-block">Changer de mot de passe</div>
                                             <div className="btn btn-info btn-lg"><i className="fas fa-key"></i></div>
                                             </Link>
                                         </div>
                                         <div className="col-4">
                                             <h2 className="text-light">MON PROFIL</h2>
-                                            <code className="h4">{this.props.pseudo}</code>
+                                            <code className="h4 d-none d-lg-block">{this.props.pseudo}</code>
                                         </div>
                                         <div className="col-4">
-                                            <label htmlFor="" className="text-light">Historique</label><br/>
+                                            <div className="text-light d-none d-lg-block">Historique</div>
                                             <div className="btn btn-info btn-lg"><i className="fas fa-history"></i></div>
                                         </div>
                                     </div>
@@ -273,8 +273,8 @@ class Profile extends Component {
                                                 <input type="text" id="inter" name="interet" className="form-control w-100 mx-auto text-center" placeholder="Pas de centre d'intêret" onChange={this.handleText} value={this.state.interet} onBlur={this.handleOnBlurSubmit}/>
                                             </div>
                                             <div className="col-lg">
-                                                <label htmlFor="" className="text-light">Anniversaire</label>
-                                                <div className="row mt-3 mt-lg-0">
+                                                <label htmlFor="" className="text-light mt-3 mt-lg-0">Anniversaire</label>
+                                                <div className="row">
                                                         <div className="col-4">
                                                             <select className="mx-auto select-s form-control w-100" id="dayBirth" onChange={this.handleBirth} value={this.state.birthday.day} onBlur={this.handleOnBlurSubmit}>
                                                                 <Birthday Toget="day" />
@@ -295,7 +295,7 @@ class Profile extends Component {
                                             </div>
                                             <div className="row mt-4">
                                                 <div className="col">
-                                                    <label htmlFor="" className="text-light">Quel est votre genre ?</label>
+                                                    <label htmlFor="" className="text-light">Genre</label>
                                                     <div className="form-group text-center">
                                                         <input id="immale" type="radio" name="myGender" value="male" onChange={this.handleMyGender} onBlur={this.handleOnBlurSubmit}/>
                                                         <label htmlFor="immale" id="rad-sam-1" className="border radio-inline fas fa-male text-light"><p className="font-sam text-white h6">Homme</p></label>
@@ -305,7 +305,7 @@ class Profile extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="col">
-                                                    <label htmlFor="" className="text-light">Que recherchez-vous ?</label>
+                                                    <label htmlFor="" className="text-light">Attirance</label>
                                                     <div className="form-group text-center">
                                                         <input id="getmale" type="checkbox" name="getGender" onChange={this.handleGetGenderMale} onBlur={this.handleOnBlurSubmit}/>
                                                         <label htmlFor="getmale" id="check-sam-1" className="border radio-inline fas fa-male text-light"><p className="font-sam text-white h6">Homme</p></label>
@@ -332,7 +332,7 @@ class Profile extends Component {
                                                 </div>
                                                 <div className="col">
                                                     <div className="form-group text-center">
-                                                        <label htmlFor="place" className="text-light">Où habitez-vous ?</label>
+                                                        <label htmlFor="place" className="text-light">Localisation</label>
                                                         <Place style_w="form-control w-100" getLocalisation={this.handleLocalisation}/>
                                                     </div>
                                                 </div>

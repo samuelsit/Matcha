@@ -9,10 +9,6 @@ var memberSchema = mongoose.Schema({
         type: Boolean,
         required: false
     },
-    popularity: {
-        type: Number,
-        required: false
-    },
     interet: {
         type: String,
         required: false

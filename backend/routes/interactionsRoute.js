@@ -5,6 +5,9 @@ var interactionsController = require('../controllers/interactionsController');
 router.route('/api/interactions')
     .post(interactionsController.newInteraction)
 
+router.route('/api/interactions/remove')
+    .post(interactionsController.removeInteraction)
+
 router.route('/api/interactions/like/count/:pseudo')
     .get(interactionsController.countLike)
 

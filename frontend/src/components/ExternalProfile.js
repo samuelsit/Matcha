@@ -38,7 +38,6 @@ class ExternalProfile extends Component {
             _4: "",
             _5: ""
         },
-        popularity: 0,
         pseudo1Match: 0,
         pseudo2Match: 0,
         redirect: false,

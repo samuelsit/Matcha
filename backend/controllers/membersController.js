@@ -228,7 +228,6 @@ exports.newMember = function (req, res) {
     const nodemailer = require("nodemailer");
     var member = new Member();
     member.isLoggued = req.body.isLoggued;
-    member.popularity = req.body.popularity;
     member.interet = req.body.interet;
     if (!req.body.attirance.male && !req.body.attirance.female) {
         member.attirance.male = true;

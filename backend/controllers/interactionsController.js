@@ -15,6 +15,25 @@ exports.newInteraction = function (req, res) {
     });
 };
 
+exports.removeInteraction = function (req, res) {
+    console.log(req.body);
+    
+    Interaction.deleteOne({
+        from: req.body.from,
+        to: req.body.to,
+        data: req.body.data
+    }, function (err, inter) {
+        if (err)
+            res.send(err);
+        console.log(inter);
+        
+        res.json({
+            status: "success",
+            message: 'Like deleted'
+        });
+    });
+};
+
 exports.countLike = function (req, res) {
     Interaction.find({data: 'like', to: req.params.pseudo}).countDocuments(function (err, interactions) {
         if (err) {

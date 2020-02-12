@@ -13,7 +13,7 @@ class Accueil extends Component {
     _isMounted = false
 
     state = {
-        members: [],
+        card: [],
         attirance: {
             male: false,
             female: false
@@ -26,6 +26,7 @@ class Accueil extends Component {
     }
 
     componentDidMount() {
+        this.DisablePage()
         this._isMounted = true
         axios.get('http://localhost:5000/api/members/' + this.props.pseudo).then(res => {
             if (this._isMounted) {
@@ -38,7 +39,7 @@ class Accueil extends Component {
                 })
             }           
         })
-        .then(res => {
+        .then(() => {
             axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
                 skip: this.state.skip,
                 attirance: {
@@ -48,27 +49,35 @@ class Accueil extends Component {
                 myGender: this.state.myGender
             }).then(res => {
                 if (this._isMounted) {
-                    this.setState({members: res.data.members})
+                    this.setState({card: res.data.members.map((el, i) => (
+                        <CardLove
+                            key={i}
+                            isLoggued={el.isLoggued.toString()}
+                            name={el.firstname}
+                            age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
+                            country={el.country.name}
+                            distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
+                            gender={el.myGender}
+                            love={this.orientationSexuelle(el.myGender, el.attirance)}
+                            interet={el.interet}
+                            pseud={el.pseudo}
+                            img={el.pictures._1}
+                        />
+                    ))})
                 }
-            }).then(() => {
-                axios.post('http://localhost:5000/api/members/CountAll/' + this.props.pseudo, {
-                    skip: this.state.skip,
-                    attirance: {
-                        male: this.state.attirance.male,
-                        female: this.state.attirance.female
-                    },
-                    myGender: this.state.myGender
-                }).then(res => {
-                    if (this._isMounted) {
-                        this.setState({pageMax: res.data.nbMembers / 4})
-                    }
-                })
-            }).catch(error => {
-                console.log(error)
             })
-        })
-        .catch(error => {
-            console.log(error)
+            axios.post('http://localhost:5000/api/members/CountAll/' + this.props.pseudo, {
+                skip: this.state.skip,
+                attirance: {
+                    male: this.state.attirance.male,
+                    female: this.state.attirance.female
+                },
+                myGender: this.state.myGender
+            }).then(res => {
+                if (this._isMounted) {
+                    this.setState({pageMax: Math.ceil(res.data.nbMembers / 4)})
+                }
+            })
         })
     }
 
@@ -116,6 +125,7 @@ class Accueil extends Component {
     }
 
     getNewMembers = () => {
+        this.DisablePage()
         axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
             skip: this.state.skip,
             attirance: {
@@ -125,7 +135,21 @@ class Accueil extends Component {
             myGender: this.state.myGender
         }).then(res => {
             if (this._isMounted) {
-                this.setState({members: res.data.members})
+                this.setState({card: res.data.members.map((el, i) => (
+                    <CardLove
+                        key={i}
+                        isLoggued={el.isLoggued.toString()}
+                        name={el.firstname}
+                        age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
+                        country={el.country.name}
+                        distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
+                        gender={el.myGender}
+                        love={this.orientationSexuelle(el.myGender, el.attirance)}
+                        interet={el.interet}
+                        pseud={el.pseudo}
+                        img={el.pictures._1}
+                    />
+                ))})
             }
         }).catch(error => {
             console.log(error)
@@ -144,7 +168,7 @@ class Accueil extends Component {
         }
     }
 
-    componentDidUpdate() {
+    DisablePage = () => {
         var btnprev = document.getElementById('prev')
         var btnnext = document.getElementById('next')
         if (this.state.page === 1) {
@@ -153,7 +177,7 @@ class Accueil extends Component {
         else {
             btnprev.classList.remove("disabled");
         }
-        if (this.state.page === this.state.pageMax) {
+        if (this.state.page === this.state.pageMax || (this.state.pageMax > 0 && this.state.pageMax < 1)) {
             btnnext.classList.add("disabled");
         }
         else {
@@ -166,23 +190,6 @@ class Accueil extends Component {
     }
 
     render () {
-        let card = this.state.members.map((el, i) => (
-            <CardLove
-                key={i}
-                isLoggued={el.isLoggued.toString()}
-                name={el.firstname}
-                age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
-                country={el.country.name}
-                distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
-                isLoved={el.popularity}
-                gender={el.myGender}
-                love={this.orientationSexuelle(el.myGender, el.attirance)}
-                interet={el.interet}
-                pseud={el.pseudo}
-                img={el.pictures._1}
-            />
-        ))
-
         if (this.props.isAuth === true) {
             return (
                 <Fragment>
@@ -195,19 +202,17 @@ class Accueil extends Component {
                             </div>
                         </div><hr/>
                         <div className="row text-center">
-                            {
-                                card
-                            }
+                            { this.state.card }
                         </div>
                         <div className="row">
                             <div className="col">
                                 <nav aria-label="Page navigation example" className="mt-3">
                                     <ul className="pagination justify-content-start">
                                         <li id="prev" className="page-item disable cursor-pagination" onClick={this.handlePrev}>
-                                            <div className="page-link">Previous</div>
+                                            <div className="page-link">Précédente</div>
                                         </li>
                                         <li id="next" className="page-item cursor-pagination" onClick={this.handleNext}>
-                                            <div className="page-link">Next</div>
+                                            <div className="page-link">Suivante</div>
                                         </li>
                                     </ul>
                                 </nav>

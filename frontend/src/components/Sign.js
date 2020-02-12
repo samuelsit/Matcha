@@ -295,7 +295,6 @@ class Sign extends Component {
     
                 axios.post('http://localhost:5000/api/members', {
                     isLoggued: false,
-                    popularity: 0,
                     interet: this.state.interet.data,
                     biographie: "",
                     attirance: {
