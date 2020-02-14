@@ -19,11 +19,26 @@ class Chat extends Component {
   state = {
     messages: [],
     pseudo: this.props.match.params.pseudo,
+    private: false,
+    redirect: false
   }
 
   componentDidMount() {
     this._isMounted = true
-    axios.get('http://localhost:5000/api/members/' + this.state.pseudo).then(res => {
+    axios.get('http://localhost:5000/api/messages/exist/' + this.state.pseudo + '/' + this.props.pseudo)
+    .then(res => {
+      if (this._isMounted) {
+        if (res.data.data) {
+          this.setState({ private: false })
+        }
+        else {
+          this.setState({ redirect: true })
+          this.setState({ private: true })
+        }
+      }
+    })
+    axios.get('http://localhost:5000/api/members/' + this.state.pseudo)
+    .then(res => {
         if (this._isMounted) {
               this.setState({
                   firstname: res.data.member.firstname,
@@ -60,7 +75,7 @@ class Chat extends Component {
   handleRedirect = () => {
     if (this.state.redirect) {
         return (
-            <Redirect to={"/connexion"} />
+            <Redirect to={"/profile"} />
         )
     }
   }
@@ -68,8 +83,10 @@ class Chat extends Component {
   messagesRef = createRef()
 
   componentDidUpdate () {
-    const ref = this.messagesRef.current
-    ref.scrollTop = ref.scrollHeight
+    if (this.state.private) {
+      const ref = this.messagesRef.current
+      ref.scrollTop = ref.scrollHeight
+    }
   }
 
   addMessage = message => {
@@ -96,7 +113,7 @@ class Chat extends Component {
           <Redirect to={"/connexion"} />
       )
     }
-    else if (this.props.pseudo === this.state.pseudo) {
+    else if ((this.props.pseudo === this.state.pseudo) || (this.state.private)) {
       return (
         <Redirect to={"/profile"} />
       )
@@ -104,6 +121,7 @@ class Chat extends Component {
     else {
       return (
         <Fragment>
+          {this.handleRedirect()}
           <Header />
           <div className="container-fluid">
             <div className="row">

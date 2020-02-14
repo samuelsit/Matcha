@@ -13,7 +13,6 @@ class FilterSort extends Component {
 
     handleRangeToState = event => {
         const id = event.target.name
-console.log(id);
 
         if (id === "customRange1") {
             const filtreAge = event.target.value
@@ -69,17 +68,17 @@ console.log(id);
                             <div className="row">
                                 <div className="col-lg-6">
                                     <label htmlFor="customRange1" className="h3">Filtrer par âge: <code>{this.state.filtreAge  + ' ans'}</code></label>
-                                    <input type="range" className="custom-range" id="customRange1" name="customRange1" min="18" max="99" onChange={this.handleRangeToState}></input>
+                                    <input type="range" className="custom-range" id="customRange1" name="customRange1" min="18" max="99" value="18" onChange={this.handleRangeToState}></input>
                                 </div>
                                 <div className="col-lg-6">
                                     <label htmlFor="customRange2" className="h3">Filtrer par popularité: <code>{this.state.filtrePop <= '1' && this.state.filtrePop !== '0-1000' ? this.state.filtrePop + ' match' : this.state.filtrePop + ' matchs'}</code></label>
-                                    <input type="range" className="custom-range" id="customRange2" name="customRange2" min="0" max="1000" onChange={this.handleRangeToState}></input>
+                                    <input type="range" className="custom-range" id="customRange2" name="customRange2" min="0" max="1000" value="0" onChange={this.handleRangeToState}></input>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col-lg-6">
                                     <label htmlFor="customRange1" className="h3">Filtrer par distance: <code>{this.state.filtreDis} km</code></label>
-                                    <input type="range" className="custom-range" id="customRange3" name="customRange3" min="0" max="1000" onChange={this.handleRangeToState}></input>
+                                    <input type="range" className="custom-range" id="customRange3" name="customRange3" min="0" max="1000" value="0" onChange={this.handleRangeToState}></input>
                                 </div>
                                 <div className="col-lg-6">
                                     <label htmlFor="customRange1" className="h3">Filtrer par tags populaires: </label>

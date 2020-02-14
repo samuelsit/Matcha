@@ -36,6 +36,32 @@ exports.getMessagesWith = function (req, res) {
     });
 };
 
+exports.isMessage = function (req, res) {    
+    Message.find({
+        $or: [
+            {$and: [{from: req.params.pseudo1}, {to: req.params.pseudo2}]},
+            {$and: [{to: req.params.pseudo1}, {from: req.params.pseudo2}]}
+        ]
+    }).countDocuments(function (err, messages) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        if (messages >= 1) {
+            res.json({
+                data: true
+            });
+        }
+        else {
+            res.json({
+                data: false
+            });
+        }
+    });
+};
+
 exports.getLastMessages = function (req, res) {
     var messageUsers = []
     var lastMessages = []

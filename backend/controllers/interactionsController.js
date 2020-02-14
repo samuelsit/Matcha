@@ -15,18 +15,14 @@ exports.newInteraction = function (req, res) {
     });
 };
 
-exports.removeInteraction = function (req, res) {
-    console.log(req.body);
-    
+exports.removeInteraction = function (req, res) {    
     Interaction.deleteOne({
         from: req.body.from,
         to: req.body.to,
         data: req.body.data
     }, function (err, inter) {
         if (err)
-            res.send(err);
-        console.log(inter);
-        
+            res.send(err);        
         res.json({
             status: "success",
             message: 'Like deleted'
@@ -67,10 +63,49 @@ exports.isMatch = function (req, res) {
     });
 };
 
+exports.isBlock = function (req, res) {
+    Interaction.find({
+        $and: [
+            {from: req.params.pseudo1, to: req.params.pseudo2},
+            {data: 'block'}
+        ]
+    }).countDocuments(function (err, interactions) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        res.json({
+            interactions
+        });
+    });
+};
+
 exports.getLastNotifications = function (req, res) {
     Interaction
     .find({
         to: req.params.pseudo
+    })
+    .sort({createdAt: -1})
+    .exec(function (err, interactions) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        res.json({
+            interactions
+        });
+    });
+};
+
+exports.getLastView = function (req, res) {
+    Interaction
+    .find({
+        from: req.params.pseudo,
+        data: 'view'
     })
     .sort({createdAt: -1})
     .exec(function (err, interactions) {

@@ -94,7 +94,7 @@ router.route('/api/members/isValid/:pseudo/:status')
 
 // Change member profile
 router.route('/api/members/profile/:pseudo')
-    .patch(memberController.changeMemberProfile);
+    .post(memberController.changeMemberProfile);
 
 router.route('/api/members/profile/pass/:pseudo')
     .patch(memberController.changeMemberPass);

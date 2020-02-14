@@ -8,6 +8,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 
+import History from './components/History'
 import NotFound from './components/NotFound'
 import Seed from './components/Seed'
 import Reinit from './components/Reinit'
@@ -41,6 +42,7 @@ const Root = () => (
             <Route exact path='/oubli' component={Forget} />
             <Route exact path='/accueil' component={Accueil} />
             <Route exact path='/profile' component={Profile} />
+            <Route exact path='/history' component={History} />
             <Route exact path='/profile/:pseudo' component={ExternalProfile} />
             <Route exact path='/mail-validation' component={MailValidation} />
             <Route path='/chat/:pseudo' component={Chat} />

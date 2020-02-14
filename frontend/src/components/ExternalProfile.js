@@ -38,16 +38,40 @@ class ExternalProfile extends Component {
             _4: "",
             _5: ""
         },
-        pseudo1Match: 0,
-        pseudo2Match: 0,
+        pseudo1: 0,
+        pseudo2: 0,
         redirect: false,
         error: true
     }
 
     componentDidMount() {
         this._isMounted = true
+        var btnLove = document.getElementById('btn-love')
+        var btnBlock = document.getElementById('btn-block')
+        axios.get('http://localhost:5000/api/interactions/block/isblock/' + this.props.pseudo + '/' + this.state.pseudo)
+        .then(res => {
+            if (res.data.interactions) {
+                btnBlock.classList.remove("btn-danger");
+                btnBlock.classList.add("btn-success");
+            }
+        })
+        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo)
+        .then(res => {
+            if (this._isMounted) {
+                this.setState({
+                    pseudo2: res.data.interactions
+                })
+            }
+        }).catch(error => {
+            console.log(error)
+        }).then(() => {
+            if (this.state.pseudo2) {
+                btnLove.classList.remove("btn-danger");
+                btnLove.classList.add("btn-success");
+            }
+        })
         axios.get('http://localhost:5000/api/members/exist/' + this.state.pseudo).then(res => {
-            if (res.data.status === 'pseudo not exist') {
+            if (res.data.status === 'pseudo not exist' && this._isMounted) {
                 this.setState({error: true})
                 this.setRedirect()
             }
@@ -107,7 +131,7 @@ class ExternalProfile extends Component {
                 axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo).then(res => {
                     if (this._isMounted) {
                         this.setState({
-                            pseudo1Match: res.data.interactions
+                            pseudo1: res.data.interactions
                         })
                     }           
                 }).catch(error => {
@@ -116,11 +140,104 @@ class ExternalProfile extends Component {
                 axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.state.pseudo + '/' + this.props.pseudo).then(res => {
                     if (this._isMounted) {
                         this.setState({
-                            pseudo2Match: res.data.interactions
+                            pseudo2: res.data.interactions
                         })
                     }           
                 }).catch(error => {
                     console.log(error)
+                })
+            }
+        })
+    }
+
+    handleLike = () => {
+        var btnLove = document.getElementById('btn-love')
+
+        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo)
+        .then(res => {
+            if (res.data.interactions === 0) {
+                btnLove.classList.remove("btn-danger");
+                btnLove.classList.add("btn-success");
+                axios.post('http://localhost:5000/api/interactions', {
+                    from: this.props.pseudo,
+                    to: this.state.pseudo,
+                    data: 'like'
+                })
+                .then(() => {
+                    axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo)
+                    .then(res => {
+                        if (this._isMounted) {
+                            this.setState({ popularity: res.data.interactions })
+                        }           
+                    }).catch(error => {
+                        console.log(error)
+                    })
+                    axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo)
+                    .then(res => {
+                        if (this._isMounted) {
+                            this.setState({ pseudo2: res.data.interactions })
+                        }
+                    })
+                    .then(() => {
+                        if (this.state.pseudo1 !== 0 && this.state.pseudo2 !== 0) {
+                            axios.post('http://localhost:5000/api/messages', {
+                                from: this.props.pseudo,
+                                to: this.state.pseudo,
+                                data: "C'est un match !"
+                            })
+                        }
+                    })
+                    
+                })
+            }
+            else {
+                btnLove.classList.add("btn-danger");
+                btnLove.classList.remove("btn-success");
+                axios.post('http://localhost:5000/api/interactions/remove', {
+                    from: this.props.pseudo,
+                    to: this.state.pseudo,
+                    data: 'like'
+                }).then(() => {
+                    axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo)
+                    .then(res => {
+                        if (this._isMounted) {
+                            this.setState({ pseudo2: res.data.interactions })
+                        }
+                    })
+                    axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo)
+                    .then(res => {
+                        if (this._isMounted) {
+                            this.setState({ popularity: res.data.interactions })
+                        }           
+                    }).catch(error => {
+                        console.log(error)
+                    })
+                })
+            }
+        })
+    }
+
+    handleBlock = () => {
+        var btnBlock = document.getElementById('btn-block')
+
+        axios.get('http://localhost:5000/api/interactions/block/isblock/' + this.props.pseudo + '/' + this.state.pseudo)
+        .then(res => {
+            if (res.data.interactions === 0) {
+                btnBlock.classList.remove("btn-danger");
+                btnBlock.classList.add("btn-success");
+                axios.post('http://localhost:5000/api/interactions', {
+                    from: this.props.pseudo,
+                    to: this.state.pseudo,
+                    data: 'block'
+                })
+            }
+            else {
+                btnBlock.classList.add("btn-danger");
+                btnBlock.classList.remove("btn-success");
+                axios.post('http://localhost:5000/api/interactions/remove', {
+                    from: this.props.pseudo,
+                    to: this.state.pseudo,
+                    data: 'block'
                 })
             }
         })
@@ -148,50 +265,7 @@ class ExternalProfile extends Component {
         })
     }
 
-    handleClick = () => {
-        if (this.state.pseudo1Match === 0) {
-            axios.post('http://localhost:5000/api/interactions', {
-                from: this.props.pseudo,
-                to: this.state.pseudo,
-                data: 'like'
-            })
-            if (this.state.pseudo2Match === 1) {
-                axios.post('http://localhost:5000/api/messages', {
-                    from: this.props.pseudo,
-                    to: this.state.pseudo,
-                    data: "C'est un match !"
-                })
-            }
-        }
-        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo).then(res => {
-            if (this._isMounted) {
-                this.setState({
-                    pseudo1Match: res.data.interactions
-                })
-            }           
-        }).catch(error => {
-            console.log(error)
-        })
-        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.state.pseudo + '/' + this.props.pseudo).then(res => {
-            if (this._isMounted) {
-                this.setState({
-                    pseudo2Match: res.data.interactions
-                })
-            }           
-        }).catch(error => {
-            console.log(error)
-        })
-        axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo)
-            .then(res => {
-                if (this._isMounted) {
-                    this.setState({
-                        popularity: res.data.interactions
-                    })
-                }           
-            }).catch(error => {
-                console.log(error)
-        })
-    }
+    
 
     componentWillUnmount() {
         this._isMounted = false
@@ -215,14 +289,28 @@ class ExternalProfile extends Component {
                 <Header />
                 <div className="container">
                     <div className="row">
-                        <div className='col-lg-3 col-md-3 mt-5 text-center'>
-                            {/* <button className="btn btn-circle btn-lg btn-danger mt-lg-5" onClick={this.handleClick}><i className="fas fa-heart"> {this.state.popularity}</i></button> */}
+                        <div className='col-lg-3 col-md-3 text-center mt-5'><br/><br/><br/>
+                            <div className="row">
+                                <div className="col">
+                                    <button id="btn-love" className="btn btn-circle btn-lg btn-danger mt-lg-5" onClick={this.handleLike}><i className="fas fa-heart"> {this.state.popularity}</i></button>
+                                </div>
+                            </div>
                         </div>
                         <div className="col-12 col-lg-6 col-md-6 mt-lg-4 mt-md-4">
                             {this.handleProfile()}
                         </div>
                         <div className='col-lg-3 col-md-3 mt-5 text-center'>
-                            {/* <button className="btn btn-circle btn-lg btn-danger mt-lg-5" onClick={this.handleClick}><i className="fas fa-heart"> {this.state.popularity}</i></button> */}
+                            <div className="row">
+                                <div className="col col-lg-12"><br/><br/><br/>
+                                    <h3>Block</h3>
+                                    <button id="btn-block" className="btn btn-circle btn-lg btn-danger" onClick={this.handleBlock}><i class="fas fa-ban"></i></button>
+                                </div>
+                                <div className="col col-lg-12"><br/><br/><br/>
+                                    <h3>Report</h3>
+                                    <button id="btn-report" className="btn btn-circle btn-lg btn-danger" onClick={this.handleReport}><i class="fas fa-bug"></i></button>
+                                </div>
+                            </div>
+                            <br/><br/>
                         </div>
                     </div>
                 </div>

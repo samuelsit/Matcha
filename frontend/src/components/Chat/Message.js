@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import '../../css/Chat.css'
 
 const Message = ({pseudo, message, isUser}) => {
     if (!isUser(pseudo)) {

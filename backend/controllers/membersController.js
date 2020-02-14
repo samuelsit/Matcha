@@ -18,7 +18,8 @@ exports.allMember = function (req, res) {
                 {attirance: { male: myGender === 'male' ? true : false , female: false }},
                 {attirance: { male: myGender === 'male' ? true : false , female: true }}
             ],
-            myGender: 'female'
+            myGender: 'female',
+            'pictures._1':  {$ne: '' }
         }, function (err, members) {
             if (err) {
                 res.json({
@@ -43,7 +44,8 @@ exports.allMember = function (req, res) {
                 {attirance: { male: myGender === 'male' ? true : false , female: false }},
                 {attirance: { male: myGender === 'male' ? true : false , female: true }}
             ],
-            myGender: 'male'
+            myGender: 'male',
+            'pictures._1':  {$ne: '' }
         }, function (err, members) {
             if (err) {
                 res.json({
@@ -67,7 +69,8 @@ exports.allMember = function (req, res) {
                 {attirance: { male: true , female: true }},
                 {attirance: { male: myGender === 'male' ? true : false , female: false }},
                 {attirance: { male: myGender === 'male' ? true : false , female: true }}
-            ]
+            ],
+            'pictures._1':  {$ne: '' }
         }, function (err, members) {
             if (err) {
                 res.json({
@@ -99,7 +102,8 @@ exports.CountAllMember = function (req, res) {
                 {attirance: { male: myGender === 'male' ? true : false , female: false }},
                 {attirance: { male: myGender === 'male' ? true : false , female: true }}
             ],
-            myGender: 'female'
+            myGender: 'female',
+            'pictures._1':  {$ne: '' }
         }, function (err, nbMembers) {
             if (err) {
                 res.json({
@@ -121,7 +125,8 @@ exports.CountAllMember = function (req, res) {
                 {attirance: { male: myGender === 'male' ? true : false , female: false }},
                 {attirance: { male: myGender === 'male' ? true : false , female: true }}
             ],
-            myGender: 'male'
+            myGender: 'male',
+            'pictures._1':  {$ne: '' }
         }, function (err, nbMembers) {
             if (err) {
                 res.json({
@@ -142,7 +147,8 @@ exports.CountAllMember = function (req, res) {
                 {attirance: { male: true , female: true }},
                 {attirance: { male: myGender === 'male' ? true : false , female: false }},
                 {attirance: { male: myGender === 'male' ? true : false , female: true }}
-            ]
+            ],
+            'pictures._1':  {$ne: '' }
         }, function (err, nbMembers) {
             if (err) {
                 res.json({
@@ -476,9 +482,9 @@ exports.changeMemberProfile = function (req, res) {
             member.country.lng = req.body.country.lng
         if (req.body.country.lat)
             member.country.lat = req.body.country.lat
-            member.save(function (err) {
+        member.save(function (err) {
             if (err)
-                res.json(err);            
+                res.json(err);                      
             res.json({
                 member
             });

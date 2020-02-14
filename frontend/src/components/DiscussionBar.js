@@ -9,21 +9,14 @@ class DiscussionBar extends Component {
     state = {
         redirect: false,
         member: [],
-        isPic: false
+        _1: ''
     }
 
     componentDidMount() {
         this._isMounted = true
         axios.get('http://localhost:5000/api/members/' + this.props.login).then(res => {
             if (this._isMounted) {
-                this.setState({member: res.data.member})
-            }
-        }).catch(error => {
-            console.log(error)
-        })
-        axios.get('http://localhost:5000/api/members/pictures/profile/' + this.props.login).then(res => {
-            if (this._isMounted) {
-                this.setState({isPic: res.data.status})
+                this.setState({member: res.data.member, _1: res.data.member.pictures._1})
             }
         }).catch(error => {
             console.log(error)
@@ -49,7 +42,8 @@ class DiscussionBar extends Component {
     }
 
     render () {
-        const pic = this.state.isPic === false ? require('../pictures/profile/noPic.png') : require(`../pictures/profile/${this.props.login}_1.png`)
+        let pic = /^(http|https):/.test(this.state._1) ? this.state._1 : this.state._1 !== '' ? require(`../pictures/profile/${this.state._1}`) : require(`../pictures/profile/noPic.png`)
+        // const pic = this.state.isPic === false ? require('../pictures/profile/noPic.png') : require(`../pictures/profile/${this.props.login}_1.png`)
         return (
             <Fragment>
                 {this.handleRedirect()}

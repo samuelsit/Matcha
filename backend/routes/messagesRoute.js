@@ -11,4 +11,7 @@ router.route('/api/messages/all/:pseudo1/:pseudo2')
 router.route('/api/messages/last/:pseudo')
     .get(messagesController.getLastMessages)
 
+router.route('/api/messages/exist/:pseudo1/:pseudo2')
+    .get(messagesController.isMessage)
+
 module.exports = router;

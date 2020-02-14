@@ -25,27 +25,31 @@ class Header extends Component {
                                 lng: position.coords.longitude
                             }
                         })
+                        this.props.setUserPos(position.coords.latitude, position.coords.longitude)
                     })
                 }
-            }) 
-            axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo).then(res => {
-                if (!res.data.data) {
-                    $.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
-                        var ip = String(data).match(/ip=([0-9.]+)/)
-                        $.get('https://ipapi.co/' + ip[1] + '/json', function(data) {
-                            axios
-                            .patch('http://localhost:5000/api/members/profile/country/' + this.props.pseudo, {
-                                country: {
-                                    name: data.city + ', ' + data.region,
-                                    lat: data.latitude,
-                                    lng: data.longitude
-                                }
-                            })
+            })
+            .then(() => {
+                axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo).then(res => {
+                    if (!res.data.data) {
+                        $.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
+                            var ip = String(data).match(/ip=([0-9.]+)/)
+                            $.get('https://ipapi.co/' + ip[1] + '/json', function(data) {
+                                axios
+                                .patch('http://localhost:5000/api/members/profile/country/' + this.props.pseudo, {
+                                    country: {
+                                        name: data.city + ', ' + data.region,
+                                        lat: data.latitude,
+                                        lng: data.longitude
+                                    }
+                                })
+                                this.props.setUserPos(data.latitude, data.longitude)
+                            }.bind(this))
                         }.bind(this))
-                    }.bind(this))
-                }      
-            }).catch(error => {
-                console.log(error)
+                    }      
+                }).catch(error => {
+                    console.log(error)
+                })
             })
         }
     }

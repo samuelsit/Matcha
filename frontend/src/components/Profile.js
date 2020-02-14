@@ -98,7 +98,7 @@ class Profile extends Component {
 
     handleOnBlurSubmit = () => {
         const regex = RegExp(/^(#[\w+]+,? ?)+$/)
-        axios.patch('http://localhost:5000/api/members/profile/' + this.props.pseudo, {
+        axios.post('http://localhost:5000/api/members/profile/' + this.props.pseudo, {
             interet: regex.test(this.state.interet) ? this.state.interet : '',
             attirance: {
                 male: this.state.attirance.male,
@@ -121,6 +121,7 @@ class Profile extends Component {
             biographie: this.state.biographie,
             updatedAt: Date.now()
         })
+        this.props.setUserPos(this.state.country.lat, this.state.country.lng)
     }
 
     handleLocalisation = (address, lat, lng) => {
@@ -201,9 +202,6 @@ class Profile extends Component {
         fd.append('image', event.target.files[0], event.target.files[0].name)
         axios
         .post('http://localhost:5000/api/members/pictures/' + this.props.pseudo + '/' + event.target.id, fd)
-        .then(res => {
-            console.log(res)
-        })
     }
 
     componentWillUnmount() {
@@ -252,8 +250,10 @@ class Profile extends Component {
                                             <code className="h4 d-none d-lg-block">{this.props.pseudo}</code>
                                         </div>
                                         <div className="col-4">
+                                            <Link to="/history">
                                             <div className="text-light d-none d-lg-block">Historique</div>
                                             <div className="btn btn-info btn-lg"><i className="fas fa-history"></i></div>
+                                            </Link>
                                         </div>
                                     </div>
                                     <form className="mt-4">
@@ -333,7 +333,7 @@ class Profile extends Component {
                                                 <div className="col">
                                                     <div className="form-group text-center">
                                                         <label htmlFor="place" className="text-light">Localisation</label>
-                                                        <Place style_w="form-control w-100" getLocalisation={this.handleLocalisation}/>
+                                                        <Place style_w="form-control w-100" getLocalisation={this.handleLocalisation} submitBlur={this.handleOnBlurSubmit}/>
                                                     </div>
                                                 </div>
                                             </div>
@@ -374,6 +374,14 @@ class Profile extends Component {
     }
 }
 
+const mapDispatchToProps = dispatch => {
+    return {
+        setUserPos: (lat, lng) => {
+            dispatch({ type: 'SET_USER_POS', lat: lat, lng: lng })
+        }
+    }
+}
+
 const mapStateToProps = state => {
     return {
         pseudo: state.pseudo,
@@ -381,4 +389,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, null)(Profile)
+export default connect(mapStateToProps, mapDispatchToProps)(Profile)

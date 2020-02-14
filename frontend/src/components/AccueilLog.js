@@ -19,14 +19,13 @@ class Accueil extends Component {
             female: false
         },
         myGender: '',
-        myCoords: [],
         skip: 0,
         page: 1,
-        pageMax: 0
+        pageMax: 1,
+        redirect: false
     }
 
     componentDidMount() {
-        this.DisablePage()
         this._isMounted = true
         axios.get('http://localhost:5000/api/members/' + this.props.pseudo).then(res => {
             if (this._isMounted) {
@@ -40,6 +39,9 @@ class Accueil extends Component {
             }           
         })
         .then(() => {
+            if (this.state.myGender !== 'male' && this.state.myGender !== 'female' && this._isMounted) {
+                this.setState({ redirect: true })
+            }
             axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
                 skip: this.state.skip,
                 attirance: {
@@ -49,7 +51,8 @@ class Accueil extends Component {
                 myGender: this.state.myGender
             }).then(res => {
                 if (this._isMounted) {
-                    this.setState({card: res.data.members.map((el, i) => (
+                    this.setState({card: res.data.members.map((el, i) => {
+                        return (
                         <CardLove
                             key={i}
                             isLoggued={el.isLoggued.toString()}
@@ -62,34 +65,36 @@ class Accueil extends Component {
                             interet={el.interet}
                             pseud={el.pseudo}
                             img={el.pictures._1}
+                            updateProps={false}
                         />
-                    ))})
+                    )})})
                 }
             })
-            axios.post('http://localhost:5000/api/members/CountAll/' + this.props.pseudo, {
-                skip: this.state.skip,
-                attirance: {
-                    male: this.state.attirance.male,
-                    female: this.state.attirance.female
-                },
-                myGender: this.state.myGender
-            }).then(res => {
-                if (this._isMounted) {
-                    this.setState({pageMax: Math.ceil(res.data.nbMembers / 4)})
-                }
+            .then(() => {
+                axios.post('http://localhost:5000/api/members/CountAll/' + this.props.pseudo, {
+                    skip: this.state.skip,
+                    attirance: {
+                        male: this.state.attirance.male,
+                        female: this.state.attirance.female
+                    },
+                    myGender: this.state.myGender
+                }).then(res => {
+                    if (this._isMounted) {
+                        this.setState({pageMax: Math.ceil(res.data.nbMembers / 4)})
+                    }
+                }).then(() => {
+                    if (this.props.isAuth === true && this._isMounted) {
+                        this.DisablePage()
+                    }
+                })
             })
         })
     }
 
     getDistanceFrom = (lat, lng) => {
-        navigator.geolocation.getCurrentPosition(position => {            
-            if (this._isMounted) {
-                this.setState({myCoords: {latitude: position.coords.latitude, longitude: position.coords.longitude}})
-                this.props.setUserPos(position.coords.latitude, position.coords.longitude)
-            }
-        })
-        const cardCoords = {latitude: lat, longitude: lng}
-        var distance = convertDistance(getDistance(this.state.myCoords, cardCoords, 1000), 'km')            
+        const CoordsMember = {latitude: lat, longitude: lng}
+        const CoordsUser = {latitude: this.props.lat, longitude: this.props.lng}
+        var distance = convertDistance(getDistance(CoordsUser, CoordsMember, 1000), 'km')        
         return distance
     }
 
@@ -125,7 +130,9 @@ class Accueil extends Component {
     }
 
     getNewMembers = () => {
-        this.DisablePage()
+        if (this._isMounted && this.props.isAuth) {
+            this.DisablePage()
+        }
         axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
             skip: this.state.skip,
             attirance: {
@@ -148,6 +155,7 @@ class Accueil extends Component {
                         interet={el.interet}
                         pseud={el.pseudo}
                         img={el.pictures._1}
+                        updateProps={true}
                     />
                 ))})
             }
@@ -168,6 +176,14 @@ class Accueil extends Component {
         }
     }
 
+    handleRedirect = () => {
+        if (this.state.redirect) {
+            return (
+                <Redirect to={"/profile"} />
+            )
+        }
+    }
+
     DisablePage = () => {
         var btnprev = document.getElementById('prev')
         var btnnext = document.getElementById('next')
@@ -176,8 +192,8 @@ class Accueil extends Component {
         }
         else {
             btnprev.classList.remove("disabled");
-        }
-        if (this.state.page === this.state.pageMax || (this.state.pageMax > 0 && this.state.pageMax < 1)) {
+        }        
+        if (this.state.page === this.state.pageMax) {
             btnnext.classList.add("disabled");
         }
         else {
@@ -193,6 +209,7 @@ class Accueil extends Component {
         if (this.props.isAuth === true) {
             return (
                 <Fragment>
+                    {this.handleRedirect()}
                     <Header />
                     <br/>
                     <div className="container-fluid mt-5">
@@ -208,7 +225,7 @@ class Accueil extends Component {
                             <div className="col">
                                 <nav aria-label="Page navigation example" className="mt-3">
                                     <ul className="pagination justify-content-start">
-                                        <li id="prev" className="page-item disable cursor-pagination" onClick={this.handlePrev}>
+                                        <li id="prev" className="page-item cursor-pagination" onClick={this.handlePrev}>
                                             <div className="page-link">Précédente</div>
                                         </li>
                                         <li id="next" className="page-item cursor-pagination" onClick={this.handleNext}>
@@ -232,19 +249,13 @@ class Accueil extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        setUserPos: (lat, lng) => {
-            dispatch({ type: 'SET_USER_POS', lat: lat, lng: lng })
-        }
-    }
-}
-
 const mapStateToProps = state => {
     return {
         isAuth: state.isAuth,
-        pseudo: state.pseudo
+        pseudo: state.pseudo,
+        lat: state.lat,
+        lng: state.lng
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Accueil)
+export default connect(mapStateToProps, null)(Accueil)

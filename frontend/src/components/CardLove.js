@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
+// import '../css/Card.css'
 
 class CardLove extends Component {
 
@@ -12,104 +13,178 @@ class CardLove extends Component {
         popularity: 0,
         pseudo1: 0,
         pseudo2: 0,
-        redirect: false,
-        isClick: true
+        redirect: false
     }
 
-    componentDidMount() {
+    componentDidMount() {        
         var btnLove = document.getElementById('btn-love-' + this.props.pseud)
         this._isMounted = true
-        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud).then(res => {
+        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseud + '/' + this.props.pseudo).then(res => {
             if (this._isMounted) {
                 this.setState({
-                    pseudo2: res.data.interactions
+                    pseudo1: res.data.interactions
                 })
             }
         }).catch(error => {
             console.log(error)
-        }).then(() => {
-            if (this.state.pseudo2) {
-                btnLove.classList.remove("btn-danger");
-                btnLove.classList.add("btn-success");
-            }
         })
-        axios.get('http://localhost:5000/api/members/' + this.props.pseud).then(res => {
-            if (this._isMounted) {
-                this.setState({
-                    picture: res.data.member.pictures._1
-                })
-            }           
-        }).catch(error => {
-            console.log(error)
-        })
-        axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
-            .then(res => {
+        .then(() => {
+            axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud).then(res => {
                 if (this._isMounted) {
                     this.setState({
-                        popularity: res.data.interactions
+                        pseudo2: res.data.interactions
+                    })
+                }
+            }).catch(error => {
+                console.log(error)
+            }).then(() => {
+                if (this.state.pseudo2) {
+                    btnLove.classList.remove("btn-danger");
+                    btnLove.classList.add("btn-success");
+                }
+            })
+            axios.get('http://localhost:5000/api/members/' + this.props.pseud).then(res => {
+                if (this._isMounted) {
+                    this.setState({
+                        picture: res.data.member.pictures._1
                     })
                 }           
             }).catch(error => {
                 console.log(error)
+            })
+            axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
+                .then(res => {
+                    if (this._isMounted) {
+                        this.setState({
+                            popularity: res.data.interactions
+                        })
+                    }           
+                }).catch(error => {
+                    console.log(error)
+            }) 
         })
+    }
+
+    componentDidUpdate(previousProps) {        
+        const data = this.props
+        if (previousProps !== data) {
+            var btnLove = document.getElementById('btn-love-' + this.props.pseud)
+            axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseud + '/' + this.props.pseudo).then(res => {
+                if (this._isMounted) {
+                    this.setState({
+                        pseudo1: res.data.interactions
+                    })
+                }
+            }).catch(error => {
+                console.log(error)
+            })
+            .then(() => {
+                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud).then(res => {
+                    if (this._isMounted) {
+                        this.setState({
+                            pseudo2: res.data.interactions
+                        })
+                    }
+                }).catch(error => {
+                    console.log(error)
+                }).then(() => {
+                    if (this.state.pseudo2) {
+                        btnLove.classList.remove("btn-danger");
+                        btnLove.classList.add("btn-success");
+                    }
+                    else {
+                        btnLove.classList.remove("btn-success");
+                        btnLove.classList.add("btn-danger");
+                    }
+                })
+                axios.get('http://localhost:5000/api/members/' + this.props.pseud).then(res => {
+                    if (this._isMounted) {
+                        this.setState({
+                            picture: res.data.member.pictures._1
+                        })
+                    }           
+                }).catch(error => {
+                    console.log(error)
+                })
+                axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
+                    .then(res => {
+                        if (this._isMounted) {
+                            this.setState({
+                                popularity: res.data.interactions
+                            })
+                        }           
+                    }).catch(error => {
+                        console.log(error)
+                }) 
+            })
+        }
     }
 
     handleClick = () => {
         var btnLove = document.getElementById('btn-love-' + this.props.pseud)
 
-        if (this.state.isClick) {
-            btnLove.classList.remove("btn-danger");
-            btnLove.classList.add("btn-success");
-            axios.post('http://localhost:5000/api/interactions', {
-                from: this.props.pseudo,
-                to: this.props.pseud,
-                data: 'like'
-            }).then(() => {
-                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud).then(res => {
-                    if (this._isMounted) {
-                        this.setState({ pseudo2: res.data.interactions })
-                    }
-                }).then(() => {
-                    if (this._isMounted) {
-                        this.setState({isClick: false})
-                    }
-                    if (this.state.pseudo1 && this.state.pseudo2) {
-                        axios.post('http://localhost:5000/api/messages', {
-                            from: this.props.pseudo,
-                            to: this.props.pseud,
-                            data: "C'est un match !"
-                        })
-                    }
+        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud)
+        .then(res => {
+            if (res.data.interactions === 0) {
+                btnLove.classList.remove("btn-danger");
+                btnLove.classList.add("btn-success");
+                axios.post('http://localhost:5000/api/interactions', {
+                    from: this.props.pseudo,
+                    to: this.props.pseud,
+                    data: 'like'
                 })
-            }).then(() => {
-                axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
+                .then(() => {
+                    axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
                     .then(res => {
                         if (this._isMounted) {
                             this.setState({ popularity: res.data.interactions })
                         }           
                     }).catch(error => {
                         console.log(error)
+                    })
+                    axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud)
+                    .then(res => {
+                        if (this._isMounted) {
+                            this.setState({ pseudo2: res.data.interactions })
+                        }
+                    })
+                    .then(() => {
+                        if (this.state.pseudo1 !== 0 && this.state.pseudo2 !== 0) {
+                            axios.post('http://localhost:5000/api/messages', {
+                                from: this.props.pseudo,
+                                to: this.props.pseud,
+                                data: "C'est un match !"
+                            })
+                        }
+                    })
+                    
                 })
-            })
-        }
-        else {
-            btnLove.classList.add("btn-danger");
-            btnLove.classList.remove("btn-success");
-            axios.post('http://localhost:5000/api/interactions/remove', {
-                from: this.props.pseudo,
-                to: this.props.pseud,
-                data: 'like'
-            }).then(() => {
-                axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
-                .then(res => {
-                    if (this._isMounted) {
-                        this.setState({ popularity: res.data.interactions, isClick: true })
-                    }           
-                }).catch(error => {
-                    console.log(error)
+            }
+            else {
+                btnLove.classList.add("btn-danger");
+                btnLove.classList.remove("btn-success");
+                axios.post('http://localhost:5000/api/interactions/remove', {
+                    from: this.props.pseudo,
+                    to: this.props.pseud,
+                    data: 'like'
+                }).then(() => {
+                    axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud)
+                    .then(res => {
+                        if (this._isMounted) {
+                            this.setState({ pseudo2: res.data.interactions })
+                        }
+                    })
+                    axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
+                    .then(res => {
+                        if (this._isMounted) {
+                            this.setState({ popularity: res.data.interactions })
+                        }           
+                    }).catch(error => {
+                        console.log(error)
+                    })
                 })
-            })
-        }
+            }
+        })
     }
 
     handleView = () => {
@@ -171,10 +246,10 @@ class CardLove extends Component {
                         <div className="text-dark text-left card-header"><h5 className="card-title">{this.props.name} <span className={isLoggued}> </span> <span className={colorgender.concat(' ', "float-right")}><i className={gender}></i></span></h5></div>
                     </div>
                     <div className="card-body">
-                        <p className="card-text">{this.props.age} ans<br/><i className="fas fa-map-marker-alt"></i> {this.props.country} {distance}</p><hr/>
+                        <p className="card-text">{this.props.age} ans<br/><span className="d-none d-lg-block d-md-block"><i className="fas fa-map-marker-alt"></i> {this.props.country} {distance}</span></p><hr/>
                         <code>{this.props.interet ? this.props.interet : "Pas de centre d'intêret"}</code>
                         <p className="card-text"></p><hr/>
-                        <div id={`btn-love-${this.props.pseud}`} className="btn btn-danger btn-circle text-light float-left" onClick={this.handleClick}><i className="fas fa-heart"> {this.state.popularity}</i></div>
+                        <div id={`btn-love-${this.props.pseud}`} className="btn btn-danger btn-circle text-light float-left d-none d-md-block d-lg-block" onClick={this.handleClick}><i className="fas fa-heart"> {this.state.popularity}</i></div>
                         <div className={colorlove.concat(' ', 'float-right')}><i className={love.concat(' ', 'text-light')}></i></div>
                         {this.props.love === "bi" ? <div className="btn btn-info float-right mr-1"><i className="fas fa-venus-mars"></i></div> : null}
                     </div>
