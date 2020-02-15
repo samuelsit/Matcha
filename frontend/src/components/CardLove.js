@@ -65,7 +65,7 @@ class CardLove extends Component {
         })
     }
 
-    componentDidUpdate(previousProps) {        
+    componentDidUpdate(previousProps) { 
         const data = this.props
         if (previousProps !== data) {
             var btnLove = document.getElementById('btn-love-' + this.props.pseud)

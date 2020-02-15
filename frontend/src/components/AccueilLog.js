@@ -22,7 +22,11 @@ class Accueil extends Component {
         skip: 0,
         page: 1,
         pageMax: 1,
-        redirect: false
+        redirect: false,
+        filtreAge: 18,
+        filtreDis: 0,
+        filtrePop: 0,
+        tri: null
     }
 
     componentDidMount() {
@@ -51,23 +55,26 @@ class Accueil extends Component {
                 myGender: this.state.myGender
             }).then(res => {
                 if (this._isMounted) {
-                    this.setState({card: res.data.members.map((el, i) => {
-                        return (
-                        <CardLove
-                            key={i}
-                            isLoggued={el.isLoggued.toString()}
-                            name={el.firstname}
-                            age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
-                            country={el.country.name}
-                            distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
-                            gender={el.myGender}
-                            love={this.orientationSexuelle(el.myGender, el.attirance)}
-                            interet={el.interet}
-                            pseud={el.pseudo}
-                            img={el.pictures._1}
-                            updateProps={false}
-                        />
-                    )})})
+                    this.setState({card: res.data.members
+                        .map((el, i) => {
+                            return (
+                                <CardLove
+                                    key={i}
+                                    isLoggued={el.isLoggued.toString()}
+                                    name={el.firstname}
+                                    age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
+                                    country={el.country.name}
+                                    distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
+                                    gender={el.myGender}
+                                    love={this.orientationSexuelle(el.myGender, el.attirance)}
+                                    interet={el.interet}
+                                    pseud={el.pseudo}
+                                    img={el.pictures._1}
+                                    updateProps={false}
+                                />
+                            )
+                        })
+                    })
                 }
             })
             .then(() => {
@@ -201,6 +208,75 @@ class Accueil extends Component {
         }
     }
 
+    handleRangeToState = event => {
+        const id = event.target.name
+        if (id === "customRange1") {
+            const filtreAge = event.target.value
+            this.setState({filtreAge}, this.filterMember)
+        }
+        else if (id === "customRange2") {
+            const filtrePop = event.target.value
+            this.setState({filtrePop}, this.filterMember)
+        }
+        else if (id === "customRange3") {
+            const filtreDis = event.target.value
+            this.setState({filtreDis}, this.filterMember)
+        }
+        else if (id === "tri") {
+            const tri = event.target.id
+            this.setState({tri})
+        }
+    }
+
+    // getPop = pseudo => {
+    //     axios
+    //     .get('http://localhost:5000/api/interactions/like/count/' + pseudo)
+    //     .then(res => res.data.interactions)
+    // }
+
+    filterMember = () => {
+        if (this._isMounted && this.props.isAuth) {
+            this.DisablePage()
+        }
+        axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
+            skip: this.state.skip,
+            attirance: {
+                male: this.state.attirance.male,
+                female: this.state.attirance.female
+            },
+            myGender: this.state.myGender
+        }).then(res => {
+            if (this._isMounted) {
+                this.setState({card: res.data.members
+                    .map((el, i) => {
+                        if (this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day)) >= this.state.filtreAge
+                        && this.getDistanceFrom(el.country.lat, el.country.lng) >= this.state.filtreDis) {
+                            return (
+                                <CardLove
+                                    key={i}
+                                    isLoggued={el.isLoggued.toString()}
+                                    name={el.firstname}
+                                    age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
+                                    country={el.country.name}
+                                    distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
+                                    gender={el.myGender}
+                                    love={this.orientationSexuelle(el.myGender, el.attirance)}
+                                    interet={el.interet}
+                                    pseud={el.pseudo}
+                                    img={el.pictures._1}
+                                    updateProps={true}
+                                />
+                            )
+                        }
+                        else {
+                            return null
+                        }
+                    })
+                })
+            }
+        })
+    }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
@@ -215,7 +291,7 @@ class Accueil extends Component {
                     <div className="container-fluid mt-5">
                         <div className="row">
                             <div className="col">
-                                <FilterSort getRange={this.handleRangeToState}/>
+                                <FilterSort getRange={this.handleRangeToState} filtreAge={this.state.filtreAge} filtreDis={this.state.filtreDis} filtrePop={this.state.filtrePop}/>
                             </div>
                         </div><hr/>
                         <div className="row text-center">
