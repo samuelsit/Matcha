@@ -13,14 +13,28 @@
     left: calc(100vw - 100px);
 }
 
-#messenger {
-    display: none;
-    position: fixed;
-    top: 54vh;
-    left: calc(100vw - 475px);
-    width: 450px;
-    height: 45vh;
-    max-height: 45vh;
+@media screen and (max-width: 660px) {
+    #messenger {
+        display: none;
+        position: fixed;
+        top: 54vh;
+        left: 29vw;
+        width: 70vw;
+        height: 45vh;
+        max-height: 45vh;
+    }
+}
+
+@media screen and (min-width: 660px) {
+    #messenger {
+        display: none;
+        position: fixed;
+        top: 54vh;
+        left: calc(100vw - 475px);
+        width: 450px;
+        height: 45vh;
+        max-height: 45vh;
+    }
 }
 
 .middle {

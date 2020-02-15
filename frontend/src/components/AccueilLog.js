@@ -24,7 +24,7 @@ class Accueil extends Component {
         pageMax: 1,
         redirect: false,
         filtreAge: 18,
-        filtreDis: 0,
+        filtreDis: 10000,
         filtrePop: 0,
         tri: null
     }
@@ -250,7 +250,7 @@ class Accueil extends Component {
                 this.setState({card: res.data.members
                     .map((el, i) => {
                         if (this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day)) >= this.state.filtreAge
-                        && this.getDistanceFrom(el.country.lat, el.country.lng) >= this.state.filtreDis) {
+                        && this.getDistanceFrom(el.country.lat, el.country.lng) <= this.state.filtreDis) {
                             return (
                                 <CardLove
                                     key={i}

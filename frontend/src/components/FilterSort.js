@@ -25,14 +25,16 @@ class FilterSort extends Component {
                         </span>
                         <span className="h1 align-middle">Trier par: </span>
                         <div className="btn-group btn-group-lg" role="group">
-                            <label htmlFor="age"><button type="button" className="btn btn-secondary" name="tri" id="age" onClick={this.props.getRange}>Âge</button></label>
-                            <input type="radio" className="d-none"/>
-                            <label htmlFor="pop"><button type="button" className="btn btn-secondary" name="tri" id="pop" onClick={this.props.getRange}>Popularité</button></label>
-                            <input type="radio" className="d-none"/>
-                            <label htmlFor="dis"><button type="button" className="btn btn-secondary" name="tri" id="dis" onClick={this.props.getRange}>Distance</button></label>
-                            <input type="radio" className="d-none"/>
-                            <label htmlFor="tag"><button type="button" className="btn btn-secondary" name="tri" id="tag" onClick={this.props.getRange}>Tags</button></label>
-                            <input type="radio" className="d-none"/>
+                            <div className="container-fluid">
+                                <label htmlFor="age"><button type="button" className="btn btn-secondary" name="tri" id="age" onClick={this.props.getRange}>Âge</button></label>
+                                <input type="radio" className="d-none"/>
+                                <label htmlFor="pop"><button type="button" className="btn btn-secondary" name="tri" id="pop" onClick={this.props.getRange}>Popularité</button></label>
+                                <input type="radio" className="d-none"/>
+                                <label htmlFor="dis"><button type="button" className="btn btn-secondary" name="tri" id="dis" onClick={this.props.getRange}>Distance</button></label>
+                                <input type="radio" className="d-none"/>
+                                <label htmlFor="tag"><button type="button" className="btn btn-secondary" name="tri" id="tag" onClick={this.props.getRange}>Tags</button></label>
+                                <input type="radio" className="d-none"/>
+                            </div>
                         </div>
                     </div>
                     <div className="card-body">
