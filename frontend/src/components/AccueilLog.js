@@ -25,7 +25,7 @@ class Accueil extends Component {
         redirect: false,
         filtreAge: 18,
         filtreDis: 10000,
-        filtrePop: 0,
+        filtrePop: 1000,
         tri: null
     }
 
@@ -70,7 +70,6 @@ class Accueil extends Component {
                                     interet={el.interet}
                                     pseud={el.pseudo}
                                     img={el.pictures._1}
-                                    updateProps={false}
                                 />
                             )
                         })
@@ -162,7 +161,6 @@ class Accueil extends Component {
                         interet={el.interet}
                         pseud={el.pseudo}
                         img={el.pictures._1}
-                        updateProps={true}
                     />
                 ))})
             }
@@ -228,11 +226,12 @@ class Accueil extends Component {
         }
     }
 
-    // getPop = pseudo => {
-    //     axios
-    //     .get('http://localhost:5000/api/interactions/like/count/' + pseudo)
-    //     .then(res => res.data.interactions)
-    // }
+    async getPop(pseudo, callback) {
+        let pop = await axios
+                .get('http://localhost:5000/api/interactions/like/count/' + pseudo)
+                .then(res => res.data.interactions)
+        return (callback(pop))
+    }
 
     filterMember = () => {
         if (this._isMounted && this.props.isAuth) {
@@ -249,8 +248,10 @@ class Accueil extends Component {
             if (this._isMounted) {
                 this.setState({card: res.data.members
                     .map((el, i) => {
+                        //let pop = this.getPop(el.pseudo, res => res)
+                        //let pop = this.getPop(el.pseudo, res => { console.log(res) })
                         if (this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day)) >= this.state.filtreAge
-                        && this.getDistanceFrom(el.country.lat, el.country.lng) <= this.state.filtreDis) {
+                        && this.getDistanceFrom(el.country.lat, el.country.lng) <= this.state.filtreDis) {// && pop <= this.state.filtrePop) {
                             return (
                                 <CardLove
                                     key={i}
@@ -264,7 +265,6 @@ class Accueil extends Component {
                                     interet={el.interet}
                                     pseud={el.pseudo}
                                     img={el.pictures._1}
-                                    updateProps={true}
                                 />
                             )
                         }
