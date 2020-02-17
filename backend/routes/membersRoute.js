@@ -88,6 +88,9 @@ router.route('/api/members/isValid/:pseudo')
 router.route('/api/members/isCountry/:pseudo')
     .get(memberController.isCountry);
 
+router.route('/api/members/getCountry/:pseudo')
+    .get(memberController.getCountry);
+
 // Change isValid
 router.route('/api/members/isValid/:pseudo/:status')
     .patch(memberController.changeIsValid);

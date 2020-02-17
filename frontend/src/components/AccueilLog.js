@@ -39,7 +39,7 @@ class Accueil extends Component {
                         female: res.data.member.attirance.female
                     },
                     myGender: res.data.member.myGender
-                })
+                })              
             }           
         })
         .then(() => {
@@ -269,7 +269,7 @@ class Accueil extends Component {
                             .then(() => console.log("Pseudo = " + el.pseudo + " Popularite = " + pop))
                         
                         if (this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day)) >= this.state.filtreAge
-                        && this.getDistanceFrom(el.country.lat, el.country.lng) <= this.state.filtreDis ) {// && pop <= this.state.filtrePop) {
+                        && this.getDistanceFrom(el.country.lat, el.country.lng) <= this.state.filtreDis && pop <= this.state.filtrePop) {
                             return (
                                 <CardLove
                                     key={i}

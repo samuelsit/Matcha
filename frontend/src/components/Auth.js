@@ -23,9 +23,11 @@ class Auth extends Component {
     }
 
     setRedirect = () => {
-        this.setState({
-            redirect: true
-        })
+        if (this._isMounted) {
+            this.setState({
+                redirect: true
+            })
+        }
     }
     
     handleRedirect = () => {
@@ -39,11 +41,11 @@ class Auth extends Component {
     handleText = event => {
         const id = event.target.id
         
-        if (id === "pseudo") {
+        if (id === "pseudo" && this._isMounted) {
             const pseudo = event.target.value
             this.setState({pseudo})
         }
-        else if (id === "pass") {
+        else if (id === "pass" && this._isMounted) {
             const pass = event.target.value
             this.setState({pass})
         }
@@ -89,7 +91,29 @@ class Auth extends Component {
                                         if (this._isMounted) {
                                             this.props.setUserPseudo(this.state.pseudo)
                                             this.props.setUserIsAuth(true)
-                                            this.setRedirect()
+                                            axios.get('http://localhost:5000/api/members/isCountry/' + this.state.pseudo)
+                                            .then(res => {
+                                                if (res.data.data) {
+                                                    axios.get('http://localhost:5000/api/members/getCountry/' + this.state.pseudo)
+                                                    .then(res => {
+                                                        if (res.data.lng && res.data.lat) {
+                                                            this.props.setUserPos(res.data.lat, res.data.lng)
+                                                        }
+                                                        else {
+                                                            this.props.setUserPos(0, 0)
+                                                        }
+                                                    })
+                                                    .then(() => {
+                                                        this.setRedirect()
+                                                    })
+                                                }
+                                                else {
+                                                    this.props.setUserPos(0, 0)
+                                                }
+                                            })
+                                            .then(() => {
+                                                this.setRedirect()
+                                            })
                                         }
                                     })
                                     .catch(error => { console.log(error) })
@@ -168,7 +192,10 @@ const mapDispatchToProps = dispatch => {
         },
         setUserPseudo: (pseudo) => {
             dispatch({ type: 'SET_USER_PSEUDO', pseudo: pseudo })
-        }
+        },
+        setUserPos: (lat, lng) => {
+            dispatch({ type: 'SET_USER_POS', lat: lat, lng: lng })
+        }   
     }
 }
 

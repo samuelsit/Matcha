@@ -229,6 +229,30 @@ exports.isCountry = function (req, res) {
     });
 };
 
+exports.getCountry = function (req, res) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        if (member.country.name === '' ||
+            member.country.lat === 0 ||
+            member.country.lng === 0) {
+            res.json({
+                data: false
+            });
+        }
+        else {
+            res.json({
+                lng: member.country.lng,
+                lat: member.country.lat
+            });
+        }
+    });
+};
+
 // Handle create members actions and send mail
 exports.newMember = function (req, res) {
     const nodemailer = require("nodemailer");
