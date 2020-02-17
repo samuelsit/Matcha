@@ -7,7 +7,7 @@ const fs = require('fs')
 exports.allMember = function (req, res) {    
     var memberLog = '^' + req.params.pseudo + '$'
     var regex = new RegExp(memberLog)
-    let {attirance, myGender, skip} = req.body
+    let {attirance, myGender} = req.body
     
     if (!attirance.male && attirance.female) {
         Member
@@ -32,8 +32,6 @@ exports.allMember = function (req, res) {
             });
         })
         .sort({isLoggued: -1})
-        .skip(skip)
-        .limit(4);
     }
     else if (attirance.male && !attirance.female) {
         Member
@@ -58,8 +56,6 @@ exports.allMember = function (req, res) {
             });
         })
         .sort({isLoggued: -1})
-        .skip(skip)
-        .limit(4);
     }
     else {
         Member
@@ -83,83 +79,6 @@ exports.allMember = function (req, res) {
             });
         })
         .sort({isLoggued: -1})
-        .skip(skip)
-        .limit(4);
-    }
-};
-
-exports.CountAllMember = function (req, res) {    
-    var memberLog = '^' + req.params.pseudo + '$'
-    var regex = new RegExp(memberLog)
-    let {attirance, myGender, skip} = req.body
-    
-    if (!attirance.male && attirance.female) {
-        Member
-        .countDocuments({
-            pseudo: {$not: regex},
-            $or: [
-                {attirance: { male: true , female: true }},
-                {attirance: { male: myGender === 'male' ? true : false , female: false }},
-                {attirance: { male: myGender === 'male' ? true : false , female: true }}
-            ],
-            myGender: 'female',
-            'pictures._1':  {$ne: '' }
-        }, function (err, nbMembers) {
-            if (err) {
-                res.json({
-                    status: "error",
-                    message: err
-                });
-            }
-            res.json({
-                nbMembers
-            });
-        })
-    }
-    else if (attirance.male && !attirance.female) {
-        Member
-        .countDocuments({
-            pseudo: {$not: regex},
-            $or: [
-                {attirance: { male: true , female: true }},
-                {attirance: { male: myGender === 'male' ? true : false , female: false }},
-                {attirance: { male: myGender === 'male' ? true : false , female: true }}
-            ],
-            myGender: 'male',
-            'pictures._1':  {$ne: '' }
-        }, function (err, nbMembers) {
-            if (err) {
-                res.json({
-                    status: "error",
-                    message: err
-                });
-            }
-            res.json({
-                nbMembers
-            });
-        })
-    }
-    else {
-        Member
-        .countDocuments({
-            pseudo: {$not: regex},
-            $or: [
-                {attirance: { male: true , female: true }},
-                {attirance: { male: myGender === 'male' ? true : false , female: false }},
-                {attirance: { male: myGender === 'male' ? true : false , female: true }}
-            ],
-            'pictures._1':  {$ne: '' }
-        }, function (err, nbMembers) {
-            if (err) {
-                res.json({
-                    status: "error",
-                    message: err
-                });
-            }
-            res.json({
-                nbMembers
-            });
-        })
     }
 };
 

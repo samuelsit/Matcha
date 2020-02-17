@@ -20,6 +20,7 @@ class Accueil extends Component {
         },
         myGender: '',
         skip: 0,
+        limit: 4,
         page: 1,
         pageMax: 1,
         redirect: false,
@@ -47,14 +48,15 @@ class Accueil extends Component {
                 this.setState({ redirect: true })
             }
             axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
-                skip: this.state.skip,
                 attirance: {
                     male: this.state.attirance.male,
                     female: this.state.attirance.female
                 },
                 myGender: this.state.myGender
-            }).then(res => {
+            })
+            .then(res => {
                 if (this._isMounted) {
+                    this.setState({pageMax: Math.ceil(res.data.members.length / 4)})
                     this.setState({card: res.data.members
                         .map((el, i) => {
                             return (
@@ -73,26 +75,14 @@ class Accueil extends Component {
                                 />
                             )
                         })
+                        .slice(this.state.skip, this.state.limit)
                     })
                 }
             })
             .then(() => {
-                axios.post('http://localhost:5000/api/members/CountAll/' + this.props.pseudo, {
-                    skip: this.state.skip,
-                    attirance: {
-                        male: this.state.attirance.male,
-                        female: this.state.attirance.female
-                    },
-                    myGender: this.state.myGender
-                }).then(res => {
-                    if (this._isMounted) {
-                        this.setState({pageMax: Math.ceil(res.data.nbMembers / 4)})
-                    }
-                }).then(() => {
-                    if (this.props.isAuth === true && this._isMounted) {
-                        this.DisablePage()
-                    }
-                })
+                if (this.props.isAuth === true && this._isMounted) {
+                    this.DisablePage()
+                }
             })
         })
     }
@@ -148,21 +138,24 @@ class Accueil extends Component {
             myGender: this.state.myGender
         }).then(res => {
             if (this._isMounted) {
-                this.setState({card: res.data.members.map((el, i) => (
-                    <CardLove
-                        key={i}
-                        isLoggued={el.isLoggued.toString()}
-                        name={el.firstname}
-                        age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
-                        country={el.country.name}
-                        distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
-                        gender={el.myGender}
-                        love={this.orientationSexuelle(el.myGender, el.attirance)}
-                        interet={el.interet}
-                        pseud={el.pseudo}
-                        img={el.pictures._1}
-                    />
-                ))})
+                this.setState({card: res.data.members
+                    .map((el, i) => (
+                        <CardLove
+                            key={i}
+                            isLoggued={el.isLoggued.toString()}
+                            name={el.firstname}
+                            age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
+                            country={el.country.name}
+                            distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
+                            gender={el.myGender}
+                            love={this.orientationSexuelle(el.myGender, el.attirance)}
+                            interet={el.interet}
+                            pseud={el.pseudo}
+                            img={el.pictures._1}
+                        />
+                    ))
+                    .slice(this.state.skip, this.state.limit)
+                })
             }
         }).catch(error => {
             console.log(error)
@@ -171,13 +164,13 @@ class Accueil extends Component {
 
     handleNext = () => {
         if (this.state.page < this.state.pageMax) {
-            this.setState({skip: this.state.skip + 4, page: this.state.page + 1}, this.getNewMembers)
+            this.setState({skip: this.state.skip + 4, limit: this.state.limit + 4, page: this.state.page + 1}, this.getNewMembers)
         }
     }
 
     handlePrev = () => {
         if (this.state.page > 1) {
-            this.setState({skip: this.state.skip - 4, page: this.state.page - 1}, this.getNewMembers)
+            this.setState({skip: this.state.skip - 4, limit: this.state.limit - 4, page: this.state.page - 1}, this.getNewMembers)
         }
     }
 
@@ -260,16 +253,13 @@ class Accueil extends Component {
             if (this._isMounted) {
                 this.setState({card: res.data.members
                     .map((el, i) => {
-
                         let pop = null
-                        //let pop = this.getPop(el.pseudo, res => res)
-                        //let pop = this.getPop(el.pseudo, res => { console.log(res) })
                         this.getPop(el.pseudo)
                             .then((res) => pop = res)
-                            .then(() => console.log("Pseudo = " + el.pseudo + " Popularite = " + pop))
-                        
+                            .then(() => {console.log("Pseudo = " + el.pseudo + " Popularite = " + pop) })                        
                         if (this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day)) >= this.state.filtreAge
                         && this.getDistanceFrom(el.country.lat, el.country.lng) <= this.state.filtreDis && pop <= this.state.filtrePop) {
+                            console.log("Pseudo = " + el.pseudo + " Popularite = " + pop)
                             return (
                                 <CardLove
                                     key={i}
@@ -290,6 +280,7 @@ class Accueil extends Component {
                             return null
                         }
                     })
+                    .slice(this.state.skip, this.state.limit)
                 })
             }
         })
