@@ -226,11 +226,23 @@ class Accueil extends Component {
         }
     }
 
-    async getPop(pseudo, callback) {
-        let pop = await axios
-                .get('http://localhost:5000/api/interactions/like/count/' + pseudo)
-                .then(res => res.data.interactions)
-        return (callback(pop))
+    //OLD
+
+    // async getPop(pseudo, callback) {
+    //     let pop = await axios
+    //             .get('http://localhost:5000/api/interactions/like/count/' + pseudo)
+    //             .then(res => res.data.interactions)
+    //     return (callback(pop))
+    // }
+
+
+    //NEW
+
+    async getPop(pseudo) {
+        let pop = 
+            await axios.get('http://localhost:5000/api/interactions/like/count/' + pseudo)
+                .then((res) => res.data.interactions)
+        return (pop)
     }
 
     filterMember = () => {
@@ -248,10 +260,16 @@ class Accueil extends Component {
             if (this._isMounted) {
                 this.setState({card: res.data.members
                     .map((el, i) => {
+
+                        let pop = null
                         //let pop = this.getPop(el.pseudo, res => res)
                         //let pop = this.getPop(el.pseudo, res => { console.log(res) })
+                        this.getPop(el.pseudo)
+                            .then((res) => pop = res)
+                            .then(() => console.log("Pseudo = " + el.pseudo + " Popularite = " + pop))
+                        
                         if (this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day)) >= this.state.filtreAge
-                        && this.getDistanceFrom(el.country.lat, el.country.lng) <= this.state.filtreDis) {// && pop <= this.state.filtrePop) {
+                        && this.getDistanceFrom(el.country.lat, el.country.lng) <= this.state.filtreDis ) {// && pop <= this.state.filtrePop) {
                             return (
                                 <CardLove
                                     key={i}
