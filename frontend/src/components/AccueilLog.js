@@ -26,7 +26,7 @@ class Accueil extends Component {
         redirect: false,
         filtreAge: 18,
         filtreDis: 10000,
-        filtrePop: 1000,
+        filtrePop: 0,
         tri: null
     }
 
@@ -219,23 +219,10 @@ class Accueil extends Component {
         }
     }
 
-    //OLD
-
-    // async getPop(pseudo, callback) {
-    //     let pop = await axios
-    //             .get('http://localhost:5000/api/interactions/like/count/' + pseudo)
-    //             .then(res => res.data.interactions)
-    //     return (callback(pop))
-    // }
-
-
-    //NEW
-
-    async getPop(pseudo) {
-        let pop = 
-            await axios.get('http://localhost:5000/api/interactions/like/count/' + pseudo)
-                .then((res) => res.data.interactions)
-        return (pop)
+    filter = el => {
+        return this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day)) >= this.state.filtreAge
+        && this.getDistanceFrom(el.country.lat, el.country.lng) <= this.state.filtreDis
+        && el.popularity >= this.state.filtrePop
     }
 
     filterMember = () => {
@@ -249,36 +236,26 @@ class Accueil extends Component {
                 female: this.state.attirance.female
             },
             myGender: this.state.myGender
-        }).then(res => {
+        }).then(res => {            
             if (this._isMounted) {
                 this.setState({card: res.data.members
-                    .map((el, i) => {
-                        let pop = null
-                        this.getPop(el.pseudo)
-                            .then((res) => pop = res)
-                            .then(() => {console.log("Pseudo = " + el.pseudo + " Popularite = " + pop) })                        
-                        if (this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day)) >= this.state.filtreAge
-                        && this.getDistanceFrom(el.country.lat, el.country.lng) <= this.state.filtreDis && pop <= this.state.filtrePop) {
-                            console.log("Pseudo = " + el.pseudo + " Popularite = " + pop)
-                            return (
-                                <CardLove
-                                    key={i}
-                                    isLoggued={el.isLoggued.toString()}
-                                    name={el.firstname}
-                                    age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
-                                    country={el.country.name}
-                                    distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
-                                    gender={el.myGender}
-                                    love={this.orientationSexuelle(el.myGender, el.attirance)}
-                                    interet={el.interet}
-                                    pseud={el.pseudo}
-                                    img={el.pictures._1}
-                                />
-                            )
-                        }
-                        else {
-                            return null
-                        }
+                    .filter(this.filter)
+                    .map((el, i) => {                      
+                        return (
+                            <CardLove
+                                key={i}
+                                isLoggued={el.isLoggued.toString()}
+                                name={el.firstname}
+                                age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
+                                country={el.country.name}
+                                distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
+                                gender={el.myGender}
+                                love={this.orientationSexuelle(el.myGender, el.attirance)}
+                                interet={el.interet}
+                                pseud={el.pseudo}
+                                img={el.pictures._1}
+                            />
+                        )
                     })
                     .slice(this.state.skip, this.state.limit)
                 })

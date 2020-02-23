@@ -5,6 +5,10 @@ var memberSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    popularity: {
+        type: Number,
+        required: false
+    },
     isLoggued: {
         type: Boolean,
         required: false

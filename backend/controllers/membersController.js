@@ -201,6 +201,7 @@ exports.newMember = function (req, res) {
     member.pictures._4 = req.body.pictures._4;
     member.pictures._5 = req.body.pictures._5;
     member.pseudo = req.body.pseudo;
+    member.popularity = 0;
     member.save(function (err) {
         if (err)
             res.json(err);
@@ -387,10 +388,27 @@ exports.changeIsValid = function (req, res) {
     });
 };
 
+exports.changeMemberPop = function (req, res) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
+        if (err)
+            res.send(err);
+        member.popularity = req.body.popularity
+        member.save(function (err) {
+            if (err)
+                res.json(err);                      
+            res.json({
+                member
+            });
+        });
+    });
+};
+
 exports.changeMemberProfile = function (req, res) {
     Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (err)
             res.send(err);
+        if (req.body.popularity)
+            member.popularity = req.body.popularity
         if (req.body.email)
             member.email = req.body.email
         if (req.body.password)
