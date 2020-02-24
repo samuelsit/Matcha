@@ -27,7 +27,8 @@ class Accueil extends Component {
         filtreAge: 18,
         filtreDis: 10000,
         filtrePop: 0,
-        tri: null
+        tri: null,
+        compteur: 0
     }
 
     componentDidMount() {
@@ -215,7 +216,12 @@ class Accueil extends Component {
         }
         else if (id === "tri") {
             const tri = event.target.id
-            this.setState({tri})
+            if (tri === this.state.tri) {
+                this.setState({compteur: this.state.compteur + 1})
+            }
+            else {
+                this.setState({tri, compteur: 0})
+            }
         }
     }
 
@@ -263,6 +269,155 @@ class Accueil extends Component {
         })
     }
 
+    sortMemberAge = compteur => {        
+        if (this._isMounted && this.props.isAuth) {
+            this.DisablePage()
+        }
+        axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
+            skip: this.state.skip,
+            attirance: {
+                male: this.state.attirance.male,
+                female: this.state.attirance.female
+            },
+            myGender: this.state.myGender
+        }).then(res => {            
+            if (this._isMounted) {
+                this.setState({card: res.data.members
+                    .sort((a, b) => {
+                        if (compteur % 2 === 0) {
+                            return this.getAge(new Date(a.birthday.year, a.birthday.month, a.birthday.day)) - this.getAge(new Date(b.birthday.year, b.birthday.month, b.birthday.day))
+                        }
+                        else {
+                            return this.getAge(new Date(b.birthday.year, b.birthday.month, b.birthday.day)) - this.getAge(new Date(a.birthday.year, a.birthday.month, a.birthday.day))
+                        }
+                    })
+                    .map((el, i) => {                      
+                        return (
+                            <CardLove
+                                key={i}
+                                isLoggued={el.isLoggued.toString()}
+                                name={el.firstname}
+                                age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
+                                country={el.country.name}
+                                distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
+                                gender={el.myGender}
+                                love={this.orientationSexuelle(el.myGender, el.attirance)}
+                                interet={el.interet}
+                                pseud={el.pseudo}
+                                img={el.pictures._1}
+                            />
+                        )
+                    })
+                    .slice(this.state.skip, this.state.limit)
+                })
+            }
+        })
+    }
+
+    sortMemberPop = compteur => {
+        if (this._isMounted && this.props.isAuth) {
+            this.DisablePage()
+        }
+        axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
+            skip: this.state.skip,
+            attirance: {
+                male: this.state.attirance.male,
+                female: this.state.attirance.female
+            },
+            myGender: this.state.myGender
+        }).then(res => {            
+            if (this._isMounted) {
+                this.setState({card: res.data.members
+                    .sort((a, b) => {
+                        if (compteur % 2 === 0) {
+                            return b.popularity - a.popularity
+                        }
+                        else {
+                            return a.popularity - b.popularity
+                        }
+                    })
+                    .map((el, i) => {                      
+                        return (
+                            <CardLove
+                                key={i}
+                                isLoggued={el.isLoggued.toString()}
+                                name={el.firstname}
+                                age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
+                                country={el.country.name}
+                                distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
+                                gender={el.myGender}
+                                love={this.orientationSexuelle(el.myGender, el.attirance)}
+                                interet={el.interet}
+                                pseud={el.pseudo}
+                                img={el.pictures._1}
+                            />
+                        )
+                    })
+                    .slice(this.state.skip, this.state.limit)
+                })
+            }
+        })
+    }
+
+    sortMemberDis = compteur => {
+        if (this._isMounted && this.props.isAuth) {
+            this.DisablePage()
+        }
+        axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
+            skip: this.state.skip,
+            attirance: {
+                male: this.state.attirance.male,
+                female: this.state.attirance.female
+            },
+            myGender: this.state.myGender
+        }).then(res => {            
+            if (this._isMounted) {
+                this.setState({card: res.data.members
+                    .sort((a, b) => {
+                        if (compteur % 2 === 0) {
+                            return this.getDistanceFrom(a.country.lat, a.country.lng) - this.getDistanceFrom(b.country.lat, b.country.lng)
+                        }
+                        else {
+                            return this.getDistanceFrom(b.country.lat, b.country.lng) - this.getDistanceFrom(a.country.lat, a.country.lng)
+                        }
+                    })
+                    .map((el, i) => {                      
+                        return (
+                            <CardLove
+                                key={i}
+                                isLoggued={el.isLoggued.toString()}
+                                name={el.firstname}
+                                age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
+                                country={el.country.name}
+                                distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
+                                gender={el.myGender}
+                                love={this.orientationSexuelle(el.myGender, el.attirance)}
+                                interet={el.interet}
+                                pseud={el.pseudo}
+                                img={el.pictures._1}
+                            />
+                        )
+                    })
+                    .slice(this.state.skip, this.state.limit)
+                })
+            }
+        })
+    }
+
+    componentDidUpdate(previousProps, previousState) {
+        if ((previousState.tri !== this.state.tri) || (previousState.compteur !== this.state.compteur)) {
+            if (this.state.tri === 'age') {
+                this.sortMemberAge(this.state.compteur)
+            }
+            else if (this.state.tri === 'dis') {
+                this.sortMemberDis(this.state.compteur)
+            }
+            else if (this.state.tri === 'pop') {
+                this.sortMemberPop(this.state.compteur)
+            }
+        }
+    }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
@@ -277,7 +432,7 @@ class Accueil extends Component {
                     <div className="container-fluid mt-5">
                         <div className="row">
                             <div className="col">
-                                <FilterSort getRange={this.handleRangeToState} filtreAge={this.state.filtreAge} filtreDis={this.state.filtreDis} filtrePop={this.state.filtrePop}/>
+                                <FilterSort getRange={this.handleRangeToState} filtreAge={this.state.filtreAge} filtreDis={this.state.filtreDis} filtrePop={this.state.filtrePop} tri={this.state.tri}/>
                             </div>
                         </div><hr/>
                         <div className="row text-center">

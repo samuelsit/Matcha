@@ -32,8 +32,6 @@ class FilterSort extends Component {
                                 <input type="radio" className="d-none"/>
                                 <label htmlFor="dis"><button type="button" className="btn btn-secondary" name="tri" id="dis" onClick={this.props.getRange}>Distance</button></label>
                                 <input type="radio" className="d-none"/>
-                                <label htmlFor="tag"><button type="button" className="btn btn-secondary" name="tri" id="tag" onClick={this.props.getRange}>Tags</button></label>
-                                <input type="radio" className="d-none"/>
                             </div>
                         </div>
                     </div>
