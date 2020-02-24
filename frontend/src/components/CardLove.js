@@ -135,9 +135,7 @@ class CardLove extends Component {
                 })
                 .then(() => {
                     axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
-                    .then(res => {
-                        console.log(res.data.interactions);
-                        
+                    .then(res => {                        
                         axios.post('http://localhost:5000/api/members/profile/pop/' + this.props.pseud, {
                             popularity: res.data.interactions
                         })
@@ -181,8 +179,6 @@ class CardLove extends Component {
                     })
                     axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
                     .then(res => {
-                        console.log(res.data.interactions);
-
                         axios.post('http://localhost:5000/api/members/profile/pop/' + this.props.pseud, {
                             popularity: res.data.interactions
                         })

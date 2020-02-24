@@ -28,6 +28,16 @@ class Accueil extends Component {
         filtreDis: 10000,
         filtrePop: 0,
         tri: null,
+        tag: {
+            musique: false,
+            science: false,
+            sport: false,
+            voyage: false,
+            art: false,
+            humour: false,
+            amour: false,
+            matcha: false
+        },
         compteur: 0
     }
 
@@ -231,6 +241,78 @@ class Accueil extends Component {
         && el.popularity >= this.state.filtrePop
     }
 
+    filterMusique = el => {
+        if (this.state.tag.musique) {
+            return el.interet.indexOf('musique') !== -1 || el.interet.indexOf('Musique') !== -1 || el.interet.indexOf('Music') !== -1 || el.interet.indexOf('music') !== -1
+        }
+        else {
+            return el
+        }
+    }
+
+    filterSciences = el => {
+        if (this.state.tag.science) {
+            return el.interet.indexOf('science') !== -1 || el.interet.indexOf('Science') !== -1 || el.interet.indexOf('sciences') !== -1 || el.interet.indexOf('Sciences') !== -1
+        }
+        else {
+            return el
+        }
+    }
+
+    filterSport = el => {
+        if (this.state.tag.sport) {
+            return el.interet.indexOf('sport') !== -1 || el.interet.indexOf('Sport') !== -1 || el.interet.indexOf('sports') !== -1 || el.interet.indexOf('Sports') !== -1
+        }
+        else {
+            return el
+        }
+    }
+
+    filterVoyage = el => {
+        if (this.state.tag.voyage) {
+            return el.interet.indexOf('voyage') !== -1 || el.interet.indexOf('Voyage') !== -1 || el.interet.indexOf('voyages') !== -1 || el.interet.indexOf('Voyages') !== -1
+        }
+        else {
+            return el
+        }
+    }
+
+    filterArt = el => {
+        if (this.state.tag.art) {
+            return el.interet.indexOf('art') !== -1 || el.interet.indexOf('Art') !== -1 || el.interet.indexOf('arts') !== -1 || el.interet.indexOf('Arts') !== -1
+        }
+        else {
+            return el
+        }
+    }
+
+    filterHumour = el => {
+        if (this.state.tag.humour) {
+            return el.interet.indexOf('humour') !== -1 || el.interet.indexOf('Humour') !== -1
+        }
+        else {
+            return el
+        }
+    }
+
+    filterAmour = el => {
+        if (this.state.tag.amour) {
+            return el.interet.indexOf('amour') !== -1 || el.interet.indexOf('Amour') !== -1 || el.interet.indexOf('love') !== -1 || el.interet.indexOf('Love') !== -1
+        }
+        else {
+            return el
+        }
+    }
+
+    filterMatcha = el => {
+        if (this.state.tag.matcha) {
+            return el.interet.indexOf('matcha') !== -1 || el.interet.indexOf('Matcha') !== -1
+        }
+        else {
+            return el
+        }
+    }
+
     filterMember = () => {
         if (this._isMounted && this.props.isAuth) {
             this.DisablePage()
@@ -283,6 +365,7 @@ class Accueil extends Component {
         }).then(res => {            
             if (this._isMounted) {
                 this.setState({card: res.data.members
+                    .filter(this.filter)
                     .sort((a, b) => {
                         if (compteur % 2 === 0) {
                             return this.getAge(new Date(a.birthday.year, a.birthday.month, a.birthday.day)) - this.getAge(new Date(b.birthday.year, b.birthday.month, b.birthday.day))
@@ -328,6 +411,7 @@ class Accueil extends Component {
         }).then(res => {            
             if (this._isMounted) {
                 this.setState({card: res.data.members
+                    .filter(this.filter)
                     .sort((a, b) => {
                         if (compteur % 2 === 0) {
                             return b.popularity - a.popularity
@@ -373,6 +457,7 @@ class Accueil extends Component {
         }).then(res => {            
             if (this._isMounted) {
                 this.setState({card: res.data.members
+                    .filter(this.filter)
                     .sort((a, b) => {
                         if (compteur % 2 === 0) {
                             return this.getDistanceFrom(a.country.lat, a.country.lng) - this.getDistanceFrom(b.country.lat, b.country.lng)
@@ -418,6 +503,77 @@ class Accueil extends Component {
         }
     }
 
+    memberTag = () => {
+        if (this._isMounted && this.props.isAuth) {
+            this.DisablePage()
+        }
+        axios.post('http://localhost:5000/api/members/all/' + this.props.pseudo, {
+            skip: this.state.skip,
+            attirance: {
+                male: this.state.attirance.male,
+                female: this.state.attirance.female
+            },
+            myGender: this.state.myGender
+        }).then(res => {            
+            if (this._isMounted) {
+                this.setState({card: res.data.members
+                    .filter(this.filter)
+                    .filter(this.filterMusique)
+                    .filter(this.filterSciences)
+                    .filter(this.filterSport)
+                    .filter(this.filterVoyage)
+                    .filter(this.filterArt)
+                    .filter(this.filterHumour)
+                    .filter(this.filterAmour)
+                    .filter(this.filterMatcha)
+                    .map((el, i) => {                      
+                        return (
+                            <CardLove
+                                key={i}
+                                isLoggued={el.isLoggued.toString()}
+                                name={el.firstname}
+                                age={this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day))}
+                                country={el.country.name}
+                                distance={this.getDistanceFrom(el.country.lat, el.country.lng)}
+                                gender={el.myGender}
+                                love={this.orientationSexuelle(el.myGender, el.attirance)}
+                                interet={el.interet}
+                                pseud={el.pseudo}
+                                img={el.pictures._1}
+                            />
+                        )
+                    })
+                    .slice(this.state.skip, this.state.limit)
+                })
+            }
+        })
+    }
+
+    checkBoxesManagement = () => {
+        const cB = document.getElementsByClassName('interest')
+        const musique = cB[0].checked
+        const science = cB[1].checked
+        const sport = cB[2].checked
+        const voyage = cB[3].checked
+        const art = cB[4].checked
+        const humour = cB[5].checked
+        const amour = cB[6].checked
+        const matcha = cB[7].checked
+        const tag = {
+            musique: musique,
+            science: science,
+            sport: sport,
+            voyage: voyage,
+            art: art,
+            humour: humour,
+            amour: amour,
+            matcha: matcha
+        }
+        if (this._isMounted === true) {
+            this.setState({tag}, this.memberTag)
+        }
+    }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
@@ -432,7 +588,7 @@ class Accueil extends Component {
                     <div className="container-fluid mt-5">
                         <div className="row">
                             <div className="col">
-                                <FilterSort getRange={this.handleRangeToState} filtreAge={this.state.filtreAge} filtreDis={this.state.filtreDis} filtrePop={this.state.filtrePop} tri={this.state.tri}/>
+                                <FilterSort interest={this.checkBoxesManagement} getRange={this.handleRangeToState} filtreAge={this.state.filtreAge} filtreDis={this.state.filtreDis} filtrePop={this.state.filtrePop} tri={this.state.tri}/>
                             </div>
                         </div><hr/>
                         <div className="row text-center">

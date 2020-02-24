@@ -55,22 +55,22 @@ class FilterSort extends Component {
                                 <div className="col-lg-6">
                                     <label htmlFor="customRange1" className="h3">Filtrer par tags populaires: </label>
                                     <div className="form-check">
-                                        <input className="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
-                                        <label className="form-check-label" htmlFor="inlineCheckbox1"><code>#matcha </code></label>
-                                        <input className="form-check-input" type="checkbox" id="inlineCheckbox2" value="option1" />
-                                        <label className="form-check-label" htmlFor="inlineCheckbox2"><code>#matcha </code></label>
-                                        <input className="form-check-input" type="checkbox" id="inlineCheckbox3" value="option1" />
-                                        <label className="form-check-label" htmlFor="inlineCheckbox3"><code>#matcha </code></label>
-                                        <input className="form-check-input" type="checkbox" id="inlineCheckbox4" value="option1" />
-                                        <label className="form-check-label" htmlFor="inlineCheckbox4"><code>#matcha</code></label>
-                                        <input className="form-check-input" type="checkbox" id="inlineCheckbox5" value="option1" />
-                                        <label className="form-check-label" htmlFor="inlineCheckbox5"><code>#money</code></label>
-                                        <input className="form-check-input" type="checkbox" id="inlineCheckbox6" value="option1" />
-                                        <label className="form-check-label" htmlFor="inlineCheckbox6"><code>#money</code></label>
-                                        <input className="form-check-input" type="checkbox" id="inlineCheckbox7" value="option1" />
-                                        <label className="form-check-label" htmlFor="inlineCheckbox7"><code>#money</code></label>
-                                        <input className="form-check-input" type="checkbox" id="inlineCheckbox8" value="option1" />
-                                        <label className="form-check-label" htmlFor="inlineCheckbox8"><code>#money</code></label>
+                                        <input className="form-check-input interest" type="checkbox" id="musique" value="musique" onChange={this.props.interest}/>
+                                        <label className="form-check-label" htmlFor="musique"><code>#musique </code></label>
+                                        <input className="form-check-input interest" type="checkbox" id="sciences" value="sciences" onChange={this.props.interest}/>
+                                        <label className="form-check-label" htmlFor="sciences"><code>#sciences </code></label>
+                                        <input className="form-check-input interest" type="checkbox" id="sport" value="sport" onChange={this.props.interest}/>
+                                        <label className="form-check-label" htmlFor="sport"><code>#sport </code></label>
+                                        <input className="form-check-input interest" type="checkbox" id="voyage" value="voyage" onChange={this.props.interest}/>
+                                        <label className="form-check-label" htmlFor="voyage"><code>#voyage </code></label>
+                                        <input className="form-check-input interest" type="checkbox" id="art" value="art" onChange={this.props.interest}/>
+                                        <label className="form-check-label" htmlFor="art"><code>#art </code></label>
+                                        <input className="form-check-input interest" type="checkbox" id="humour" value="humour" onChange={this.props.interest}/>
+                                        <label className="form-check-label" htmlFor="humour"><code>#humour </code></label>
+                                        <input className="form-check-input interest" type="checkbox" id="amour" value="amour" onChange={this.props.interest}/>
+                                        <label className="form-check-label" htmlFor="amour"><code>#amour </code></label>
+                                        <input className="form-check-input interest" type="checkbox" id="matcha" value="matcha" onChange={this.props.interest}/>
+                                        <label className="form-check-label" htmlFor="matcha"><code>#matcha </code></label>
                                     </div>
                                 </div>
                             </div>
