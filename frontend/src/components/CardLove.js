@@ -69,7 +69,7 @@ class CardLove extends Component {
     }
 
     receptionSocket = notif => {
-        if (this._isMounted) {
+        if (this._isMounted && notif.to === this.props.pseudo) {
             this.setState({
                 pseudo1: 1
             })
@@ -138,6 +138,7 @@ class CardLove extends Component {
             if (res.data.interactions === 0) {
                 btnLove.classList.remove("btn-danger");
                 btnLove.classList.add("btn-success");
+                axios.post('http://localhost:5000/api/notif/' + this.props.pseud + '/true')
                 axios.post('http://localhost:5000/api/interactions', {
                     from: this.props.pseudo,
                     to: this.props.pseud,
