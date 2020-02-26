@@ -49,3 +49,14 @@
     position: sticky;
     top: 0;
 }
+
+.notifMsg {
+    display: none;
+    position: relative;
+    left: 50px;
+    top: 15px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: red;
+}

@@ -2,7 +2,9 @@ import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-// import '../css/Card.css'
+import io from 'socket.io-client'
+
+const socket = io('http://localhost:5000')
 
 class CardLove extends Component {
 
@@ -63,6 +65,15 @@ class CardLove extends Component {
                     console.log(error)
             }) 
         })
+        socket.on('notification', this.receptionSocket)
+    }
+
+    receptionSocket = notif => {
+        if (this._isMounted) {
+            this.setState({
+                pseudo1: 1
+            })
+        }
     }
 
     componentDidUpdate(previousProps) { 
@@ -122,7 +133,6 @@ class CardLove extends Component {
 
     handleClick = () => {
         var btnLove = document.getElementById('btn-love-' + this.props.pseud)
-
         axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud)
         .then(res => {
             if (res.data.interactions === 0) {
@@ -146,18 +156,23 @@ class CardLove extends Component {
                         console.log(error)
                     })
                     axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud)
-                    .then(res => {
+                    .then(res => {                        
                         if (this._isMounted) {
                             this.setState({ pseudo2: res.data.interactions })
                         }
                     })
                     .then(() => {
                         if (this.state.pseudo1 !== 0 && this.state.pseudo2 !== 0) {
+                            socket.emit('notificationMsg', {from: this.props.pseudo, to: this.props.pseud, notif: 'retour'})
+                            socket.emit('notification', {from: this.props.pseudo, to: this.props.pseud, notif: 'retour'})
                             axios.post('http://localhost:5000/api/messages', {
                                 from: this.props.pseudo,
                                 to: this.props.pseud,
                                 data: "C'est un match !"
                             })
+                        }
+                        else {
+                            socket.emit('notification', {from: this.props.pseudo, to: this.props.pseud, notif: 'like'})
                         }
                     })
                     
@@ -166,6 +181,7 @@ class CardLove extends Component {
             else {
                 btnLove.classList.add("btn-danger");
                 btnLove.classList.remove("btn-success");
+                socket.emit('notification', {from: this.props.pseudo, to: this.props.pseud, notif: 'unlike'})
                 axios.post('http://localhost:5000/api/interactions/remove', {
                     from: this.props.pseudo,
                     to: this.props.pseud,

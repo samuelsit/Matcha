@@ -40,6 +40,9 @@ io.on('connection', socket => {
     socket.on('chat message', msg => {
         io.emit('chat message', msg)
     })
+    socket.on('notification', notification => {
+        io.emit('notification', notification)
+    })
 })
 
 // Launch app to listen to specified port

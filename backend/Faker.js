@@ -33,6 +33,8 @@ exports.seedMember = function (req, res) {
     member.pictures._4 = faker.image.avatar();
     member.pictures._5 = faker.image.avatar();
     member.pseudo = randomCard.username;
+    member.isNotif = false;
+    member.isMessage = false;
     member.save(function (err) {            
         if (err)
             res.json(err);

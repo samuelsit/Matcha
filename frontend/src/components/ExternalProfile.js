@@ -6,6 +6,9 @@ import { connect } from 'react-redux'
 import { Redirect } from "react-router-dom"
 import DiscussionButton from './DiscussionButton'
 import ChatProfile from './Chat/ChatProfile'
+import io from 'socket.io-client'
+
+const socket = io('http://localhost:5000')
 
 class ExternalProfile extends Component {
 
@@ -82,6 +85,7 @@ class ExternalProfile extends Component {
                         to: this.state.pseudo,
                         data: 'view'
                     })
+                    socket.emit('notification', {from: this.props.pseudo, to: this.state.pseudo, notif: 'view'})
                 }
                 axios.get('http://localhost:5000/api/members/' + this.state.pseudo).then(res => {
                     if (this._isMounted) {
@@ -158,6 +162,7 @@ class ExternalProfile extends Component {
             if (res.data.interactions === 0) {
                 btnLove.classList.remove("btn-danger");
                 btnLove.classList.add("btn-success");
+                socket.emit('notification', {from: this.props.pseudo, to: this.state.pseudo, notif: 'like'})
                 axios.post('http://localhost:5000/api/interactions', {
                     from: this.props.pseudo,
                     to: this.state.pseudo,
@@ -180,11 +185,15 @@ class ExternalProfile extends Component {
                     })
                     .then(() => {
                         if (this.state.pseudo1 !== 0 && this.state.pseudo2 !== 0) {
+                            socket.emit('notification', {from: this.props.pseudo, to: this.state.pseudo, notif: 'retour'})
                             axios.post('http://localhost:5000/api/messages', {
                                 from: this.props.pseudo,
                                 to: this.state.pseudo,
                                 data: "C'est un match !"
                             })
+                        }
+                        else {
+                            socket.emit('notification', {from: this.props.pseudo, to: this.state.pseudo, notif: 'like'})
                         }
                     })
                     
@@ -193,6 +202,7 @@ class ExternalProfile extends Component {
             else {
                 btnLove.classList.add("btn-danger");
                 btnLove.classList.remove("btn-success");
+                socket.emit('notification', {from: this.props.pseudo, to: this.state.pseudo, notif: 'unlike'})
                 axios.post('http://localhost:5000/api/interactions/remove', {
                     from: this.props.pseudo,
                     to: this.state.pseudo,
@@ -265,8 +275,6 @@ class ExternalProfile extends Component {
         })
     }
 
-    
-
     componentWillUnmount() {
         this._isMounted = false
     }
@@ -303,11 +311,11 @@ class ExternalProfile extends Component {
                             <div className="row">
                                 <div className="col col-lg-12"><br/><br/><br/>
                                     <h3>Block</h3>
-                                    <button id="btn-block" className="btn btn-circle btn-lg btn-danger" onClick={this.handleBlock}><i class="fas fa-ban"></i></button>
+                                    <button id="btn-block" className="btn btn-circle btn-lg btn-danger" onClick={this.handleBlock}><i className="fas fa-ban"></i></button>
                                 </div>
                                 <div className="col col-lg-12"><br/><br/><br/>
                                     <h3>Report</h3>
-                                    <button id="btn-report" className="btn btn-circle btn-lg btn-danger" onClick={this.handleReport}><i class="fas fa-bug"></i></button>
+                                    <button id="btn-report" className="btn btn-circle btn-lg btn-danger" onClick={this.handleReport}><i className="fas fa-bug"></i></button>
                                 </div>
                             </div>
                             <br/><br/>

@@ -128,6 +128,18 @@ router.route('/api/members/pictures/5/:pseudo')
 router.route('/api/members/forget/:email')
     .get(memberController.forgetPass);
 
+router.route('/api/notif/:pseudo')
+    .get(memberController.getNotif)
+
+router.route('/api/notif/:pseudo/:status')
+    .post(memberController.postNotif)
+
+router.route('/api/notifMsg/:pseudo')
+    .get(memberController.getNotifMsg)
+
+router.route('/api/notifMsg/:pseudo/:status')
+    .post(memberController.postNotifMsg)
+
 // Export API routes
 module.exports = router;
 

@@ -108,6 +108,14 @@ var memberSchema = mongoose.Schema({
             type: String,
             required: false
         }
+    },
+    isNotif: {
+        type: Boolean,
+        required: false
+    },
+    isMessage: {
+        type: Boolean,
+        required: false
     }
 },
 {

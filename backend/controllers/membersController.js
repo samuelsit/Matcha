@@ -667,6 +667,70 @@ exports.isPicture5 = function (req, res) {
     });
 };
 
+exports.getNotif = function (req, res) {
+    Member
+    .findOne({
+        pseudo: req.params.pseudo
+    }, function (err, member) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        res.json({
+            notif: member.isNotif
+        });
+    });
+};
+
+exports.getNotifMsg = function (req, res) {
+    Member
+    .findOne({
+        pseudo: req.params.pseudo
+    }, function (err, member) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        res.json({
+            notif: member.isMessage
+        });
+    });
+};
+
+exports.postNotif = function (req, res) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
+        if (err)
+            res.send(err);
+        member.isNotif = req.params.status;
+        member.save(function (err) {
+            if (err)
+                res.json(err);
+            res.json({
+                member
+            });
+        });
+    });
+};
+
+exports.postNotifMsg = function (req, res) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
+        if (err)
+            res.send(err);
+        member.isMessage = req.params.status;
+        member.save(function (err) {
+            if (err)
+                res.json(err);
+            res.json({
+                member
+            });
+        });
+    });
+};
+
 ////
 // Handle delete contact
 // exports.delete = function (req, res) {

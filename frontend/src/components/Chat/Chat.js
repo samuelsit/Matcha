@@ -62,7 +62,7 @@ class Chat extends Component {
 
   receptionSocket = msg => {
     var message
-    if (msg.pseudo !== this.props.pseudo) {
+    if (msg.from !== this.props.pseudo) {
       message = '<div class="badge badge-pill badge-primary float-right">' + msg.message + '</div><br/>'
     }
     else {
@@ -90,7 +90,7 @@ class Chat extends Component {
   }
 
   addMessage = message => {
-    socket.emit('chat message', message)
+    socket.emit('chat message', {message: message.message, from: message.pseudo, to: this.state.pseudo})
     axios.post('http://localhost:5000/api/messages', {
         from: this.props.pseudo,
         to: this.state.pseudo,

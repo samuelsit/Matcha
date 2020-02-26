@@ -69,6 +69,7 @@ class Accueil extends Component {
                 if (this._isMounted) {
                     this.setState({pageMax: Math.ceil(res.data.members.length / 4)})
                     this.setState({card: res.data.members
+                        .filter(this.filter)
                         .map((el, i) => {
                             return (
                                 <CardLove

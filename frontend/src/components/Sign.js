@@ -325,7 +325,9 @@ class Sign extends Component {
                         _4: "",
                         _5: ""
                     },
-                    pseudo: this.state.pseudo
+                    pseudo: this.state.pseudo,
+                    isNotif: false,
+                    isMessage: false
                 })
             }
         })
