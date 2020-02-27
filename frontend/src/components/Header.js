@@ -13,7 +13,7 @@ class Header extends Component {
     }
 
     componentDidMount() {        
-        if (this.props.pseudo !== '' && this.props.pseudo !== null) {
+        if (this.props.pseudo !== '') {
             axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo).then(res => {
                 if (!res.data.data) {
                     navigator.geolocation.getCurrentPosition(position => {
@@ -30,26 +30,28 @@ class Header extends Component {
                 }
             })
             .then(() => {
-                axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo).then(res => {
-                    if (!res.data.data) {
-                        $.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
-                            var ip = String(data).match(/ip=([0-9.]+)/)
-                            $.get('https://ipapi.co/' + ip[1] + '/json', function(data) {
-                                axios
-                                .patch('http://localhost:5000/api/members/profile/country/' + this.props.pseudo, {
-                                    country: {
-                                        name: data.city + ', ' + data.region,
-                                        lat: data.latitude,
-                                        lng: data.longitude
-                                    }
-                                })
-                                this.props.setUserPos(data.latitude, data.longitude)
+                if (this.props.pseudo !== '') {
+                    axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo).then(res => {
+                        if (!res.data.data) {
+                            $.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
+                                var ip = String(data).match(/ip=([0-9.]+)/)
+                                $.get('https://ipapi.co/' + ip[1] + '/json', function(data) {
+                                    axios
+                                    .patch('http://localhost:5000/api/members/profile/country/' + this.props.pseudo, {
+                                        country: {
+                                            name: data.city + ', ' + data.region,
+                                            lat: data.latitude,
+                                            lng: data.longitude
+                                        }
+                                    })
+                                    this.props.setUserPos(data.latitude, data.longitude)
+                                }.bind(this))
                             }.bind(this))
-                        }.bind(this))
-                    }      
-                }).catch(error => {
-                    console.log(error)
-                })
+                        }      
+                    }).catch(error => {
+                        console.log(error)
+                    })
+                }
             })
         }
     }

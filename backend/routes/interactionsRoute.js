@@ -17,6 +17,12 @@ router.route('/api/interactions/like/ismatch/:pseudo1/:pseudo2')
 router.route('/api/interactions/block/isblock/:pseudo1/:pseudo2')
     .get(interactionsController.isBlock)
 
+router.route('/api/interactions/block/getblock/:pseudo')
+    .get(interactionsController.getBlock)
+
+router.route('/api/interactions/block/getblockme/:pseudo')
+    .get(interactionsController.getBlockMe)
+
 router.route('/api/interactions/last/:pseudo')
     .get(interactionsController.getLastNotifications)
 

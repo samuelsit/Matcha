@@ -38,11 +38,27 @@ class Accueil extends Component {
             amour: false,
             matcha: false
         },
-        compteur: 0
+        compteur: 0,
+        blockMember: [],
+        blockMe: []
     }
 
     componentDidMount() {
         this._isMounted = true
+        axios.get('http://localhost:5000/api/interactions/block/getblock/' + this.props.pseudo).then(res => {
+            if (this._isMounted) {
+                this.setState({
+                    blockMember: res.data.block
+                })              
+            }           
+        })
+        axios.get('http://localhost:5000/api/interactions/block/getblockme/' + this.props.pseudo).then(res => {
+            if (this._isMounted) {
+                this.setState({
+                    blockMe: res.data.block
+                })              
+            }           
+        })
         axios.get('http://localhost:5000/api/members/' + this.props.pseudo).then(res => {
             if (this._isMounted) {
                 this.setState({
@@ -240,6 +256,8 @@ class Accueil extends Component {
         return this.getAge(new Date(el.birthday.year, el.birthday.month, el.birthday.day)) >= this.state.filtreAge
         && this.getDistanceFrom(el.country.lat, el.country.lng) <= this.state.filtreDis
         && el.popularity >= this.state.filtrePop
+        && this.state.blockMember.indexOf(el.pseudo) === -1
+        && this.state.blockMe.indexOf(el.pseudo) === -1
     }
 
     filterMusique = el => {

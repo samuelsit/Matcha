@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import { Redirect } from "react-router-dom"
+import { connect } from 'react-redux'
 
 class NotificationBar extends Component {
     _isMounted = false
@@ -8,11 +9,27 @@ class NotificationBar extends Component {
     state = {
         user: '',
         profilePic: '',
-        redirect: false
+        redirect: false,
+        blockMember: [],
+        blockMe: []
     }
 
     componentDidMount() {
         this._isMounted = true
+        axios.get('http://localhost:5000/api/interactions/block/getblock/' + this.props.pseudo).then(res => {
+            if (this._isMounted) {
+                this.setState({
+                    blockMember: res.data.block
+                })              
+            }           
+        })
+        axios.get('http://localhost:5000/api/interactions/block/getblockme/' + this.props.pseudo).then(res => {
+            if (this._isMounted) {
+                this.setState({
+                    blockMe: res.data.block
+                })              
+            }           
+        })
         axios.get('http://localhost:5000/api/members/' + this.props.login).then(res => {
             if (this._isMounted) {
                 this.setState({user: res.data.member.firstname + ' ' + res.data.member.lastname, profilePic: res.data.member.pictures._1})
@@ -62,18 +79,29 @@ class NotificationBar extends Component {
         else {
             action = 'à consulté votre profil'
         }
-        
-        return (
-            <Fragment>
-                {this.handleRedirect()}
-                <span className="text-left" onClick={this.handleView}>
-                    <img className="rounded-circle" width="30" height="30" src={pic} alt="Card cap" />
-                    <span className="card-title h5 middle"> {this.state.user} {action}</span>
-                </span>
-                <hr/>
-            </Fragment>
-        )
+        if (this.state.blockMember.indexOf(this.props.login) === -1
+        && this.state.blockMe.indexOf(this.props.login) === -1) {
+            return (
+                <Fragment>
+                    {this.handleRedirect()}
+                    <span className="text-left" onClick={this.handleView}>
+                        <img className="rounded-circle" width="30" height="30" src={pic} alt="Card cap" />
+                        <span className="card-title h5 middle"> {this.state.user} {action}</span>
+                    </span>
+                    <hr/>
+                </Fragment>
+            )
+        }
+        else {
+            return null
+        }
     }
 }
 
-export default NotificationBar
+const mapStateToProps = state => {
+    return {
+        pseudo: state.pseudo
+    }
+}
+
+export default connect(mapStateToProps, null)(NotificationBar)

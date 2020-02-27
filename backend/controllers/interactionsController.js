@@ -134,6 +134,54 @@ exports.getLastNotifications = function (req, res) {
     });
 };
 
+exports.getBlock = function (req, res) {
+    Interaction
+    .find({
+        from: req.params.pseudo,
+        data: 'block'
+    })
+    .exec(function (err, interactions) {
+        let arr = []
+        interactions.map(res => {
+            arr.push(res.to)
+        })
+        
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        res.json({
+            block: arr
+        });
+    });
+};
+
+exports.getBlockMe = function (req, res) {
+    Interaction
+    .find({
+        to: req.params.pseudo,
+        data: 'block'
+    })
+    .exec(function (err, interactions) {
+        let arr = []
+        interactions.map(res => {
+            arr.push(res.from)
+        })
+        
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        res.json({
+            block: arr
+        });
+    });
+};
+
 exports.getLastView = function (req, res) {
     Interaction
     .find({
