@@ -5,7 +5,6 @@ import DiscussionBar from './DiscussionBar'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import io from 'socket.io-client'
-import notifSound from '../pictures/notif.mp3'
 
 const socket = io('http://localhost:5000')
 
@@ -35,8 +34,10 @@ class DiscussionButton extends Component {
         }).catch(error => {
             console.log(error)
         })
-        socket.on('notification', this.receptionSocket)
-        socket.on('chat message', this.receptionSocketMsg)
+        if (this._isMounted) {
+            socket.on('notification', this.receptionSocket)
+            socket.on('chat message', this.receptionSocketMsg)
+        }
     }
 
     handleOpen = () => {
@@ -56,9 +57,7 @@ class DiscussionButton extends Component {
     receptionSocket = notif => {
         if (notif.notif === 'retour') {
             axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/true')
-            var audio = new Audio(notifSound);
-            audio.play();
-            if (notif.from === this.props.pseudo) {
+            if (notif.from === this.props.pseudo && this._isMounted) {
                 document.getElementById("notifMsg").style.display = "block";
                 this.setState({ liveNotif:
                     <DiscussionBar
@@ -69,12 +68,14 @@ class DiscussionButton extends Component {
             }
             else {
                 document.getElementById("notifMsg").style.display = "block";
-                this.setState({ liveNotif:
-                    <DiscussionBar
-                        login={notif.from}
-                        message={'C\'est un match !'}
-                    />
-                })
+                if (this._isMounted) {
+                    this.setState({ liveNotif:
+                        <DiscussionBar
+                            login={notif.from}
+                            message={'C\'est un match !'}
+                        />
+                    })
+                }
             }
         }
     }
@@ -83,14 +84,14 @@ class DiscussionButton extends Component {
         if (this.props.pseudo === msg.to) {
             axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/true')
             document.getElementById("notifMsg").style.display = "block";
-            var audio = new Audio(notifSound);
-            audio.play();
-            this.setState({ liveNotif:
-                <DiscussionBar
-                    login={msg.from}
-                    message={msg.message}
-                />
-            })
+            if (this._isMounted) {
+                this.setState({ liveNotif:
+                    <DiscussionBar
+                        login={msg.from}
+                        message={msg.message}
+                    />
+                })
+            }
         }
     }
 

@@ -36,7 +36,10 @@ app.use('/', membersRoutes);
 app.use('/', messagesRoutes);
 app.use('/', interactionsRoutes);
 
+function isOpen(socket) { return socket.readyState === socket.OPEN }
+
 io.on('connection', socket => {
+    if (!isOpen(socket)) return;
     socket.on('chat message', msg => {
         io.emit('chat message', msg)
     })

@@ -35,6 +35,7 @@ exports.seedMember = function (req, res) {
     member.pseudo = randomCard.username;
     member.isNotif = false;
     member.isMessage = false;
+    member.lastVisite = Date.now();
     member.save(function (err) {            
         if (err)
             res.json(err);

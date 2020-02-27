@@ -731,6 +731,38 @@ exports.postNotifMsg = function (req, res) {
     });
 };
 
+exports.disconnectMember = function (req, res) {
+    Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
+        if (err)
+            res.send(err);
+        member.lastVisite = Date.now();
+        member.save(function (err) {
+            if (err)
+                res.json(err);
+            res.json({
+                member
+            });
+        });
+    });
+};
+
+exports.getLastConnect = function (req, res) {
+    Member
+    .findOne({
+        pseudo: req.params.pseudo
+    }, function (err, member) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        res.json({
+            last: member.lastVisite
+        });
+    });
+};
+
 ////
 // Handle delete contact
 // exports.delete = function (req, res) {

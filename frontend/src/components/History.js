@@ -10,7 +10,8 @@ class History extends Component {
     _isMounted = false
 
     state = {
-        lastMembers: []
+        lastMembers: [],
+        likeMembers: []
     }
 
     componentDidMount() {
@@ -19,6 +20,14 @@ class History extends Component {
         .then(res => {
             if (this._isMounted) {
                 this.setState({lastMembers: res.data.interactions})
+            }
+        }).catch(error => {
+            console.log(error)
+        })
+        axios.get('http://localhost:5000/api/interactions/lastLike/' + this.props.pseudo)
+        .then(res => {
+            if (this._isMounted) {
+                this.setState({likeMembers: res.data.interactions})
             }
         }).catch(error => {
             console.log(error)
@@ -37,6 +46,13 @@ class History extends Component {
             />
         ))
 
+        let likeMember = this.state.likeMembers.map((el, i) => (
+            <HistoryMember
+                key={i}
+                login={el.to}
+            />
+        ))
+
         if (this.props.isAuth === true) {
             return (
                 <Fragment>
@@ -44,7 +60,24 @@ class History extends Component {
                     <br/><br/><br/><br/>
                     <div className="container h-100">
                         <div className="col-12 text-center">
-                            <h1>DERNIERS PROFILS VISITÉS</h1>
+                            <h1><span role="img" aria-label="img">💕</span> PROFILS QUI VOUS LIKE</h1>
+                            <div className="p-1 shadow-lg">
+                                <table className="table">
+                                    <thead className="thead-dark">
+                                        <tr>
+                                        <th scope="col">Photo</th>
+                                        <th scope="col">Nom</th>
+                                        <th scope="col">Prénom</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        { likeMember }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="col-12 text-center mt-5">
+                            <h1><span role="img" aria-label="img">📋</span> DERNIERS PROFILS VISITÉS</h1>
                             <div className="p-1 shadow-lg">
                                 <table className="table">
                                     <thead className="thead-dark">

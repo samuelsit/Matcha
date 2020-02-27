@@ -58,6 +58,7 @@ class Header extends Component {
         axios
         .patch('http://localhost:5000/api/members/status/false/' + this.props.pseudo)
         .then(() => {
+            axios.post('http://localhost:5000/api/disconnect/' + this.props.pseudo)
             this.props.setUserIsAuth(false)
             this.props.setUserPos(0, 0)
             this.props.setUserPseudo('')

@@ -28,6 +28,7 @@
 
 #cross {
     float: right;
+    cursor: pointer;
 }
 
 #notif-head {

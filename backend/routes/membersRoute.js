@@ -140,6 +140,10 @@ router.route('/api/notifMsg/:pseudo')
 router.route('/api/notifMsg/:pseudo/:status')
     .post(memberController.postNotifMsg)
 
+router.route('/api/disconnect/:pseudo')
+    .post(memberController.disconnectMember)
+    .get(memberController.getLastConnect)
+
 // Export API routes
 module.exports = router;
 

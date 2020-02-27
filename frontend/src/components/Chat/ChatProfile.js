@@ -2,6 +2,8 @@ import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 import Slider from '../Slider'
+import '../../css/CardLove.css'
+import { connect } from 'react-redux'
 
 class ChatProfile extends Component {
 
@@ -18,11 +20,25 @@ class ChatProfile extends Component {
         _2: '',
         _3: '',
         _4: '',
-        _5: ''
+        _5: '',
+        lastVisite: ''
     }
   
     componentDidMount() {
       this._isMounted = true
+      axios.get('http://localhost:5000/api/disconnect/' + this.props.pseudo)
+        .then(res => {
+            if (this._isMounted) {
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+                const date = new Date(res.data.last)
+                this.setState({ lastVisite: date.toLocaleDateString(undefined, options)})
+            }
+      })
+      axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.state.pseudo + '/' + this.props.pseudo).then(res => {
+            if (res.data.interactions === 1) {
+                document.getElementById("isLike").style.display = "block";
+            }
+      })
       axios.get('http://localhost:5000/api/members/pictures/profile/' + this.state.pseudo).then(res => {
           if (this._isMounted) {
               this.setState({isPic1: res.data.status, _1: res.data.pic})
@@ -125,6 +141,7 @@ class ChatProfile extends Component {
                 {this.handleRedirect()}
                 <div className={classname}>
                     <div>
+                        <span id="isLike" className="text-light w-100 position-absolute border isLike border border-white">Cet utilisateur vous like</span>
                         <Slider
                             img1={pic1}
                             img2={pic2}
@@ -132,7 +149,7 @@ class ChatProfile extends Component {
                             img4={pic4}
                             img5={pic5}
                         />
-                        <div onClick={this.handleView} className="text-dark card-header text-center"><h5 className="card-title">{this.state.firstname} {this.state.lastname} <span className={isLoggued}> </span></h5></div>
+                        <div onClick={this.handleView} className="text-dark card-header text-center"><h5 className="card-title">{this.state.firstname} {this.state.lastname} <span className={isLoggued}> </span><br/><small><code>{this.state.isLoggued === false ? 'Dernière connexion : ' + this.state.lastVisite : null}</code></small></h5></div>
                     </div>
                     <div className="card-body text-center">
                         <p className="card-text"><span className="font-weight-bold">Age: </span>{this.getAge(new Date(this.state.year, this.state.month, this.state.day))} ans</p><hr/>
@@ -147,4 +164,10 @@ class ChatProfile extends Component {
     }
 }
 
-export default ChatProfile
+const mapStateToProps = state => {
+    return {
+        pseudo: state.pseudo
+    }
+}
+
+export default connect(mapStateToProps, null)(ChatProfile)

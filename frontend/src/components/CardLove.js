@@ -3,6 +3,7 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import io from 'socket.io-client'
+import '../css/CardLove.css'
 
 const socket = io('http://localhost:5000')
 
@@ -22,6 +23,9 @@ class CardLove extends Component {
         var btnLove = document.getElementById('btn-love-' + this.props.pseud)
         this._isMounted = true
         axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseud + '/' + this.props.pseudo).then(res => {
+            if (res.data.interactions === 1) {
+                document.getElementById("isLike").style.display = "block";
+            }
             if (this._isMounted) {
                 this.setState({
                     pseudo1: res.data.interactions
@@ -211,9 +215,11 @@ class CardLove extends Component {
     }
 
     handleView = () => {
-        this.setState({
-            redirect: true
-        })
+        if (this._isMounted) {
+            this.setState({
+                redirect: true
+            })
+        }
     }
 
     handleRedirect = () => {
@@ -265,6 +271,7 @@ class CardLove extends Component {
             <div className="col-6 col-lg-3 col-md-4 mt-4">
                 <div className="card">
                     <div onClick={this.handleView}>
+                        <span id="isLike" className="text-light w-100 position-absolute border isLike border border-white">Cet utilisateur vous like</span>
                         <img className="card-img-top" src={profilepic} alt="Card cap"/>
                         <div className="text-dark text-left card-header"><h5 className="card-title">{this.props.name} <span className={isLoggued}> </span> <span className={colorgender.concat(' ', "float-right")}><i className={gender}></i></span></h5></div>
                     </div>

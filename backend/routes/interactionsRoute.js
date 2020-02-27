@@ -23,4 +23,9 @@ router.route('/api/interactions/last/:pseudo')
 router.route('/api/interactions/lastView/:pseudo')
     .get(interactionsController.getLastView)
 
+router.route('/api/interactions/lastLike/:pseudo')
+    .get(interactionsController.getLastLike)
+
+router.route('/api/interactions/report/:pseudo')
+    .get(interactionsController.report)
 module.exports = router;

@@ -43,6 +43,7 @@
 
 #cross {
     float: right;
+    cursor: pointer;
 }
 
 #discuss-head {

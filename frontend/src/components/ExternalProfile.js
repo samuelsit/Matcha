@@ -253,6 +253,12 @@ class ExternalProfile extends Component {
         })
     }
 
+    handleReport = () => {
+        if (window.confirm("Reporter en tant que faux compte ?")) { 
+            axios.get('http://localhost:5000/api/interactions/report/' + this.state.pseudo)
+        }
+    }
+
     handleProfile = () => {
         if (this.state.error === false) {
             return (

@@ -4,7 +4,6 @@ import * as $ from 'jquery'
 import NotificationBar from './NotificationBar'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import notifSound from '../pictures/notif.mp3'
 import io from 'socket.io-client'
 
 const socket = io('http://localhost:5000')
@@ -37,11 +36,15 @@ class NotificationButton extends Component {
         }).catch(error => {
             console.log(error)
         })
-        socket.on('notification', this.receptionSocket)
+        if (this._isMounted) {
+            socket.on('notification', this.receptionSocket)
+        }
     }
 
     handleClose = () => {
-        this.setState({ isOpenNotif: false })
+        if (this._isMounted) {
+            this.setState({ isOpenNotif: false })
+        }
         axios.post('http://localhost:5000/api/notif/' + this.props.pseudo + '/false')
         $('#notif').fadeOut()
     }
@@ -53,7 +56,9 @@ class NotificationButton extends Component {
             this.handleClose()
         }
         else {
-            this.setState({ isOpenNotif: true })
+            if (this._isMounted) {
+                this.setState({ isOpenNotif: true })
+            }
             $('#notif').fadeIn()
         }
     }
@@ -62,14 +67,14 @@ class NotificationButton extends Component {
         if (this.props.pseudo === notif.to) {
             axios.post('http://localhost:5000/api/notif/' + this.props.pseudo + '/true')
             $('.notif').fadeIn()
-            var audio = new Audio(notifSound);
-            audio.play();            
-            this.setState({ liveNotif:
-                <NotificationBar
-                    login={notif.from}
-                    eve={notif.notif}
-                />
-            })
+            if (this._isMounted) {
+                this.setState({ liveNotif:
+                    <NotificationBar
+                        login={notif.from}
+                        eve={notif.notif}
+                    />
+                })
+            }
         }
     }
 

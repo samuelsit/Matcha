@@ -1,0 +1,7 @@
+.isLike {
+    z-index: 1;
+    text-align: center;
+    display: none;
+    opacity: 0.8;
+    background-color: #E83E8C;
+}

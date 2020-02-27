@@ -116,6 +116,10 @@ var memberSchema = mongoose.Schema({
     isMessage: {
         type: Boolean,
         required: false
+    },
+    lastVisite: {
+        type: Date,
+        required: false
     }
 },
 {
