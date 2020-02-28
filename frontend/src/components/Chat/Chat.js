@@ -20,11 +20,27 @@ class Chat extends Component {
     messages: [],
     pseudo: this.props.match.params.pseudo,
     private: false,
-    redirect: false
+    redirect: false,
+    blockMember: [],
+    blockMe: []
   }
 
   componentDidMount() {
     this._isMounted = true
+    axios.get('http://localhost:5000/api/interactions/block/getblock/' + this.props.pseudo).then(res => {
+        if (this._isMounted) {
+            this.setState({
+                blockMember: res.data.block
+            })              
+        }           
+    })
+    axios.get('http://localhost:5000/api/interactions/block/getblockme/' + this.props.pseudo).then(res => {
+        if (this._isMounted) {
+            this.setState({
+                blockMe: res.data.block
+            })              
+        }           
+    })
     axios.get('http://localhost:5000/api/messages/exist/' + this.state.pseudo + '/' + this.props.pseudo)
     .then(res => {
       if (this._isMounted) {
@@ -116,6 +132,12 @@ class Chat extends Component {
     else if ((this.props.pseudo === this.state.pseudo) || (this.state.private)) {
       return (
         <Redirect to={"/profile"} />
+      )
+    }
+    else if (this.state.blockMember.indexOf(this.state.pseudo) !== -1
+    || this.state.blockMe.indexOf(this.state.pseudo) !== -1) {
+      return (
+        <Redirect to={"/accueil"} />
       )
     }
     else {

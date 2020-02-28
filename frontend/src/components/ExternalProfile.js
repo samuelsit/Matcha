@@ -41,6 +41,7 @@ class ExternalProfile extends Component {
             _4: "",
             _5: ""
         },
+        popularity: 0,
         pseudo1: 0,
         pseudo2: 0,
         redirect: false,
@@ -152,6 +153,15 @@ class ExternalProfile extends Component {
                 })
             }
         })
+        socket.on('notification', this.receptionSocket)
+    }
+
+    receptionSocket = notif => {
+        if (this._isMounted && notif.to === this.props.pseudo) {
+            this.setState({
+                pseudo1: 1
+            })
+        }
     }
 
     handleLike = () => {
@@ -162,7 +172,7 @@ class ExternalProfile extends Component {
             if (res.data.interactions === 0) {
                 btnLove.classList.remove("btn-danger");
                 btnLove.classList.add("btn-success");
-                socket.emit('notification', {from: this.props.pseudo, to: this.state.pseudo, notif: 'like'})
+                axios.post('http://localhost:5000/api/notif/' + this.state.pseudo + '/true')
                 axios.post('http://localhost:5000/api/interactions', {
                     from: this.props.pseudo,
                     to: this.state.pseudo,
@@ -171,9 +181,12 @@ class ExternalProfile extends Component {
                 .then(() => {
                     axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo)
                     .then(res => {
+                        axios.post('http://localhost:5000/api/members/profile/pop/' + this.state.pseudo, {
+                            popularity: res.data.interactions
+                        })
                         if (this._isMounted) {
                             this.setState({ popularity: res.data.interactions })
-                        }           
+                        }         
                     }).catch(error => {
                         console.log(error)
                     })
@@ -185,6 +198,7 @@ class ExternalProfile extends Component {
                     })
                     .then(() => {
                         if (this.state.pseudo1 !== 0 && this.state.pseudo2 !== 0) {
+                            socket.emit('notificationMsg', {from: this.props.pseudo, to: this.state.pseudo, notif: 'retour'})
                             socket.emit('notification', {from: this.props.pseudo, to: this.state.pseudo, notif: 'retour'})
                             axios.post('http://localhost:5000/api/messages', {
                                 from: this.props.pseudo,
@@ -216,6 +230,9 @@ class ExternalProfile extends Component {
                     })
                     axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo)
                     .then(res => {
+                        axios.post('http://localhost:5000/api/members/profile/pop/' + this.state.pseudo, {
+                            popularity: res.data.interactions
+                        })
                         if (this._isMounted) {
                             this.setState({ popularity: res.data.interactions })
                         }           
