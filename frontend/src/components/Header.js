@@ -13,7 +13,7 @@ class Header extends Component {
     }
 
     componentDidMount() {        
-        if (this.props.pseudo !== '') {
+        if (this.props.pseudo !== null) {
             axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo).then(res => {
                 if (!res.data.data) {
                     navigator.geolocation.getCurrentPosition(position => {
@@ -30,7 +30,7 @@ class Header extends Component {
                 }
             })
             .then(() => {
-                if (this.props.pseudo !== '') {
+                if (this.props.pseudo !== null) {
                     axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo).then(res => {
                         if (!res.data.data) {
                             $.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
