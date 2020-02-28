@@ -45,11 +45,27 @@ class ExternalProfile extends Component {
         pseudo1: 0,
         pseudo2: 0,
         redirect: false,
-        error: true
+        error: true,
+        blockMember: [],
+        blockMe: []
     }
 
     componentDidMount() {
         this._isMounted = true
+        axios.get('http://localhost:5000/api/interactions/block/getblock/' + this.props.pseudo).then(res => {
+            if (this._isMounted) {
+                this.setState({
+                    blockMember: res.data.block
+                })              
+            }           
+        })
+        axios.get('http://localhost:5000/api/interactions/block/getblockme/' + this.props.pseudo).then(res => {
+            if (this._isMounted) {
+                this.setState({
+                    blockMe: res.data.block
+                })              
+            }           
+        })
         var btnLove = document.getElementById('btn-love')
         var btnBlock = document.getElementById('btn-block')
         axios.get('http://localhost:5000/api/interactions/block/isblock/' + this.props.pseudo + '/' + this.state.pseudo)
@@ -311,6 +327,12 @@ class ExternalProfile extends Component {
         else if (this.state.pseudo === this.props.pseudo) {
             return (
                 <Redirect to={"/profile"} />
+            )
+        }
+        else if (this.state.blockMember.indexOf(this.state.pseudo) !== -1
+        || this.state.blockMe.indexOf(this.state.pseudo) !== -1) {
+            return (
+                <Redirect to={"/accueil"} />
             )
         }
         else {
