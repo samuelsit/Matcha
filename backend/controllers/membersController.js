@@ -487,13 +487,13 @@ exports.changeMemberCountry = function (req, res) {
 
 exports.changeMemberPictures = function (req, res) {
     Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
-        if (err)
+        if (err || req.file === undefined)
             res.send(err);
-
+        else {        
         sharp(req.file.path)
         .resize(954, 635)
         .toBuffer((err, buffer) => {
-            fs.writeFile(req.file.path, buffer, function(e) {
+            fs.writeFile(req.file.path, buffer, function(e) { 
             });
         })
 
@@ -519,6 +519,7 @@ exports.changeMemberPictures = function (req, res) {
                 member
             });
         });
+        }
     });
 };
 

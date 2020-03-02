@@ -202,6 +202,11 @@ class Profile extends Component {
         fd.append('image', event.target.files[0], event.target.files[0].name)
         axios
         .post('http://localhost:5000/api/members/pictures/' + this.props.pseudo + '/' + event.target.id, fd)
+        .then(res => {
+            if (res.data === '') {
+                alert('erreur lors du chargement de l\'image')
+            }
+        })
     }
 
     componentWillUnmount() {

@@ -12,7 +12,7 @@ class Formulaire extends Component {
 
         const message = {
             pseudo,
-            message: this.state.message
+            message: this.state.message.replace(/</g, "&lt;").replace(/>/g, "&gt;")
         }
         addMessage(message)
         this.setState({message: '', length})
