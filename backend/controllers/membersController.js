@@ -266,6 +266,50 @@ exports.changeStatus = function (req, res) {
     });
 };
 
+exports.authMember = function (req, res) {
+    Member.findOne({pseudo: req.body.pseudo}, function (err, member) {
+        if (err) {
+            res.json({
+                status: "error",
+                message: err
+            });
+        }
+        if (member === null) {
+            res.json({
+                exist: false
+            });
+        }
+        bcrypt.compare(req.body.pass, member.password).then(res => {
+            if (res === false) {
+                res.json({
+                    pass: false
+                });
+            }
+        })
+        if (member.isValid === false) {
+            res.json({
+                isValid: false
+            });
+        }
+        else {
+            member.isLoggued = true;
+            if (member.country.name === '' ||
+                member.country.lat === 0 ||
+                member.country.lng === 0) {
+                res.json({
+                    isCountry: false
+                });
+            }
+            else {
+                res.json({
+                    lng: member.country.lng,
+                    lat: member.country.lat
+                });
+            }
+        }
+    });
+}
+
 exports.isMember = function (req, res) {
     Member.findOne({pseudo: req.params.pseudo}, function (err, members) {
         if (err) {

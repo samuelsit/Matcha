@@ -4,7 +4,6 @@ import Header from './Header'
 import { Redirect, Link } from "react-router-dom"
 import axios from 'axios'
 import * as $ from 'jquery'
-import bcrypt from 'bcryptjs'
 import { connect } from 'react-redux'
 
 class Auth extends Component {
@@ -76,64 +75,38 @@ class Auth extends Component {
         }
         if (!errorPass && !errorPseudo) {
             axios
-            .get('http://localhost:5000/api/members/exist/' + this.state.pseudo)
+            .post('http://localhost:5000/api/members/auth', {
+                pseudo: this.state.pseudo,
+                pass: this.state.pass
+            })
             .then(res => {
-                if (res.data.status === 'pseudo already exist') {
-                    bcrypt.compare(this.state.pass, res.data.pass).then(res => {
-                        if (res === true) {
-                            axios
-                            .get('http://localhost:5000/api/members/isValid/' + this.state.pseudo)
-                            .then(res => {
-                                if (res.data.data === true) {
-                                    axios
-                                    .patch('http://localhost:5000/api/members/status/true/' + this.state.pseudo)
-                                    .then(() => {
-                                        if (this._isMounted) {
-                                            this.props.setUserPseudo(this.state.pseudo)
-                                            this.props.setUserIsAuth(true)
-                                            axios.get('http://localhost:5000/api/members/isCountry/' + this.state.pseudo)
-                                            .then(res => {
-                                                if (res.data.data) {
-                                                    axios.get('http://localhost:5000/api/members/getCountry/' + this.state.pseudo)
-                                                    .then(res => {
-                                                        if (res.data.lng && res.data.lat) {
-                                                            this.props.setUserPos(res.data.lat, res.data.lng)
-                                                        }
-                                                        else {
-                                                            this.props.setUserPos(0, 0)
-                                                        }
-                                                    })
-                                                    .then(() => {
-                                                        this.setRedirect()
-                                                    })
-                                                }
-                                                else {
-                                                    this.props.setUserPos(0, 0)
-                                                }
-                                            })
-                                            .then(() => {
-                                                this.setRedirect()
-                                            })
-                                        }
-                                    })
-                                    .catch(error => { console.log(error) })
-                                }
-                                else {
-                                    $("#badPass").fadeOut()
-                                    $("#nonValid").fadeIn()
-                                }
-                            })
-                        }
-                        else {
-                            $("#badPass").fadeIn()
-                        }
-                    })
-                }
-                else {
+                if (res.data.exist === false) {
                     $("#badPass").fadeIn()
                 }
+                if (res.data.pass === false) {
+                    $("#badPass").fadeIn()
+                }
+                if (res.data.isValid === false) {
+                    $("#badPass").fadeOut()
+                    $("#nonValid").fadeIn()
+                }
+                else {
+                    this.props.setUserPseudo(this.state.pseudo)
+                    this.props.setUserIsAuth(true)
+                    if (res.data.isCountry === false) {
+                        this.props.setUserPos(0, 0)
+                    }
+                    else {
+                        if (res.data.lng && res.data.lat) {
+                            this.props.setUserPos(res.data.lat, res.data.lng)
+                            this.setRedirect()
+                        }
+                        else {
+                            this.props.setUserPos(0, 0)
+                        }
+                    }
+                }
             })
-            .catch(error => { console.log(error) })
         }
     }
 

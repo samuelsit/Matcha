@@ -13,10 +13,12 @@ class Header extends Component {
     }
 
     componentDidMount() {        
-        if (this.props.pseudo !== null) {
+        if (this.props.pseudo) {
             axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo).then(res => {
                 if (!res.data.data) {
                     navigator.geolocation.getCurrentPosition(position => {
+                        console.log("Pseudo: " + this.props.pseudo);
+                        
                         axios
                         .patch('http://localhost:5000/api/members/profile/country/' + this.props.pseudo, {
                             country: {
@@ -30,12 +32,13 @@ class Header extends Component {
                 }
             })
             .then(() => {
-                if (this.props.pseudo !== null) {
+                if (this.props.pseudo) {
                     axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo).then(res => {
                         if (!res.data.data) {
                             $.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
                                 var ip = String(data).match(/ip=([0-9.]+)/)
                                 $.get('https://ipapi.co/' + ip[1] + '/json', function(data) {
+                                    console.log(this.props.pseudo);
                                     axios
                                     .patch('http://localhost:5000/api/members/profile/country/' + this.props.pseudo, {
                                         country: {

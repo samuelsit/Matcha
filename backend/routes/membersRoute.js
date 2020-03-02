@@ -82,6 +82,9 @@ router.route('/api/members/token/:pseudo/:token')
 router.route('/api/members/isValid/:pseudo')
     .get(memberController.isValidMember);
 
+router.route('/api/members/auth')
+    .post(memberController.authMember);
+
 router.route('/api/members/isCountry/:pseudo')
     .get(memberController.isCountry);
 
