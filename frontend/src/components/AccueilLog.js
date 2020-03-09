@@ -45,21 +45,21 @@ class Accueil extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        axios.get('http://localhost:5000/api/interactions/block/getblock/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/interactions/block/getblock/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({
                     blockMember: res.data.block
                 })              
             }           
         })
-        axios.get('http://localhost:5000/api/interactions/block/getblockme/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/interactions/block/getblockme/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({
                     blockMe: res.data.block
                 })              
             }           
         })
-        axios.get('http://localhost:5000/api/members/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/members/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({
                     attirance: {
@@ -80,7 +80,7 @@ class Accueil extends Component {
                     female: this.state.attirance.female
                 },
                 myGender: this.state.myGender
-            })
+            }, {headers: { "x-access-token": this.props.token }})
             .then(res => {
                 if (this._isMounted) {
                     this.setState({pageMax: Math.ceil(res.data.members.length / 4)})
@@ -164,7 +164,7 @@ class Accueil extends Component {
                 female: this.state.attirance.female
             },
             myGender: this.state.myGender
-        }).then(res => {
+        }, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({card: res.data.members
                     .map((el, i) => (
@@ -343,7 +343,7 @@ class Accueil extends Component {
                 female: this.state.attirance.female
             },
             myGender: this.state.myGender
-        }).then(res => {            
+        }, {headers: { "x-access-token": this.props.token }}).then(res => {            
             if (this._isMounted) {
                 this.setState({card: res.data.members
                     .filter(this.filter)
@@ -381,7 +381,7 @@ class Accueil extends Component {
                 female: this.state.attirance.female
             },
             myGender: this.state.myGender
-        }).then(res => {            
+        }, {headers: { "x-access-token": this.props.token }}).then(res => {            
             if (this._isMounted) {
                 this.setState({card: res.data.members
                     .filter(this.filter)
@@ -427,7 +427,7 @@ class Accueil extends Component {
                 female: this.state.attirance.female
             },
             myGender: this.state.myGender
-        }).then(res => {            
+        }, {headers: { "x-access-token": this.props.token }}).then(res => {            
             if (this._isMounted) {
                 this.setState({card: res.data.members
                     .filter(this.filter)
@@ -473,7 +473,7 @@ class Accueil extends Component {
                 female: this.state.attirance.female
             },
             myGender: this.state.myGender
-        }).then(res => {            
+        }, {headers: { "x-access-token": this.props.token }}).then(res => {            
             if (this._isMounted) {
                 this.setState({card: res.data.members
                     .filter(this.filter)
@@ -533,7 +533,7 @@ class Accueil extends Component {
                 female: this.state.attirance.female
             },
             myGender: this.state.myGender
-        }).then(res => {            
+        }, {headers: { "x-access-token": this.props.token }}).then(res => {            
             if (this._isMounted) {
                 this.setState({card: res.data.members
                     .filter(this.filter)
@@ -598,6 +598,7 @@ class Accueil extends Component {
     }
 
     render () {
+        console.log("TokenRender: " + this.props.token)
         if (this.props.isAuth === true) {
             return (
                 <Fragment>
@@ -646,7 +647,8 @@ const mapStateToProps = state => {
         isAuth: state.isAuth,
         pseudo: state.pseudo,
         lat: state.lat,
-        lng: state.lng
+        lng: state.lng,
+        token: state.token
     }
 }
 

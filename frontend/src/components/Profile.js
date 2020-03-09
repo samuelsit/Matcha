@@ -45,7 +45,7 @@ class Profile extends Component {
 
     componentDidMount() {
         this._isMounted = true        
-        axios.get('http://localhost:5000/api/members/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/members/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({
                     lastname: res.data.member.lastname,
@@ -120,7 +120,7 @@ class Profile extends Component {
             firstname: this.state.firstname,
             biographie: this.state.biographie,
             updatedAt: Date.now()
-        })
+        }, {headers: { "x-access-token": this.props.token }})
         this.props.setUserPos(this.state.country.lat, this.state.country.lng)
     }
 
@@ -201,7 +201,7 @@ class Profile extends Component {
         const fd = new FormData()
         fd.append('image', event.target.files[0], event.target.files[0].name)
         axios
-        .post('http://localhost:5000/api/members/pictures/' + this.props.pseudo + '/' + event.target.id, fd)
+        .post('http://localhost:5000/api/members/pictures/' + this.props.pseudo + '/' + event.target.id, fd, {headers: { "x-access-token": this.props.token }})
         .then(res => {
             if (res.data === '') {
                 alert('erreur lors du chargement de l\'image')
@@ -390,7 +390,8 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => {
     return {
         pseudo: state.pseudo,
-        isAuth: state.isAuth
+        isAuth: state.isAuth,
+        token: state.token
     }
 }
 

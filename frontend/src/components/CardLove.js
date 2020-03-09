@@ -22,7 +22,7 @@ class CardLove extends Component {
     componentDidMount() {        
         var btnLove = document.getElementById('btn-love-' + this.props.pseud)
         this._isMounted = true
-        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseud + '/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseud + '/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (res.data.interactions === 1) {
                 document.getElementById("isLike").style.display = "block";
             }
@@ -35,7 +35,7 @@ class CardLove extends Component {
             console.log(error)
         })
         .then(() => {
-            axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud).then(res => {
+            axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud, {headers: { "x-access-token": this.props.token }}).then(res => {
                 if (this._isMounted) {
                     this.setState({
                         pseudo2: res.data.interactions
@@ -49,7 +49,7 @@ class CardLove extends Component {
                     btnLove.classList.add("btn-success");
                 }
             })
-            axios.get('http://localhost:5000/api/members/' + this.props.pseud).then(res => {
+            axios.get('http://localhost:5000/api/members/' + this.props.pseud, {headers: { "x-access-token": this.props.token }}).then(res => {
                 if (this._isMounted) {
                     this.setState({
                         picture: res.data.member.pictures._1
@@ -58,7 +58,7 @@ class CardLove extends Component {
             }).catch(error => {
                 console.log(error)
             })
-            axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
+            axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud, {headers: { "x-access-token": this.props.token }})
                 .then(res => {
                     if (this._isMounted) {
                         this.setState({
@@ -84,7 +84,7 @@ class CardLove extends Component {
         const data = this.props
         if (previousProps !== data) {
             var btnLove = document.getElementById('btn-love-' + this.props.pseud)
-            axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseud + '/' + this.props.pseudo).then(res => {
+            axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseud + '/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
                 if (this._isMounted) {
                     this.setState({
                         pseudo1: res.data.interactions
@@ -94,7 +94,7 @@ class CardLove extends Component {
                 console.log(error)
             })
             .then(() => {
-                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud).then(res => {
+                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud, {headers: { "x-access-token": this.props.token }}).then(res => {
                     if (this._isMounted) {
                         this.setState({
                             pseudo2: res.data.interactions
@@ -112,7 +112,7 @@ class CardLove extends Component {
                         btnLove.classList.add("btn-danger");
                     }
                 })
-                axios.get('http://localhost:5000/api/members/' + this.props.pseud).then(res => {
+                axios.get('http://localhost:5000/api/members/' + this.props.pseud, {headers: { "x-access-token": this.props.token }}).then(res => {
                     if (this._isMounted) {
                         this.setState({
                             picture: res.data.member.pictures._1
@@ -121,7 +121,7 @@ class CardLove extends Component {
                 }).catch(error => {
                     console.log(error)
                 })
-                axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
+                axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud, {headers: { "x-access-token": this.props.token }})
                     .then(res => {
                         if (this._isMounted) {
                             this.setState({
@@ -137,7 +137,7 @@ class CardLove extends Component {
 
     handleClick = () => {
         var btnLove = document.getElementById('btn-love-' + this.props.pseud)
-        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud)
+        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud, {headers: { "x-access-token": this.props.token }})
         .then(res => {
             if (res.data.interactions === 0) {
                 btnLove.classList.remove("btn-danger");
@@ -147,20 +147,20 @@ class CardLove extends Component {
                     from: this.props.pseudo,
                     to: this.props.pseud,
                     data: 'like'
-                })
+                }, {headers: { "x-access-token": this.props.token }})
                 .then(() => {
-                    axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
+                    axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud, {headers: { "x-access-token": this.props.token }})
                     .then(res => {                        
                         axios.post('http://localhost:5000/api/members/profile/pop/' + this.props.pseud, {
                             popularity: res.data.interactions
-                        })
+                        }, {headers: { "x-access-token": this.props.token }})
                         if (this._isMounted) {
                             this.setState({ popularity: res.data.interactions })
                         }
                     }).catch(error => {
                         console.log(error)
                     })
-                    axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud)
+                    axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud, {headers: { "x-access-token": this.props.token }})
                     .then(res => {                        
                         if (this._isMounted) {
                             this.setState({ pseudo2: res.data.interactions })
@@ -174,7 +174,7 @@ class CardLove extends Component {
                                 from: this.props.pseudo,
                                 to: this.props.pseud,
                                 data: "C'est un match !"
-                            })
+                            }, {headers: { "x-access-token": this.props.token }})
                         }
                         else {
                             socket.emit('notification', {from: this.props.pseudo, to: this.props.pseud, notif: 'like'})
@@ -191,18 +191,18 @@ class CardLove extends Component {
                     from: this.props.pseudo,
                     to: this.props.pseud,
                     data: 'like'
-                }).then(() => {
-                    axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud)
+                }, {headers: { "x-access-token": this.props.token }}).then(() => {
+                    axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.props.pseud, {headers: { "x-access-token": this.props.token }})
                     .then(res => {
                         if (this._isMounted) {
                             this.setState({ pseudo2: res.data.interactions })
                         }
                     })
-                    axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud)
+                    axios.get('http://localhost:5000/api/interactions/like/count/' + this.props.pseud, {headers: { "x-access-token": this.props.token }})
                     .then(res => {
                         axios.post('http://localhost:5000/api/members/profile/pop/' + this.props.pseud, {
                             popularity: res.data.interactions
-                        })
+                        }, {headers: { "x-access-token": this.props.token }})
                         if (this._isMounted) {
                             this.setState({ popularity: res.data.interactions })
                         }           
@@ -292,7 +292,8 @@ class CardLove extends Component {
 
 const mapStateToProps = state => {
     return {
-        pseudo: state.pseudo
+        pseudo: state.pseudo,
+        token: state.token
     }
 }
 

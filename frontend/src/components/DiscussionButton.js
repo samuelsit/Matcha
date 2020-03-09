@@ -18,14 +18,14 @@ class DiscussionButton extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        axios.get('http://localhost:5000/api/messages/last/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/messages/last/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({lastMessages: res.data.lastMessages})
             }
         }).catch(error => {
             console.log(error)
         })
-        axios.get('http://localhost:5000/api/notifMsg/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/notifMsg/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 if (res.data.notif === true) {
                     document.getElementById("notifMsg").style.display = "block";
@@ -42,21 +42,21 @@ class DiscussionButton extends Component {
 
     handleOpen = () => {
         document.getElementById("notifMsg").style.display = "none";
-        axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/false')
+        axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/false', {headers: { "x-access-token": this.props.token }})
         $('#messenger').fadeIn()
         $('#fixed-bottom').fadeOut()
     }
 
     handleClose = () => {
         document.getElementById("notifMsg").style.display = "none";
-        axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/false')
+        axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/false', {headers: { "x-access-token": this.props.token }})
         $('#fixed-bottom').fadeIn()
         $('#messenger').fadeOut()
     }
 
     receptionSocket = notif => {
         if (notif.notif === 'retour') {
-            axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/true')
+            axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/true', {headers: { "x-access-token": this.props.token }})
             if (notif.from === this.props.pseudo && this._isMounted) {
                 document.getElementById("notifMsg").style.display = "block";
                 this.setState({ liveNotif:
@@ -82,7 +82,7 @@ class DiscussionButton extends Component {
 
     receptionSocketMsg = msg => {
         if (this.props.pseudo === msg.to) {
-            axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/true')
+            axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/true', {headers: { "x-access-token": this.props.token }})
             document.getElementById("notifMsg").style.display = "block";
             if (this._isMounted) {
                 this.setState({ liveNotif:
@@ -135,7 +135,8 @@ class DiscussionButton extends Component {
 
 const mapStateToProps = state => {
     return {
-        pseudo: state.pseudo
+        pseudo: state.pseudo,
+        token: state.token
     }
 }
 

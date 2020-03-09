@@ -328,7 +328,7 @@ class Sign extends Component {
                     pseudo: this.state.pseudo,
                     isNotif: false,
                     isMessage: false
-                })
+                }).then((res) => console.log(res.data))
             }
         })
         .catch(error => { console.log(error) })

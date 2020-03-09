@@ -1,6 +1,7 @@
 // Initialize express router
 let router = require('express').Router();
 let multer = require('multer')
+const CheckToken = require('../middlewares/checkToken');
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -50,14 +51,14 @@ router.route('/api/members/seed')
 
 // Get all members // Create new member //
 router.route('/api/members/all/:pseudo')
-    .post(memberController.allMember)
+    .post(CheckToken ,memberController.allMember)
 
 router.route('/api/members')
     .post(memberController.newMember);
 
 // Get member
 router.route('/api/members/:pseudo')
-    .get(memberController.oneMember)
+    .get(CheckToken ,memberController.oneMember)
 
 // Change member status //
 router.route('/api/members/status/:status/:pseudo')
@@ -65,7 +66,7 @@ router.route('/api/members/status/:status/:pseudo')
 
 // Check if member exist
 router.route('/api/members/exist/:pseudo')
-    .get(memberController.isMember);
+    .get(CheckToken ,memberController.isMember);
 
 router.route('/api/members/exist/email/:email')
     .get(memberController.isMemberMail);
@@ -97,11 +98,11 @@ router.route('/api/members/isValid/:pseudo/:status')
 
 // Change member profile
 router.route('/api/members/profile/pop/:pseudo')
-    .post(memberController.changeMemberPop);
+    .post(CheckToken ,memberController.changeMemberPop);
 
 // Change member profile
 router.route('/api/members/profile/:pseudo')
-    .post(memberController.changeMemberProfile);
+    .post(CheckToken ,memberController.changeMemberProfile);
 
 router.route('/api/members/profile/pass/:pseudo')
     .patch(memberController.changeMemberPass);
@@ -111,7 +112,7 @@ router.route('/api/members/profile/country/:pseudo')
 
 // Change member profile
 router.route('/api/members/pictures/:pseudo/:id')
-    .post(upload.single('image'), memberController.changeMemberPictures);
+    .post(CheckToken,upload.single('image'), memberController.changeMemberPictures);
 
 router.route('/api/members/pictures/profile/:pseudo')
     .get(memberController.isProfilePicture);
@@ -132,16 +133,16 @@ router.route('/api/members/forget/:email')
     .get(memberController.forgetPass);
 
 router.route('/api/notif/:pseudo')
-    .get(memberController.getNotif)
+    .get(CheckToken, memberController.getNotif)
 
 router.route('/api/notif/:pseudo/:status')
-    .post(memberController.postNotif)
+    .post(CheckToken, memberController.postNotif)
 
 router.route('/api/notifMsg/:pseudo')
-    .get(memberController.getNotifMsg)
+    .get(CheckToken ,memberController.getNotifMsg)
 
 router.route('/api/notifMsg/:pseudo/:status')
-    .post(memberController.postNotifMsg)
+    .post(CheckToken ,memberController.postNotifMsg)
 
 router.route('/api/disconnect/:pseudo')
     .post(memberController.disconnectMember)

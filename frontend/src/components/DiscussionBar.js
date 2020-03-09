@@ -17,21 +17,21 @@ class DiscussionBar extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        axios.get('http://localhost:5000/api/interactions/block/getblock/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/interactions/block/getblock/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({
                     blockMember: res.data.block
                 })              
             }           
         })
-        axios.get('http://localhost:5000/api/interactions/block/getblockme/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/interactions/block/getblockme/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({
                     blockMe: res.data.block
                 })              
             }           
         })
-        axios.get('http://localhost:5000/api/members/' + this.props.login).then(res => {
+        axios.get('http://localhost:5000/api/members/' + this.props.login, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({member: res.data.member, _1: res.data.member.pictures._1})
             }
@@ -83,7 +83,8 @@ class DiscussionBar extends Component {
 
 const mapStateToProps = state => {
     return {
-        pseudo: state.pseudo
+        pseudo: state.pseudo,
+        token: state.token
     }
 }
 

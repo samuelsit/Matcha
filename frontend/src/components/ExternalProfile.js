@@ -52,14 +52,14 @@ class ExternalProfile extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        axios.get('http://localhost:5000/api/interactions/block/getblock/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/interactions/block/getblock/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({
                     blockMember: res.data.block
                 })              
             }           
         })
-        axios.get('http://localhost:5000/api/interactions/block/getblockme/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/interactions/block/getblockme/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({
                     blockMe: res.data.block
@@ -68,14 +68,14 @@ class ExternalProfile extends Component {
         })
         var btnLove = document.getElementById('btn-love')
         var btnBlock = document.getElementById('btn-block')
-        axios.get('http://localhost:5000/api/interactions/block/isblock/' + this.props.pseudo + '/' + this.state.pseudo)
+        axios.get('http://localhost:5000/api/interactions/block/isblock/' + this.props.pseudo + '/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
         .then(res => {
             if (res.data.interactions) {
                 btnBlock.classList.remove("btn-danger");
                 btnBlock.classList.add("btn-success");
             }
         })
-        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo)
+        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
         .then(res => {
             if (this._isMounted) {
                 this.setState({
@@ -90,7 +90,7 @@ class ExternalProfile extends Component {
                 btnLove.classList.add("btn-success");
             }
         })
-        axios.get('http://localhost:5000/api/members/exist/' + this.state.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/members/exist/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (res.data.status === 'pseudo not exist' && this._isMounted) {
                 this.setState({error: true})
                 this.setRedirect()
@@ -101,10 +101,10 @@ class ExternalProfile extends Component {
                         from: this.props.pseudo,
                         to: this.state.pseudo,
                         data: 'view'
-                    })
+                    }, {headers: { "x-access-token": this.props.token }})
                     socket.emit('notification', {from: this.props.pseudo, to: this.state.pseudo, notif: 'view'})
                 }
-                axios.get('http://localhost:5000/api/members/' + this.state.pseudo).then(res => {
+                axios.get('http://localhost:5000/api/members/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
                     if (this._isMounted) {
                         this.setState({
                             lastname: res.data.member.lastname,
@@ -139,7 +139,7 @@ class ExternalProfile extends Component {
                 .catch(error => {
                     console.log(error)
                 })
-                axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo)
+                axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
                     .then(res => {
                         if (this._isMounted) {
                             this.setState({
@@ -149,7 +149,7 @@ class ExternalProfile extends Component {
                     }).catch(error => {
                         console.log(error)
                 })
-                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo).then(res => {
+                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
                     if (this._isMounted) {
                         this.setState({
                             pseudo1: res.data.interactions
@@ -158,7 +158,7 @@ class ExternalProfile extends Component {
                 }).catch(error => {
                     console.log(error)
                 })
-                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.state.pseudo + '/' + this.props.pseudo).then(res => {
+                axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.state.pseudo + '/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
                     if (this._isMounted) {
                         this.setState({
                             pseudo2: res.data.interactions
@@ -183,30 +183,30 @@ class ExternalProfile extends Component {
     handleLike = () => {
         var btnLove = document.getElementById('btn-love')
 
-        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo)
+        axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
         .then(res => {
             if (res.data.interactions === 0) {
                 btnLove.classList.remove("btn-danger");
                 btnLove.classList.add("btn-success");
-                axios.post('http://localhost:5000/api/notif/' + this.state.pseudo + '/true')
+                axios.post('http://localhost:5000/api/notif/' + this.state.pseudo + '/true', {headers: { "x-access-token": this.props.token }})
                 axios.post('http://localhost:5000/api/interactions', {
                     from: this.props.pseudo,
                     to: this.state.pseudo,
                     data: 'like'
-                })
+                }, {headers: { "x-access-token": this.props.token }})
                 .then(() => {
-                    axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo)
+                    axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
                     .then(res => {
                         axios.post('http://localhost:5000/api/members/profile/pop/' + this.state.pseudo, {
                             popularity: res.data.interactions
-                        })
+                        }, {headers: { "x-access-token": this.props.token }})
                         if (this._isMounted) {
                             this.setState({ popularity: res.data.interactions })
                         }         
                     }).catch(error => {
                         console.log(error)
                     })
-                    axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo)
+                    axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
                     .then(res => {
                         if (this._isMounted) {
                             this.setState({ pseudo2: res.data.interactions })
@@ -220,7 +220,7 @@ class ExternalProfile extends Component {
                                 from: this.props.pseudo,
                                 to: this.state.pseudo,
                                 data: "C'est un match !"
-                            })
+                            }, {headers: { "x-access-token": this.props.token }})
                         }
                         else {
                             socket.emit('notification', {from: this.props.pseudo, to: this.state.pseudo, notif: 'like'})
@@ -237,18 +237,18 @@ class ExternalProfile extends Component {
                     from: this.props.pseudo,
                     to: this.state.pseudo,
                     data: 'like'
-                }).then(() => {
-                    axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo)
+                }, {headers: { "x-access-token": this.props.token }}).then(() => {
+                    axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.props.pseudo + '/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
                     .then(res => {
                         if (this._isMounted) {
                             this.setState({ pseudo2: res.data.interactions })
                         }
                     })
-                    axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo)
+                    axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
                     .then(res => {
                         axios.post('http://localhost:5000/api/members/profile/pop/' + this.state.pseudo, {
                             popularity: res.data.interactions
-                        })
+                        }, {headers: { "x-access-token": this.props.token }})
                         if (this._isMounted) {
                             this.setState({ popularity: res.data.interactions })
                         }           
@@ -263,7 +263,7 @@ class ExternalProfile extends Component {
     handleBlock = () => {
         var btnBlock = document.getElementById('btn-block')
 
-        axios.get('http://localhost:5000/api/interactions/block/isblock/' + this.props.pseudo + '/' + this.state.pseudo)
+        axios.get('http://localhost:5000/api/interactions/block/isblock/' + this.props.pseudo + '/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
         .then(res => {
             if (res.data.interactions === 0) {
                 btnBlock.classList.remove("btn-danger");
@@ -272,7 +272,7 @@ class ExternalProfile extends Component {
                     from: this.props.pseudo,
                     to: this.state.pseudo,
                     data: 'block'
-                })
+                }, {headers: { "x-access-token": this.props.token }})
             }
             else {
                 btnBlock.classList.add("btn-danger");
@@ -281,14 +281,14 @@ class ExternalProfile extends Component {
                     from: this.props.pseudo,
                     to: this.state.pseudo,
                     data: 'block'
-                })
+                }, {headers: { "x-access-token": this.props.token }})
             }
         })
     }
 
     handleReport = () => {
         if (window.confirm("Reporter en tant que faux compte ?")) { 
-            axios.get('http://localhost:5000/api/interactions/report/' + this.state.pseudo)
+            axios.get('http://localhost:5000/api/interactions/report/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
         }
     }
 
@@ -377,7 +377,8 @@ class ExternalProfile extends Component {
 const mapStateToProps = state => {
     return {
         pseudo: state.pseudo,
-        isAuth: state.isAuth
+        isAuth: state.isAuth,
+        token: state.token
     }
 }
 

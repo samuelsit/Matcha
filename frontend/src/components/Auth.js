@@ -80,6 +80,7 @@ class Auth extends Component {
                 pass: this.state.pass
             })
             .then(res => {
+                console.log("Token: " + res.data.token)
                 if (res.data.exist === false) {
                     $("#badPass").fadeIn()
                 }
@@ -93,6 +94,7 @@ class Auth extends Component {
                 else {
                     this.props.setUserPseudo(this.state.pseudo)
                     this.props.setUserIsAuth(true)
+                    this.props.setUserToken(res.data.token)
                     if (res.data.isCountry === false) {
                         this.props.setUserPos(0, 0)
                     }
@@ -168,6 +170,9 @@ const mapDispatchToProps = dispatch => {
         },
         setUserPos: (lat, lng) => {
             dispatch({ type: 'SET_USER_POS', lat: lat, lng: lng })
+        },
+        setUserToken: (token) => {
+            dispatch({ type: 'SET_USER_TOKEN', token: token})
         }   
     }
 }

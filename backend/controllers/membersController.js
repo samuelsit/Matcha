@@ -2,6 +2,8 @@ Member = require('../models/membersModel');
 
 const sharp = require('sharp')
 const fs = require('fs')
+const jwt = require('jsonwebtoken')
+const config = require('../config')
 
 // Handle index actions
 exports.allMember = function (req, res) {    
@@ -242,6 +244,20 @@ exports.newMember = function (req, res) {
 
 // Handle view member info
 exports.oneMember = function (req, res) {
+    // var token = req.headers['x-access-token'];
+    // if (!token) return res.status(401).send({ auth: false, message: 'No token provided.' });
+    
+    // jwt.verify(token, config.secret, function(err, decoded) {
+    //     if (err) return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
+    //     //var member = null;
+    //     Member.findOne({pseudo: req.params.pseudo}, function (error, member) {
+    //         if (error)
+    //             res.send(error);
+    //         res.status(200).send({decoded, member});
+    //     });
+        
+        
+    // });
     Member.findOne({pseudo: req.params.pseudo}, function (err, member) {
         if (err)
             res.send(err);
@@ -293,6 +309,9 @@ exports.authMember = function (req, res) {
         }
         else {
             member.isLoggued = true;
+            var token = jwt.sign({ id: member._id }, config.secret, {
+                expiresIn: 86400 // expires in 24 hours
+            });
             if (member.country.name === '' ||
                 member.country.lat === 0 ||
                 member.country.lng === 0) {
@@ -303,7 +322,8 @@ exports.authMember = function (req, res) {
             else {
                 res.json({
                     lng: member.country.lng,
-                    lat: member.country.lat
+                    lat: member.country.lat,
+                    token: token
                 });
             }
         }
