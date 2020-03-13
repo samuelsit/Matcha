@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import axios from 'axios'
 import { Redirect } from "react-router-dom"
+import { connect } from 'react-redux'
 
 class HistoryMember extends Component {
     _isMounted = false
@@ -14,7 +15,7 @@ class HistoryMember extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        axios.get('http://localhost:5000/api/members/' + this.props.login).then(res => {
+        axios.get('http://localhost:5000/api/members/' + this.props.login, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({firstname: res.data.member.firstname, lastname: res.data.member.lastname, profilePic: res.data.member.pictures._1})
             }
@@ -56,4 +57,10 @@ class HistoryMember extends Component {
     }
 }
 
-export default HistoryMember
+const mapStateToProps = state => {
+    return {
+        token: state.token
+    }
+}
+
+export default connect(mapStateToProps, null)(HistoryMember)

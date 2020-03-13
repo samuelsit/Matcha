@@ -14,7 +14,7 @@ class Header extends Component {
 
     componentDidMount() {        
         if (this.props.pseudo) {
-            axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo).then(res => {
+            axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
                 if (!res.data.data) {
                     navigator.geolocation.getCurrentPosition(position => {
                         console.log("Pseudo: " + this.props.pseudo);
@@ -26,14 +26,14 @@ class Header extends Component {
                                 lat: position.coords.latitude,
                                 lng: position.coords.longitude
                             }
-                        })
+                        }, {headers: { "x-access-token": this.props.token }})
                         this.props.setUserPos(position.coords.latitude, position.coords.longitude)
                     })
                 }
             })
             .then(() => {
                 if (this.props.pseudo) {
-                    axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo).then(res => {
+                    axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
                         if (!res.data.data) {
                             $.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
                                 var ip = String(data).match(/ip=([0-9.]+)/)
@@ -46,7 +46,7 @@ class Header extends Component {
                                             lat: data.latitude,
                                             lng: data.longitude
                                         }
-                                    })
+                                    }, {headers: { "x-access-token": this.props.token }})
                                     this.props.setUserPos(data.latitude, data.longitude)
                                 }.bind(this))
                             }.bind(this))
@@ -61,9 +61,9 @@ class Header extends Component {
 
     handleClick = () => {
         axios
-        .patch('http://localhost:5000/api/members/status/false/' + this.props.pseudo)
+        .patch('http://localhost:5000/api/members/status/false/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }})
         .then(() => {
-            axios.post('http://localhost:5000/api/disconnect/' + this.props.pseudo)
+            axios.post('http://localhost:5000/api/disconnect/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }})
             this.props.setUserIsAuth(false)
             this.props.setUserPos(0, 0)
             this.props.setUserPseudo('')
@@ -134,7 +134,8 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = state => { 
     return {
         isAuth: state.isAuth,
-        pseudo: state.pseudo
+        pseudo: state.pseudo,
+        token: state.token
     }
 }
 

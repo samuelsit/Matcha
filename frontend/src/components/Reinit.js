@@ -72,7 +72,7 @@ class Reinit extends Component {
     handleSubmit = event => {
         event.preventDefault()
         axios
-        .get('http://localhost:5000/api/members/exist/' + this.state.pseudo)
+        .get('http://localhost:5000/api/members/exist/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
         .then(res => {       
             bcrypt.compare(this.state.pass, res.data.pass).then(res => {
                 let errorpass = true
@@ -245,7 +245,8 @@ class Reinit extends Component {
 const mapStateToProps = state => {
     return {
         isAuth: state.isAuth,
-        pseudo: state.pseudo
+        pseudo: state.pseudo,
+        token: state.token
     }
 }
 

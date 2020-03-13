@@ -301,7 +301,7 @@ exports.authMember = function (req, res) {
                     pass: false
                 });
             }
-        })
+        }).catch((err) => res.status(500).json(err))
         if (member.isValid === false) {
             res.json({
                 isValid: false

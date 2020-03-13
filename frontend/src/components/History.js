@@ -16,7 +16,7 @@ class History extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        axios.get('http://localhost:5000/api/interactions/lastView/' + this.props.pseudo)
+        axios.get('http://localhost:5000/api/interactions/lastView/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }})
         .then(res => {
             if (this._isMounted) {
                 this.setState({lastMembers: res.data.interactions})
@@ -24,7 +24,7 @@ class History extends Component {
         }).catch(error => {
             console.log(error)
         })
-        axios.get('http://localhost:5000/api/interactions/lastLike/' + this.props.pseudo)
+        axios.get('http://localhost:5000/api/interactions/lastLike/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }})
         .then(res => {
             if (this._isMounted) {
                 this.setState({likeMembers: res.data.interactions})
@@ -109,7 +109,8 @@ class History extends Component {
 const mapStateToProps = state => {
     return {
         isAuth: state.isAuth,
-        pseudo: state.pseudo
+        pseudo: state.pseudo,
+        token: state.token
     }
 }
 

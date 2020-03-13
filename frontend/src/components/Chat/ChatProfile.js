@@ -26,7 +26,7 @@ class ChatProfile extends Component {
   
     componentDidMount() {
       this._isMounted = true
-      axios.get('http://localhost:5000/api/disconnect/' + this.props.pseudo)
+      axios.get('http://localhost:5000/api/disconnect/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }})
         .then(res => {
             if (this._isMounted) {
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
@@ -34,37 +34,37 @@ class ChatProfile extends Component {
                 this.setState({ lastVisite: date.toLocaleDateString(undefined, options)})
             }
       })
-      axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.state.pseudo + '/' + this.props.pseudo).then(res => {
+      axios.get('http://localhost:5000/api/interactions/like/ismatch/' + this.state.pseudo + '/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (res.data.interactions === 1) {
                 document.getElementById("isLike").style.display = "block";
             }
       })
-      axios.get('http://localhost:5000/api/members/pictures/profile/' + this.state.pseudo).then(res => {
+      axios.get('http://localhost:5000/api/members/pictures/profile/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
           if (this._isMounted) {
               this.setState({isPic1: res.data.status, _1: res.data.pic})
           }
       })
-      axios.get('http://localhost:5000/api/members/pictures/2/' + this.state.pseudo).then(res => {
+      axios.get('http://localhost:5000/api/members/pictures/2/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
           if (this._isMounted) {
               this.setState({isPic2: res.data.status, _2: res.data.pic})
           }
       })
-      axios.get('http://localhost:5000/api/members/pictures/3/' + this.state.pseudo).then(res => {
+      axios.get('http://localhost:5000/api/members/pictures/3/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
           if (this._isMounted) {
               this.setState({isPic3: res.data.status, _3: res.data.pic})
           }
       })
-      axios.get('http://localhost:5000/api/members/pictures/4/' + this.state.pseudo).then(res => {
+      axios.get('http://localhost:5000/api/members/pictures/4/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
           if (this._isMounted) {
               this.setState({isPic4: res.data.status, _4: res.data.pic})
           }
       })
-      axios.get('http://localhost:5000/api/members/pictures/5/' + this.state.pseudo).then(res => {
+      axios.get('http://localhost:5000/api/members/pictures/5/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
           if (this._isMounted) {
               this.setState({isPic5: res.data.status, _5: res.data.pic})
           }
       })
-      axios.get('http://localhost:5000/api/members/' + this.state.pseudo).then(res => {
+      axios.get('http://localhost:5000/api/members/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
           if (this._isMounted) {
                 this.setState({
                     firstname: res.data.member.firstname,
@@ -166,7 +166,8 @@ class ChatProfile extends Component {
 
 const mapStateToProps = state => {
     return {
-        pseudo: state.pseudo
+        pseudo: state.pseudo,
+        token: state.token
     }
 }
 

@@ -33,7 +33,7 @@ class Reinit extends Component {
         else {
             $("#getErrMail").fadeOut()
             axios
-            .get('http://localhost:5000/api/members/exist/email/' + this.state.email)
+            .get('http://localhost:5000/api/members/exist/email/' + this.state.email, {headers: { "x-access-token": this.props.token }})
             .then(res => {
                 if (res.data.status === 'pseudo not exist') {
                     $("#getErrMailNot").fadeIn()
@@ -41,7 +41,7 @@ class Reinit extends Component {
                 else {
                     $("#getErrMailNot").fadeOut()
                     axios
-                    .get('http://localhost:5000/api/members/forget/' + this.state.email)
+                    .get('http://localhost:5000/api/members/forget/' + this.state.email, {headers: { "x-access-token": this.props.token }})
                     .then(res => {
                         this.setState({ sending: true })
                     })
@@ -109,7 +109,8 @@ class Reinit extends Component {
 
 const mapStateToProps = state => {
     return {
-        isAuth: state.isAuth
+        isAuth: state.isAuth,
+        token: state.token
     }
 }
 

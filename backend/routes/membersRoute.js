@@ -58,7 +58,7 @@ router.route('/api/members')
 
 // Get member
 router.route('/api/members/:pseudo')
-    .get(CheckToken ,memberController.oneMember)
+    .get(memberController.oneMember)
 
 // Change member status //
 router.route('/api/members/status/:status/:pseudo')
@@ -66,10 +66,10 @@ router.route('/api/members/status/:status/:pseudo')
 
 // Check if member exist
 router.route('/api/members/exist/:pseudo')
-    .get(CheckToken ,memberController.isMember);
+    .get(memberController.isMember);
 
 router.route('/api/members/exist/email/:email')
-    .get(memberController.isMemberMail);
+    .get(CheckToken, memberController.isMemberMail);
 
 // Check if is valid token
 router.route('/api/members/token/:pseudo/:token')
@@ -87,7 +87,7 @@ router.route('/api/members/auth')
     .post(memberController.authMember);
 
 router.route('/api/members/isCountry/:pseudo')
-    .get(memberController.isCountry);
+    .get(CheckToken, memberController.isCountry);
 
 router.route('/api/members/getCountry/:pseudo')
     .get(memberController.getCountry);
@@ -108,14 +108,14 @@ router.route('/api/members/profile/pass/:pseudo')
     .patch(memberController.changeMemberPass);
 
 router.route('/api/members/profile/country/:pseudo')
-    .patch(memberController.changeMemberCountry);
+    .patch(CheckToken, memberController.changeMemberCountry);
 
 // Change member profile
 router.route('/api/members/pictures/:pseudo/:id')
     .post(CheckToken,upload.single('image'), memberController.changeMemberPictures);
 
 router.route('/api/members/pictures/profile/:pseudo')
-    .get(memberController.isProfilePicture);
+    .get(CheckToken, memberController.isProfilePicture);
 
 router.route('/api/members/pictures/2/:pseudo')
     .get(memberController.isPicture2);
@@ -130,7 +130,7 @@ router.route('/api/members/pictures/5/:pseudo')
     .get(memberController.isPicture5);
 
 router.route('/api/members/forget/:email')
-    .get(memberController.forgetPass);
+    .get(CheckToken, memberController.forgetPass);
 
 router.route('/api/notif/:pseudo')
     .get(CheckToken, memberController.getNotif)
@@ -145,7 +145,7 @@ router.route('/api/notifMsg/:pseudo/:status')
     .post(CheckToken ,memberController.postNotifMsg)
 
 router.route('/api/disconnect/:pseudo')
-    .post(memberController.disconnectMember)
+    .post(CheckToken, memberController.disconnectMember)
     .get(memberController.getLastConnect)
 
 // Export API routes

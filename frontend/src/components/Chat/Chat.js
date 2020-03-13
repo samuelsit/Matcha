@@ -27,21 +27,21 @@ class Chat extends Component {
 
   componentDidMount() {
     this._isMounted = true
-    axios.get('http://localhost:5000/api/interactions/block/getblock/' + this.props.pseudo).then(res => {
+    axios.get('http://localhost:5000/api/interactions/block/getblock/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
         if (this._isMounted) {
             this.setState({
                 blockMember: res.data.block
             })              
         }           
     })
-    axios.get('http://localhost:5000/api/interactions/block/getblockme/' + this.props.pseudo).then(res => {
+    axios.get('http://localhost:5000/api/interactions/block/getblockme/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
         if (this._isMounted) {
             this.setState({
                 blockMe: res.data.block
             })              
         }           
     })
-    axios.get('http://localhost:5000/api/messages/exist/' + this.state.pseudo + '/' + this.props.pseudo)
+    axios.get('http://localhost:5000/api/messages/exist/' + this.state.pseudo + '/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }})
     .then(res => {
       if (this._isMounted) {
         if (res.data.data) {
@@ -53,7 +53,7 @@ class Chat extends Component {
         }
       }
     })
-    axios.get('http://localhost:5000/api/members/' + this.state.pseudo)
+    axios.get('http://localhost:5000/api/members/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
     .then(res => {
         if (this._isMounted) {
               this.setState({
@@ -64,7 +64,7 @@ class Chat extends Component {
     }).catch(error => {
         console.log(error)
     })
-    axios.get('http://localhost:5000/api/messages/all/' + this.state.pseudo + '/' + this.props.pseudo).then(res => {
+    axios.get('http://localhost:5000/api/messages/all/' + this.state.pseudo + '/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
         if (this._isMounted) {
             this.setState({
                 messages: res.data.messages
@@ -173,7 +173,8 @@ class Chat extends Component {
 const mapStateToProps = state => {
   return {
       pseudo: state.pseudo,
-      isAuth: state.isAuth
+      isAuth: state.isAuth,
+      token: state.token
   }
 }
 

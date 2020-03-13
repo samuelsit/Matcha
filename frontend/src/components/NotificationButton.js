@@ -20,14 +20,14 @@ class NotificationButton extends Component {
 
     componentDidMount() {
         this._isMounted = true
-        axios.get('http://localhost:5000/api/interactions/last/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/interactions/last/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({lastNotif: res.data.interactions})
             }
         }).catch(error => {
             console.log(error)
         })
-        axios.get('http://localhost:5000/api/notif/' + this.props.pseudo).then(res => {
+        axios.get('http://localhost:5000/api/notif/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 if (res.data.notif === true) {
                     $('.notif').fadeIn()
@@ -45,13 +45,13 @@ class NotificationButton extends Component {
         if (this._isMounted) {
             this.setState({ isOpenNotif: false })
         }
-        axios.post('http://localhost:5000/api/notif/' + this.props.pseudo + '/false')
+        axios.post('http://localhost:5000/api/notif/' + this.props.pseudo + '/false', {headers: { "x-access-token": this.props.token }})
         $('#notif').fadeOut()
     }
 
     handleOpen = () => {
         $('.notif').fadeOut()
-        axios.post('http://localhost:5000/api/notif/' + this.props.pseudo + '/false')
+        axios.post('http://localhost:5000/api/notif/' + this.props.pseudo + '/false', {headers: { "x-access-token": this.props.token }})
         if (this.state.isOpenNotif === true) {
             this.handleClose()
         }
@@ -65,7 +65,7 @@ class NotificationButton extends Component {
 
     receptionSocket = notif => {        
         if (this.props.pseudo === notif.to) {
-            axios.post('http://localhost:5000/api/notif/' + this.props.pseudo + '/true')
+            axios.post('http://localhost:5000/api/notif/' + this.props.pseudo + '/true', {headers: { "x-access-token": this.props.token }})
             $('.notif').fadeIn()
             if (this._isMounted) {
                 this.setState({ liveNotif:
@@ -116,7 +116,8 @@ class NotificationButton extends Component {
 
 const mapStateToProps = state => {
     return {
-        pseudo: state.pseudo
+        pseudo: state.pseudo,
+        token: state.token
     }
 }
 
