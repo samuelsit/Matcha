@@ -48,10 +48,10 @@ class MailValidation extends Component {
                 }
                 else {
                     axios
-                    .patch('http://localhost:5000/api/members/token/' + pseudo + '/' + require('crypto').randomBytes(32).toString('hex'))
+                    .post('http://localhost:5000/api/members/token/' + pseudo + '/' + require('crypto').randomBytes(32).toString('hex'))
                     .then(() => {
                         axios
-                        .patch('http://localhost:5000/api/members/isValid/' + pseudo + '/true')
+                        .post('http://localhost:5000/api/members/isValid/' + pseudo + '/true')
                         .then(() => {
                             if (this._isMounted) {
                                 this.setState({ error: false })

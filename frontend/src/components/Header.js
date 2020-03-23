@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import logo from '../pictures/favicon.png'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import NotificationButton from './NotificationButton'
 import { connect } from 'react-redux'
 import axios from 'axios'
@@ -8,11 +8,7 @@ import * as $ from 'jquery'
 
 class Header extends Component {
 
-    state = {
-        firstLoc: false
-    }
-
-    componentDidMount() {        
+    componentDidMount() {   
         if (this.props.pseudo) {
             axios.get('http://localhost:5000/api/members/isCountry/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
                 if (!res.data.data) {
@@ -20,7 +16,7 @@ class Header extends Component {
                         console.log("Pseudo: " + this.props.pseudo);
                         
                         axios
-                        .patch('http://localhost:5000/api/members/profile/country/' + this.props.pseudo, {
+                        .post('http://localhost:5000/api/members/profile/country/' + this.props.pseudo, {
                             country: {
                                 name: 'Paris, France',
                                 lat: position.coords.latitude,
@@ -40,7 +36,7 @@ class Header extends Component {
                                 $.get('https://ipapi.co/' + ip[1] + '/json', function(data) {
                                     console.log(this.props.pseudo);
                                     axios
-                                    .patch('http://localhost:5000/api/members/profile/country/' + this.props.pseudo, {
+                                    .post('http://localhost:5000/api/members/profile/country/' + this.props.pseudo, {
                                         country: {
                                             name: data.city + ', ' + data.region,
                                             lat: data.latitude,
@@ -61,13 +57,16 @@ class Header extends Component {
 
     handleClick = () => {
         axios
-        .patch('http://localhost:5000/api/members/status/false/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }})
+        .post('http://localhost:5000/api/members/status/false/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }})
         .then(() => {
             axios.post('http://localhost:5000/api/disconnect/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }})
+            .catch(error => { console.log(error) })
             this.props.setUserIsAuth(false)
             this.props.setUserPos(0, 0)
             this.props.setUserPseudo('')
+            this.props.setUserToken('')
         })
+        .then(<Redirect to="/accueil" />)
         .catch(error => { console.log(error) })
     }
 
@@ -109,7 +108,7 @@ class Header extends Component {
                         </div>
                         <NotificationButton/>
                         <Link to={"/profile"}><div className="text-light btn btn-circle btn-secondary mr-2"><i className="fas fa-user"></i></div></Link>
-                        <Link to={"/"}><div className="text-light btn btn-circle btn-danger mr-2" onClick={this.handleClick}>Déconnexion</div></Link>
+                        <div className="text-light btn btn-circle btn-danger mr-2" onClick={this.handleClick}>Déconnexion</div>
                     </nav>
                 </header>
             )
@@ -127,6 +126,9 @@ const mapDispatchToProps = dispatch => {
         },
         setUserPseudo: (pseudo) => {
             dispatch({ type: 'SET_USER_PSEUDO', pseudo: pseudo })
+        },
+        setUserToken: (token) => {
+            dispatch({ type: 'SET_USER_TOKEN', token: token })
         }
     }
 }

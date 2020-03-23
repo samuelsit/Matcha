@@ -129,10 +129,10 @@ class Reinit extends Component {
                     }
                 }                        
                 axios
-                .patch('http://localhost:5000/api/members/token/' + this.state.pseudo + '/' + require('crypto').randomBytes(32).toString('hex'))
+                .post('http://localhost:5000/api/members/token/' + this.state.pseudo + '/' + require('crypto').randomBytes(32).toString('hex'))
                 .then(() => {
                     axios
-                    .patch('http://localhost:5000/api/members/profile/pass/' + this.state.pseudo, {
+                    .post('http://localhost:5000/api/members/profile/pass/' + this.state.pseudo, {
                         password: bcrypt.hashSync(this.state.npass, bcrypt.genSaltSync(10))
                     }).then(res => {                                
                         this.setRedirect()

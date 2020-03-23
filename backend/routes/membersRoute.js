@@ -62,7 +62,7 @@ router.route('/api/members/:pseudo')
 
 // Change member status //
 router.route('/api/members/status/:status/:pseudo')
-    .patch(memberController.changeStatus);
+    .post(memberController.changeStatus);
 
 // Check if member exist
 router.route('/api/members/exist/:pseudo')
@@ -77,7 +77,7 @@ router.route('/api/members/token/:pseudo/:token')
 
 // Change token
 router.route('/api/members/token/:pseudo/:token')
-    .patch(memberController.changeToken);
+    .post(memberController.changeToken);
 
 // Check if is valid member
 router.route('/api/members/isValid/:pseudo')
@@ -94,7 +94,7 @@ router.route('/api/members/getCountry/:pseudo')
 
 // Change isValid
 router.route('/api/members/isValid/:pseudo/:status')
-    .patch(memberController.changeIsValid);
+    .post(memberController.changeIsValid);
 
 // Change member profile
 router.route('/api/members/profile/pop/:pseudo')
@@ -105,10 +105,10 @@ router.route('/api/members/profile/:pseudo')
     .post(CheckToken ,memberController.changeMemberProfile);
 
 router.route('/api/members/profile/pass/:pseudo')
-    .patch(memberController.changeMemberPass);
+    .post(memberController.changeMemberPass);
 
 router.route('/api/members/profile/country/:pseudo')
-    .patch(CheckToken, memberController.changeMemberCountry);
+    .post(CheckToken, memberController.changeMemberCountry);
 
 // Change member profile
 router.route('/api/members/pictures/:pseudo/:id')
