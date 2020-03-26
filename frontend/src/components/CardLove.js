@@ -174,7 +174,7 @@ class CardLove extends Component {
                                 from: this.props.pseudo,
                                 to: this.props.pseud,
                                 data: "C'est un match !"
-                            }, {headers: { "x-access-token": this.props.token }})
+                            })
                         }
                         else {
                             socket.emit('notification', {from: this.props.pseudo, to: this.props.pseud, notif: 'like'})

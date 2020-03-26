@@ -25,7 +25,7 @@ router.route('/api/interactions/block/getblockme/:pseudo')
     .get(CheckToken, interactionsController.getBlockMe)
 
 router.route('/api/interactions/last/:pseudo')
-    .get(CheckToken, interactionsController.getLastNotifications)
+    .get(interactionsController.getLastNotifications)
 
 router.route('/api/interactions/lastView/:pseudo')
     .get(CheckToken, interactionsController.getLastView)

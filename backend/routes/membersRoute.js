@@ -69,7 +69,7 @@ router.route('/api/members/exist/:pseudo')
     .get(memberController.isMember);
 
 router.route('/api/members/exist/email/:email')
-    .get(CheckToken, memberController.isMemberMail);
+    .get(memberController.isMemberMail);
 
 // Check if is valid token
 router.route('/api/members/token/:pseudo/:token')
@@ -130,22 +130,22 @@ router.route('/api/members/pictures/5/:pseudo')
     .get(memberController.isPicture5);
 
 router.route('/api/members/forget/:email')
-    .get(CheckToken, memberController.forgetPass);
+    .get(memberController.forgetPass);
 
 router.route('/api/notif/:pseudo')
-    .get(CheckToken, memberController.getNotif)
+    .get(memberController.getNotif)
 
 router.route('/api/notif/:pseudo/:status')
-    .post(CheckToken, memberController.postNotif)
+    .post(memberController.postNotif)
 
 router.route('/api/notifMsg/:pseudo')
-    .get(CheckToken ,memberController.getNotifMsg)
+    .get(memberController.getNotifMsg)
 
 router.route('/api/notifMsg/:pseudo/:status')
-    .post(CheckToken ,memberController.postNotifMsg)
+    .post(memberController.postNotifMsg)
 
 router.route('/api/disconnect/:pseudo')
-    .post(CheckToken, memberController.disconnectMember)
+    .post(memberController.disconnectMember)
     .get(memberController.getLastConnect)
 
 // Export API routes

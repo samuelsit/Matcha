@@ -4,7 +4,7 @@ var messagesController = require('../controllers/messagesController');
 const CheckToken = require('../middlewares/checkToken')
 
 router.route('/api/messages')
-    .post(CheckToken, messagesController.newMessage)
+    .post(messagesController.newMessage)
 
 router.route('/api/messages/all/:pseudo1/:pseudo2')
     .get(messagesController.getMessagesWith)

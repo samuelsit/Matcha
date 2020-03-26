@@ -25,7 +25,7 @@ class DiscussionButton extends Component {
         }).catch(error => {
             console.log(error)
         })
-        axios.get('http://localhost:5000/api/notifMsg/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
+        axios.get('http://localhost:5000/api/notifMsg/' + this.props.pseudo).then(res => {
             if (this._isMounted) {
                 if (res.data.notif === true) {
                     document.getElementById("notifMsg").style.display = "block";
@@ -42,21 +42,21 @@ class DiscussionButton extends Component {
 
     handleOpen = () => {
         document.getElementById("notifMsg").style.display = "none";
-        axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/false', {headers: { "x-access-token": this.props.token }})
+        axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/false')
         $('#messenger').fadeIn()
         $('#fixed-bottom').fadeOut()
     }
 
     handleClose = () => {
         document.getElementById("notifMsg").style.display = "none";
-        axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/false', {headers: { "x-access-token": this.props.token }})
+        axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/false')
         $('#fixed-bottom').fadeIn()
         $('#messenger').fadeOut()
     }
 
     receptionSocket = notif => {
         if (notif.notif === 'retour') {
-            axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/true', {headers: { "x-access-token": this.props.token }})
+            axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/true')
             if (notif.from === this.props.pseudo && this._isMounted) {
                 document.getElementById("notifMsg").style.display = "block";
                 this.setState({ liveNotif:
@@ -81,8 +81,8 @@ class DiscussionButton extends Component {
     }
 
     receptionSocketMsg = msg => {
-        if (this.props.pseudo === msg.to) {
-            axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/true', {headers: { "x-access-token": this.props.token }})
+        if (this.props.pseudo !== msg.to ) {
+            axios.post('http://localhost:5000/api/notifMsg/' + this.props.pseudo + '/true')
             document.getElementById("notifMsg").style.display = "block";
             if (this._isMounted) {
                 this.setState({ liveNotif:

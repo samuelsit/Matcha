@@ -59,7 +59,7 @@ class Header extends Component {
         axios
         .post('http://localhost:5000/api/members/status/false/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }})
         .then(() => {
-            axios.post('http://localhost:5000/api/disconnect/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }})
+            axios.post('http://localhost:5000/api/disconnect/' + this.props.pseudo)
             .catch(error => { console.log(error) })
             this.props.setUserIsAuth(false)
             this.props.setUserPos(0, 0)

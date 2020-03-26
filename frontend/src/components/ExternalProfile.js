@@ -188,7 +188,7 @@ class ExternalProfile extends Component {
             if (res.data.interactions === 0) {
                 btnLove.classList.remove("btn-danger");
                 btnLove.classList.add("btn-success");
-                axios.post('http://localhost:5000/api/notif/' + this.state.pseudo + '/true', {headers: { "x-access-token": this.props.token }})
+                axios.post('http://localhost:5000/api/notif/' + this.state.pseudo + '/true')
                 axios.post('http://localhost:5000/api/interactions', {
                     from: this.props.pseudo,
                     to: this.state.pseudo,
@@ -220,7 +220,7 @@ class ExternalProfile extends Component {
                                 from: this.props.pseudo,
                                 to: this.state.pseudo,
                                 data: "C'est un match !"
-                            }, {headers: { "x-access-token": this.props.token }})
+                            })
                         }
                         else {
                             socket.emit('notification', {from: this.props.pseudo, to: this.state.pseudo, notif: 'like'})
