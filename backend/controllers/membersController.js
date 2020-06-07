@@ -283,13 +283,9 @@ exports.newMember = function (req, res) {
 };
 
 // Handle view member info
-exports.oneMember = function (req, res) {
-    console.log('appel: ' + req.params.pseudo);
-    
+exports.oneMember = function (req, res) {    
     connection.query('SELECT * FROM members WHERE pseudo = ?', [req.params.pseudo], (error, results, fields) => {
-        if (error) throw error;
-        console.log(results[0]);
-        
+        if (error) throw error;        
         let el = results[0]
         let member = {
             pseudo: el.pseudo,
@@ -344,9 +340,7 @@ exports.changeStatus = function (req, res) {
 exports.authMember = function (req, res) {
     connection.query('SELECT * FROM members WHERE pseudo = ?', [req.body.pseudo], async (error, results, fields) => {
         if (error) throw error;
-        let member = results[0]
-        console.log(member);
-        
+        let member = results[0]        
         if (member === undefined) {
             res.json({
                 exist: false
