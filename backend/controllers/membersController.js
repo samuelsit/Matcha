@@ -1153,7 +1153,7 @@ exports.postNotifMsg = function (req, res) {
 };
 
 exports.disconnectMember = function (req, res) {
-    connection.query('UPDATE members SET lastVisite = ? WHERE pseudo = ?', [Date.now(), req.params.pseudo], (error, results, fields) => {
+    connection.query('UPDATE members SET lastVisite = ? WHERE pseudo = ?', [new Date(), req.params.pseudo], (error, results, fields) => {
         if (error) throw error;
     });
     connection.query('SELECT * FROM members WHERE pseudo = ?', [req.params.pseudo], async (error, results, fields) => {

@@ -2,7 +2,7 @@ var connection = require('../bdd')
 
 // Handle create messages actions and send mail
 exports.newMessage = function (req, res) {
-    connection.query('INSERT INTO messages SET messaFrom = ?, messaTo = ?, data = ?, createdAt = ?', [req.body.from, req.body.to, req.body.data, Date.now()], (err) => {
+    connection.query('INSERT INTO messages SET messaFrom = ?, messaTo = ?, data = ?, createdAt = ?', [req.body.from, req.body.to, req.body.data, new Date()], (err) => {
         if (err) throw err;
         res.json({
             message: {

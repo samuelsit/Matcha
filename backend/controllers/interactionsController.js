@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 
 // Handle create messages actions and send mail
 exports.newInteraction = function (req, res) {
-    connection.query('INSERT INTO interactions SET interFrom = ?, interTo = ?, data = ?, createdAt = ?', [req.body.from, req.body.to, req.body.data, Date.now()], (err) => {
+    connection.query('INSERT INTO interactions SET interFrom = ?, interTo = ?, data = ?, createdAt = ?', [req.body.from, req.body.to, req.body.data, new Date()], (err) => {
         if (err) throw err;
         res.json({
             interaction: {
