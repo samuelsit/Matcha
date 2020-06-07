@@ -137,7 +137,7 @@ class ExternalProfile extends Component {
                     }           
                 })
                 .catch(error => {
-                    console.log(error)
+                    this.setState({redirect: true})
                 })
                 axios.get('http://localhost:5000/api/interactions/like/count/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }})
                     .then(res => {

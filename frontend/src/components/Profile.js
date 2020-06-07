@@ -44,7 +44,7 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        this._isMounted = true        
+        this._isMounted = true
         axios.get('http://localhost:5000/api/members/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({
@@ -219,11 +219,6 @@ class Profile extends Component {
         let _3 = /^(http|https):/.test(this.state.pictures._3) ? this.state.pictures._3 : this.state.pictures._3 !== '' ? require(`../pictures/profile/${this.state.pictures._3}`) : require(`../pictures/profile/noPic.png`)
         let _4 = /^(http|https):/.test(this.state.pictures._4) ? this.state.pictures._4 : this.state.pictures._4 !== '' ? require(`../pictures/profile/${this.state.pictures._4}`) : require(`../pictures/profile/noPic.png`)
         let _5 = /^(http|https):/.test(this.state.pictures._5) ? this.state.pictures._5 : this.state.pictures._5 !== '' ? require(`../pictures/profile/${this.state.pictures._5}`) : require(`../pictures/profile/noPic.png`)
-        // const _1 = this.state.pictures._1 !== '' ? require(`../pictures/profile/${this.state.pictures._1}`) : require(`../pictures/profile/noPic.png`)
-        // const _2 = this.state.pictures._2 !== '' ? require(`../pictures/profile/${this.state.pictures._2}`) : require(`../pictures/profile/noPic.png`)
-        // const _3 = this.state.pictures._3 !== '' ? require(`../pictures/profile/${this.state.pictures._3}`) : require(`../pictures/profile/noPic.png`)
-        // const _4 = this.state.pictures._4 !== '' ? require(`../pictures/profile/${this.state.pictures._4}`) : require(`../pictures/profile/noPic.png`)
-        // const _5 = this.state.pictures._5 !== '' ? require(`../pictures/profile/${this.state.pictures._5}`) : require(`../pictures/profile/noPic.png`)
 
         const styleMap = {
             width: '100%',

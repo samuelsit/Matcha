@@ -61,6 +61,8 @@ class Accueil extends Component {
         })
         axios.get('http://localhost:5000/api/members/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
+                console.log(res);
+                
                 this.setState({
                     attirance: {
                         male: res.data.member.attirance.male,
@@ -598,7 +600,6 @@ class Accueil extends Component {
     }
 
     render () {
-        console.log("TokenRender: " + this.props.token)
         if (this.props.isAuth === true) {
             return (
                 <Fragment>
