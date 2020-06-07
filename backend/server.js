@@ -1,9 +1,9 @@
 let bodyParser = require('body-parser');
-let mongoose = require('mongoose');
 let app = require('express')();
 let http = require('http').Server(app)
 let io = require('socket.io')(http)
 let cors = require('cors');
+let connection = require('./bdd')
 
 // Import routes
 let membersRoutes = require("./routes/membersRoute");
@@ -16,15 +16,6 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 require('dotenv').config()
-// Connect to Mongoose and set connection variable
-mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true});
-var db = mongoose.connection;
-
-// Added check for DB connection
-if(!db)
-    console.log("Error connecting db")
-else
-    console.log("Db connected successfully")
 
 // Setup server port
 var port = process.env.PORT || 5000;

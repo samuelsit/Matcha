@@ -1,23 +1,21 @@
-Interaction = require('../models/interactionsModel');
+var connection = require('../bdd')
+const nodemailer = require("nodemailer");
 
 // Handle create messages actions and send mail
 exports.newInteraction = function (req, res) {
-    var interaction = new Interaction();
-    interaction.from = req.body.from
-    interaction.to = req.body.to
-    interaction.data = req.body.data
-    interaction.save(function (err) {
-        if (err)
-            res.json(err);
+    connection.query('INSERT INTO interactions SET interFrom = ?, interTo = ?, data = ?, createdAt = ?', [req.body.from, req.body.to, req.body.data, Date.now()], (err) => {
+        if (err) throw err;
         res.json({
-            interaction
+            interaction: {
+                from: req.body.from,
+                to: req.body.to,
+                data: req.body.data
+            }
         });
-    });
+    })
 };
 
 exports.report = function (req, res) {
-    const nodemailer = require("nodemailer");
-
     nodemailer.createTestAccount((err, account) => {
         let transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
@@ -48,176 +46,103 @@ exports.report = function (req, res) {
     })
 };
 
-exports.removeInteraction = function (req, res) {    
-    Interaction.deleteOne({
-        from: req.body.from,
-        to: req.body.to,
-        data: req.body.data
-    }, function (err, inter) {
-        if (err)
-            res.send(err);        
-        res.json({
-            status: "success",
-            message: 'Like deleted'
-        });
-    });
+exports.removeInteraction = function (req, res) {   
+    connection.query('DELETE FROM interactions WHERE interFrom = ? AND interTo = ? AND data = ?', [req.body.from, req.body.to, req.body.data], (err) => {
+        if (err) throw err;
+        else
+            res.json({
+                status: "success",
+                message: 'Like deleted'
+            });
+    })
 };
 
 exports.countLike = function (req, res) {
-    Interaction.find({data: 'like', to: req.params.pseudo}).countDocuments(function (err, interactions) {
-        if (err) {
+    connection.query('SELECT COUNT(*) AS count FROM interactions WHERE interTo = ? AND data = ?', [req.params.pseudo, 'like'], (error, results, fields) => {
+        if (error) throw error;
+        else
             res.json({
-                status: "error",
-                message: err
+                interactions: results[0].count
             });
-        }
-        res.json({
-            interactions
-        });
-    });
+    })
 };
 
 exports.isMatch = function (req, res) {
-    Interaction.find({
-        $and: [
-            {from: req.params.pseudo1, to: req.params.pseudo2},
-            {data: 'like'}
-        ]
-    }).countDocuments(function (err, interactions) {
-        if (err) {
+    connection.query('SELECT COUNT(*) AS count FROM interactions WHERE interTo = ? AND interFrom = ? AND data = ?', [req.params.pseudo2, req.params.pseudo1, 'like'], (error, results, fields) => {
+        if (error) throw error;
+        else
             res.json({
-                status: "error",
-                message: err
+                interactions: results[0].count
             });
-        }
-        res.json({
-            interactions
-        });
-    });
+    })
 };
 
 exports.isBlock = function (req, res) {
-    Interaction.find({
-        $and: [
-            {from: req.params.pseudo1, to: req.params.pseudo2},
-            {data: 'block'}
-        ]
-    }).countDocuments(function (err, interactions) {
-        if (err) {
+    connection.query('SELECT COUNT(*) AS count FROM interactions WHERE interTo = ? AND interFrom = ? AND data = ?', [req.params.pseudo2, req.params.pseudo1, 'block'], (error, results, fields) => {
+        if (error) throw error;
+        else
             res.json({
-                status: "error",
-                message: err
+                interactions: results[0].count
             });
-        }
-        res.json({
-            interactions
-        });
-    });
+    })
 };
 
 exports.getLastNotifications = function (req, res) {
-    Interaction
-    .find({
-        to: req.params.pseudo
-    })
-    .sort({createdAt: -1})
-    .exec(function (err, interactions) {
-        if (err) {
+    connection.query('SELECT * FROM interactions WHERE interTo = ?', [req.params.pseudo], (error, results, fields) => {
+        if (error) throw error;
+        else {
+            let interactions = results.sort((a, b) => b.createdAt - a.createdAt).map(el => ({from: el.interFrom, to: el.interTo, data: el.data}))
             res.json({
-                status: "error",
-                message: err
+                interactions: interactions
             });
         }
-        res.json({
-            interactions
-        });
-    });
+    })
 };
 
 exports.getBlock = function (req, res) {
-    Interaction
-    .find({
-        from: req.params.pseudo,
-        data: 'block'
-    })
-    .exec(function (err, interactions) {
-        let arr = []
-        interactions.map(res => {
-            arr.push(res.to)
-        })
-        
-        if (err) {
+    connection.query('SELECT * FROM interactions WHERE interFrom = ? AND data = ?', [req.params.pseudo, 'block'], (error, results, fields) => {
+        if (error) throw error;
+        else {
+            let block = results.map(el => el.interTo)
             res.json({
-                status: "error",
-                message: err
+                block: block
             });
         }
-        res.json({
-            block: arr
-        });
-    });
+    })
 };
 
 exports.getBlockMe = function (req, res) {
-    Interaction
-    .find({
-        to: req.params.pseudo,
-        data: 'block'
-    })
-    .exec(function (err, interactions) {
-        let arr = []
-        interactions.map(res => {
-            arr.push(res.from)
-        })
-        
-        if (err) {
+    connection.query('SELECT * FROM interactions WHERE interTo = ? AND data = ?', [req.params.pseudo, 'block'], (error, results, fields) => {
+        if (error) throw error;
+        else {
+            let block = results.map(el => el.interFrom)
             res.json({
-                status: "error",
-                message: err
+                block: block
             });
         }
-        res.json({
-            block: arr
-        });
-    });
+    })
 };
 
 exports.getLastView = function (req, res) {
-    Interaction
-    .find({
-        from: req.params.pseudo,
-        data: 'view'
-    })
-    .sort({createdAt: -1})
-    .exec(function (err, interactions) {
-        if (err) {
+    connection.query('SELECT * FROM interactions WHERE interFrom = ? AND data = ?', [req.params.pseudo, 'view'], (error, results, fields) => {
+        if (error) throw error;
+        else {
+            let interactions = results.sort((a, b) => b.createdAt - a.createdAt).map(el => ({from: el.interFrom, to: el.interTo, data: el.data}))
             res.json({
-                status: "error",
-                message: err
+                interactions: interactions
             });
         }
-        res.json({
-            interactions
-        });
-    });
+    })
 };
 
 exports.getLastLike = function (req, res) {
-    Interaction
-    .find({
-        from: req.params.pseudo,
-        data: 'like'
-    })
-    .sort({createdAt: -1})
-    .exec(function (err, interactions) {
-        if (err) {
+    connection.query('SELECT * FROM interactions WHERE interFrom = ? AND data = ?', [req.params.pseudo, 'like'], (error, results, fields) => {
+        if (error) throw error;
+        else {
+            let interactions = results.sort((a, b) => b.createdAt - a.createdAt).map(el => ({from: el.interFrom, to: el.interTo, data: el.data}))
             res.json({
-                status: "error",
-                message: err
+                interactions: interactions
             });
         }
-        res.json({
-            interactions
-        });
-    });
+    })
 };
