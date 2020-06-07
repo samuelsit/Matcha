@@ -334,6 +334,9 @@ exports.oneMember = function (req, res) {
 exports.changeStatus = function (req, res) {
     connection.query('UPDATE members SET isLoggued = ? WHERE pseudo = ?', [req.params.status === false ? 0 : 1, req.params.pseudo], (error, results, fields) => {
         if (error) throw error;
+        res.json({
+            isLoggued: req.params.status
+        });
     });
 };
 
