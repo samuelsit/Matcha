@@ -6,7 +6,6 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import { Redirect, Link } from "react-router-dom"
 import DiscussionButton from './DiscussionButton'
-import MapG from './Map'
 import Place from './Place'
 
 class Profile extends Component {
@@ -220,11 +219,6 @@ class Profile extends Component {
         let _4 = /^(http|https):/.test(this.state.pictures._4) ? this.state.pictures._4 : this.state.pictures._4 !== '' ? require(`../pictures/profile/${this.state.pictures._4}`) : require(`../pictures/profile/noPic.png`)
         let _5 = /^(http|https):/.test(this.state.pictures._5) ? this.state.pictures._5 : this.state.pictures._5 !== '' ? require(`../pictures/profile/${this.state.pictures._5}`) : require(`../pictures/profile/noPic.png`)
 
-        const styleMap = {
-            width: '100%',
-            height: '800px'
-        }
-
         if (this.props.isAuth === false) {
             return (
                 <Redirect to={"/connexion"} />
@@ -366,7 +360,6 @@ class Profile extends Component {
                                 </div>
                             </div>
                         </div>
-                        <MapG style={styleMap} lat={this.state.country.lat} lng={this.state.country.lng}/>
                         <DiscussionButton/>
                     </Fragment>
             )
