@@ -9,15 +9,15 @@ var connection = require('../bdd')
 exports.allMember = function (req, res) {
     connection.query('SELECT * FROM members WHERE pseudo != ?', [req.params.pseudo], (error, results, fields) => {
         if (error) throw error;
-        var memberLog = '^' + req.params.pseudo + '$'
-        var regex = new RegExp(memberLog)
         let {attirance, myGender} = req.body
-        if (!attirance.male && attirance.female) {
+        if (!attirance.male && attirance.female) {            
             var members = results
             .filter(el => (
                 el.pseudo !== req.params.pseudo &&
                 el.myGender === 'female' &&
-                el.pic0 !== '' &&
+                el.pic0 !== ''
+            ))
+            .filter(el => (
                 (el.attiranceMale === 1 && el.attiranceFemale === 1) ||
                 (el.attiranceMale === (myGender === 'male' ? 1 : 0) && el.attiranceFemale === 1) ||
                 (el.attiranceMale === (myGender === 'male' ? 1 : 0) && el.attiranceFemale === 0)
@@ -68,10 +68,12 @@ exports.allMember = function (req, res) {
             .filter(el => (
                 el.pseudo !== req.params.pseudo &&
                 el.myGender === 'male' &&
-                el.pic0 !== '' &&
-                ((el.attiranceMale === 1 && el.attiranceFemale === 1) ||
+                el.pic0 !== ''
+            ))
+            .filter(el => (
+                (el.attiranceMale === 1 && el.attiranceFemale === 1) ||
                 (el.attiranceMale === (myGender === 'male' ? 1 : 0) && el.attiranceFemale === 1) ||
-                (el.attiranceMale === (myGender === 'male' ? 1 : 0) && el.attiranceFemale === 0))
+                (el.attiranceMale === (myGender === 'male' ? 1 : 0) && el.attiranceFemale === 0)
             ))
             .sort((a, b) => b.isLoggued - a.isLoggued)
             .map(el => ({
@@ -118,10 +120,12 @@ exports.allMember = function (req, res) {
             var members = results
             .filter(el => (
                 el.pseudo !== req.params.pseudo &&
-                el.pic0 !== '' &&
-                ((el.attiranceMale === 1 && el.attiranceFemale === 1) ||
+                el.pic0 !== ''
+            ))
+            .filter(el => (
+                (el.attiranceMale === 1 && el.attiranceFemale === 1) ||
                 (el.attiranceMale === (myGender === 'male' ? 1 : 0) && el.attiranceFemale === 1) ||
-                (el.attiranceMale === (myGender === 'male' ? 1 : 0) && el.attiranceFemale === 0))
+                (el.attiranceMale === (myGender === 'male' ? 1 : 0) && el.attiranceFemale === 0)
             ))
             .sort((a, b) => b.isLoggued - a.isLoggued)
             .map(el => ({
