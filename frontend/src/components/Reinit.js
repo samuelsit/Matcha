@@ -134,7 +134,7 @@ class Reinit extends Component {
                     axios
                     .post('http://localhost:5000/api/members/profile/pass/' + this.state.pseudo, {
                         password: bcrypt.hashSync(this.state.npass, bcrypt.genSaltSync(10))
-                    }).then(res => {                                
+                    }, {headers: { "x-access-token": this.props.token }}).then(res => {                                
                         this.setRedirect()
                     })
                 })

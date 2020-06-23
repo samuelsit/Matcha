@@ -105,7 +105,7 @@ router.route('/api/members/profile/:pseudo')
     .post(CheckToken ,memberController.changeMemberProfile);
 
 router.route('/api/members/profile/pass/:pseudo')
-    .post(memberController.changeMemberPass);
+    .post(CheckToken, memberController.changeMemberPass);
 
 router.route('/api/members/profile/country/:pseudo')
     .post(CheckToken, memberController.changeMemberCountry);
