@@ -72,6 +72,16 @@ class Accueil extends Component {
                 })              
             }           
         })
+        .then(async () => {
+            let profile = await axios.get('http://localhost:5000/api/members/pictures/profile/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }})
+            let pic2 = await axios.get('http://localhost:5000/api/members/pictures/2/' + this.props.pseudo)
+            let pic3 = await axios.get('http://localhost:5000/api/members/pictures/3/' + this.props.pseudo)
+            let pic4 = await axios.get('http://localhost:5000/api/members/pictures/4/' + this.props.pseudo)
+            let pic5 = await axios.get('http://localhost:5000/api/members/pictures/5/' + this.props.pseudo)
+            if (!profile.data.status && !pic2.data.status && !pic3.data.status && !pic4.data.status && !pic5.data.status) {
+                this.setState({ redirect: true })
+            }            
+        })
         .then(() => {
             if (this.state.myGender !== 'male' && this.state.myGender !== 'female' && this._isMounted) {
                 this.setState({ redirect: true })
@@ -88,6 +98,7 @@ class Accueil extends Component {
                     this.setState({pageMax: Math.ceil(res.data.members.length / 4)})
                     this.setState({card: res.data.members
                         .filter(this.filter)
+                        .sort((a, b) => this.getDistanceFrom(a.country.lat, a.country.lng) - this.getDistanceFrom(b.country.lat, b.country.lng))
                         .map((el, i) => {
                             return (
                                 <CardLove
@@ -169,6 +180,7 @@ class Accueil extends Component {
         }, {headers: { "x-access-token": this.props.token }}).then(res => {
             if (this._isMounted) {
                 this.setState({card: res.data.members
+                    .sort((a, b) => this.getDistanceFrom(a.country.lat, a.country.lng) - this.getDistanceFrom(b.country.lat, b.country.lng))
                     .map((el, i) => (
                         <CardLove
                             key={i}

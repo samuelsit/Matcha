@@ -272,7 +272,7 @@ class CardLove extends Component {
                 <div className="card">
                     <div onClick={this.handleView}>
                         <span id="isLike" className="text-light w-100 position-absolute border isLike border border-white">Cet utilisateur vous like</span>
-                        <img className="card-img-top" src={profilepic} alt="Card cap"/>
+                        <img className="card-img-top" src={profilepic} alt="Card cap" style={{height: '200px', objectFit: 'cover'}}/>
                         <div className="text-dark text-left card-header"><h5 className="card-title">{this.props.name} <span className={isLoggued}> </span> <span className={colorgender.concat(' ', "float-right")}><i className={gender}></i></span></h5></div>
                     </div>
                     <div className="card-body">
