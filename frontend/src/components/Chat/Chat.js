@@ -17,6 +17,8 @@ class Chat extends Component {
   _isMounted = false
 
   state = {
+    isPic1: false,
+    _1: '',
     messages: [],
     pseudo: this.props.match.params.pseudo,
     private: false,
@@ -73,6 +75,11 @@ class Chat extends Component {
     }).catch(error => {
         console.log(error)
     })
+    axios.get('http://localhost:5000/api/members/pictures/profile/' + this.state.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
+        if (this._isMounted) {
+            this.setState({isPic1: res.data.status, _1: res.data.pic})
+        }
+    })
     socket.on('chat message', this.receptionSocket)
   }
 
@@ -121,6 +128,7 @@ class Chat extends Component {
   }
 
   render () {
+    let pic1 = /^(http|https):/.test(this.state._1) ? this.state._1 : this.state.isPic1 === false ? require('../../pictures/profile/noPicAccueil.png') : require(`../../pictures/profile/${this.state.pseudo}_1.png`)
     let messages = this.state.messages.map((el, i) => (
       <Message key={i} isUser={this.isUser} message={el.data} pseudo={el.from}/>
     ))
@@ -152,7 +160,7 @@ class Chat extends Component {
               </div>
               <div className='col-lg-9'>
                 <div><br/><br/><br/>
-                  <h1 className="text-center d-sm-block d-lg-none d-md-block font-weight-bold">{this.state.firstname} {this.state.lastname} <span className="badge badge-pill badge-success"> </span></h1>
+                  <h1 className="text-center d-sm-block d-lg-none d-md-block font-weight-bold"><span className="badge badge-pill badge-success"><img src={pic1} width="50" height="50" style={{objectFit: 'cover', borderRadius:'50%'}} alt=""/> {this.state.firstname} {this.state.lastname}</span></h1>
                   <div className="messages shadow-sm" ref={this.messagesRef}>
                     <div id="message" className="h1 text-right mt-2">
                       {messages}

@@ -85,7 +85,7 @@ class NotificationBar extends Component {
                 <Fragment>
                     {this.handleRedirect()}
                     <span className="text-left" onClick={this.handleView}>
-                        <img className="rounded-circle" width="30" height="30" src={pic} alt="Card cap" />
+                        <img className="rounded-circle" width="50" height="50" style={{objectFit:'cover'}} src={pic} alt="Card cap" />
                         <span className="card-title h5 middle"> {this.state.user} {action}</span>
                     </span>
                     <hr/>

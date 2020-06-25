@@ -59,7 +59,7 @@ class DiscussionBar extends Component {
     }
 
     render () {
-        let pic = /^(http|https):/.test(this.state._1) ? this.state._1 : this.state._1 !== '' ? require(`../pictures/profile/${this.state._1}`) : require(`../pictures/profile/noPic.png`)
+        let pic = /^(http|https):/.test(this.state._1) ? this.state._1 : this.state._1 !== '' ? require(`../pictures/profile/${this.state._1}`) : require(`../pictures/profile/noPicAccueil.png`)
         // const pic = this.state.isPic === false ? require('../pictures/profile/noPic.png') : require(`../pictures/profile/${this.props.login}_1.png`)
         if (this.state.blockMember.indexOf(this.props.login) === -1
         && this.state.blockMe.indexOf(this.props.login) === -1) {
@@ -67,7 +67,7 @@ class DiscussionBar extends Component {
                 <Fragment>
                     {this.handleRedirect()}
                     <span className="text-left" onClick={this.setRedirect}>
-                        <img className="rounded-circle" width="30" height="30" src={pic} alt="Card cap" />
+                        <img className="rounded-circle" width="50" height="50" src={pic} alt="Card cap" style={{objectFit: 'cover'}} />
                         <span className="card-title h5 middle"> {this.state.member.firstname} {this.state.member.lastname}</span> -
                         <span className="card-text h5 middle text-secondary"> {this.props.message.substring(0, 20)} &bull;</span>
                     </span>
