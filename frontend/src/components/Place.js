@@ -5,7 +5,13 @@ import '../css/Place.css'
 
 class Place extends Component {
     state = {
-        address: ""
+        address: this.props.value
+    }
+
+    componentDidUpdate(props) {
+        if (props.value !== this.props.value) {
+            this.setState({address: this.props.value})
+        }
     }
 
     setAddress = address => {
@@ -30,7 +36,7 @@ class Place extends Component {
             <PlacesAutocomplete value={this.state.address} onChange={this.setAddress} onSelect={this.handleSelect} searchOptions={searchOptions}>
                 {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
                     <div>
-                        <input id="place" className={this.props.style_w} onChange={this.setAddress} {...getInputProps({ placeholder: "Indiquez votre ville 📍" })} required onBlur={this.props.submitBlur}/>
+                        <input id="place" className={this.props.style_w} onChange={this.setAddress} {...getInputProps({ placeholder: "Indiquez votre ville 📍" })} required onBlur={this.props.submitBlur} value={this.state.address}/>
                         <div>
                             {loading ? <div>Loading...</div> : null}
                             {suggestions.map((suggestion) => {

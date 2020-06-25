@@ -327,7 +327,7 @@ class Profile extends Component {
                                                 <div className="col">
                                                     <div className="form-group text-center">
                                                         <label htmlFor="place" className="text-light">Localisation</label>
-                                                        <Place style_w="form-control w-100" getLocalisation={this.handleLocalisation} submitBlur={this.handleOnBlurSubmit}/>
+                                                        <Place style_w="form-control w-100" getLocalisation={this.handleLocalisation} submitBlur={this.handleOnBlurSubmit} value={this.state.country.name}/>
                                                     </div>
                                                 </div>
                                             </div>
