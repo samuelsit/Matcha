@@ -402,7 +402,7 @@ class Sign extends Component {
                                         </div><br />
                                         <div className="form-group text-center">
                                             <div className="text-light">Dans quelle ville habitez-vous ?</div>
-                                            <Place style_w="mx-auto form-control w-75" getLocalisation={this.handleLocalisation}/>
+                                            <Place style_w="mx-auto form-control w-75" getLocalisation={this.handleLocalisation} value={this.state.country.name}/>
                                             <div className="invalid-feedback" id="getErr4">Veuillez indiquer votre ville</div>
                                         </div>
                                         <div className="form-group">

@@ -15,9 +15,9 @@ exports.newMessage = function (req, res) {
 };
 
 exports.getMessagesWith = function (req, res) {    
-    connection.query('SELECT * FROM messages WHERE (messaFrom = ? AND messaTo = ?) AND (messaFrom = ? AND messaTo = ?)', [req.params.pseudo1, req.params.pseudo2, req.params.pseudo2, req.params.pseudo1], (err, results) => {
+    connection.query('SELECT * FROM messages WHERE (messaFrom = ? AND messaTo = ?) OR (messaFrom = ? AND messaTo = ?)', [req.params.pseudo1, req.params.pseudo2, req.params.pseudo2, req.params.pseudo1], (err, results) => {
         if (err) throw err;
-        else {
+        else {            
             let messages = results.sort((a, b) => b.createdAt - a.createdAt).map(el => ({from: el.messaFrom, to: el.messaTo, data: el.data}))
             res.json({
                 messages: messages

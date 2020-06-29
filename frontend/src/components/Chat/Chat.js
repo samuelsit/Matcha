@@ -66,7 +66,7 @@ class Chat extends Component {
     }).catch(error => {
         console.log(error)
     })
-    axios.get('http://localhost:5000/api/messages/all/' + this.state.pseudo + '/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {
+    axios.get('http://localhost:5000/api/messages/all/' + this.state.pseudo + '/' + this.props.pseudo, {headers: { "x-access-token": this.props.token }}).then(res => {      
         if (this._isMounted) {
             this.setState({
                 messages: res.data.messages
