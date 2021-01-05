@@ -6,7 +6,7 @@
     "@testing-library/jest-dom": "^5.0.0",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^8.0.3",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^4.4.1",
     "geolib": "^3.2.1",
